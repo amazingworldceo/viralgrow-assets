@@ -1,0 +1,61 @@
+/* ViralGrow.io - ritocchi estetici del 20 nov 2026 (si toglie il link in layout.twig per tornare a prima) */
+
+/* Stelline: sempre dietro ai contenuti, piu' discrete */
+.sparkles { pointer-events: none; opacity: .45; }
+.main-banner-section, .middle-section, .footer { position: relative; z-index: 1; }
+
+/* Illustrazione della home: video leggero al posto della GIF da 3,5 MB */
+.banner-img video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    position: relative;
+    z-index: 1;
+    background: #fff;
+}
+
+/* Pulsante "Sign in" accanto a "Get Started Now!" (lo aggiunge restyle-2026.js) */
+.started-btn .vg-signin-btn {
+    margin-left: 12px;
+    background: transparent;
+    border: 1px solid #5d59ff;
+    color: #fff;
+}
+.started-btn .vg-signin-btn:hover { background: #5d59ff; color: #fff; }
+
+/* FAQ: le domande oltre la quinta restano chiuse finche' non si tocca "Show all questions" */
+.accordion .card.vg-faq-hidden { display: none; }
+.vg-faq-more {
+    display: block;
+    margin: 8px auto 0;
+    background: transparent;
+    border: 1px solid rgba(93, 89, 255, .6);
+    color: #fff;
+    border-radius: 30px;
+    padding: 10px 26px;
+    font-weight: 600;
+}
+
+/* Pagamenti: immagine nuova, solo metodi attivi */
+.footer-menu-pay .pay-img img { max-width: 100%; height: auto; }
+
+@media only screen and (max-width: 767px) {
+    /* Prima il titolo e i pulsanti, poi l'illustrazione (prima era al contrario) */
+    .main-banner-section .row { flex-direction: column; }
+    .main-banner-section { padding-top: 10px; }
+    .main-banner-section .banner-txt h2 p:not(:first-child) { display: none; }
+    .main-banner-section .started-btn .btn { margin-top: 8px; }
+
+    /* Illustrazione piu' piccola e ombra viola dentro lo schermo */
+    .main-banner-section .banner-img { max-width: 82%; margin: 30px auto 10px; }
+    .banner-img::before { right: -8px; bottom: -8px; }
+    .banner-img::after { right: -14px; bottom: -14px; }
+
+    /* Meno vuoto tra le sezioni */
+    .why-world, .our-team-section, .faq-section, .client-section { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+    .sparkles { opacity: .25; }
+
+    /* Footer: un po' di aria tra i blocchi di link */
+    .footer-menu-sec { margin-bottom: 18px; }
+}
