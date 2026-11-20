@@ -239,8 +239,9 @@
     }
 
     // nomi = nomi delle categorie della pagina; scegli(nome) filtra la pagina ("All" = tutto);
-    // sotto = quadratini su una riga loro sotto il titolo (Services), se no accanto al titolo (New order)
-    function barraPiattaforme(nomi, scegli, sotto) {
+    // sotto = quadratini su una riga loro sotto il titolo (Services), se no accanto al titolo (New order);
+    // iniziale = piattaforma scelta all'apertura (Mirko: Instagram)
+    function barraPiattaforme(nomi, scegli, sotto, iniziale) {
         if (document.querySelector('.vg-plat')) return;
         var presenti = {};
         nomi.forEach(function (n) { presenti[piattaformaDi(n)] = true; });
@@ -258,6 +259,8 @@
             });
             riga.appendChild(b);
         });
+        var prima = voci.map(function (p) { return p.nome; }).indexOf(iniziale);
+        if (prima >= 0) riga.children[prima].click();
         var titolo = document.querySelector('.innerMainPage .vg-page-title');
         var pagina = document.querySelector('.innerMainPage .container');
         if (sotto) {
@@ -285,6 +288,9 @@
         var tutte = Array.prototype.filter.call(categoria.options, function (o) {
             return o.value && !/general instructions/i.test(o.textContent);
         });
+        // si apre su Instagram, salvo una categoria gia' scelta di un'altra piattaforma (es. da "Order now")
+        var attuale = categoria.options[categoria.selectedIndex];
+        var iniziale = attuale && attuale.value ? piattaformaDi(attuale.textContent) : 'Instagram';
         barraPiattaforme(tutte.map(function (o) { return o.textContent; }), function (nome) {
             var scelta = nome === TUTTE.nome ? tutte : tutte.filter(function (o) { return piattaformaDi(o.textContent) === nome; });
             var prima = categoria.value;
@@ -292,7 +298,7 @@
             scelta.forEach(function (o) { categoria.appendChild(o); });
             categoria.value = scelta.some(function (o) { return o.value === prima; }) ? prima : scelta[0].value;
             if (categoria.value !== prima) categoria.dispatchEvent(new Event('change', { bubbles: true }));
-        });
+        }, false, iniziale);
     }
 
     // Services: le righe (titolo della categoria e servizi) delle altre piattaforme si nascondono e nella tendina
@@ -311,7 +317,7 @@
             // categoria scelta di un'altra piattaforma: si torna a "All Categories"
             if (tendina && tutteLeCategorie && tendina.value !== tutteLeCategorie.getAttribute('data-target') &&
                 fuori(tendina.value) && typeof window.dropdownChange === 'function') window.dropdownChange(tutteLeCategorie);
-        }, true);
+        }, true, 'Instagram');
     }
 
     // Services: "View" apre una finestra con la descrizione e Order now, staccata dalla barra in alto, con la X sempre
