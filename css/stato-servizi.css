@@ -40,3 +40,7 @@
 .vg-sw.vg-st-r { background: rgba(245, 54, 92, .2); border-color: rgba(245, 54, 92, .75); }
 .vg-sw.vg-st-new { border: 2px solid #d4af37; }
 .vg-status-order .vg-live { justify-content: flex-start; }
+
+/* New order: quadro di tutti i servizi, al primo New order dopo il login */
+.vg-status-welcome { margin: 0 0 16px; }
+.vg-status-title { margin: 0 0 8px; font-weight: 700; color: #fff; }

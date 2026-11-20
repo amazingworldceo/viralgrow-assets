@@ -115,19 +115,15 @@
 /* Menu laterale: mai sottolineato (su iPhone lo restava dopo un tocco) */
 #sidenav-main a, #sidenav-main a:hover, #sidenav-main a:focus, #sidenav-main a:active { text-decoration: none !important; }
 
-/* Nuovo ordine: le istruzioni in un avviso sopra il modulo */
-.vg-notice {
-    background: rgba(93, 89, 255, .10);
-    border: 1px solid rgba(93, 89, 255, .45);
-    border-radius: 12px;
-    padding: 14px 16px 6px;
-    margin-bottom: 18px;
-    color: #e6e7ee;
-    font-size: 14px;
-}
-.vg-notice-title { font-weight: 700; margin-bottom: 6px; color: #fff; }
-.vg-notice ul { padding-left: 18px; margin: 0 0 8px; }
-.vg-notice li { margin-bottom: 6px; }
+/* Campanella in alto: "Good to know" in cima al menu e pallino rosso "1" (anche su telefono; il "+1" del tema no) */
+.navbar .notification-badge { display: none !important; }
+#notification-button > a { position: relative; }
+.vg-bell-dot { position: absolute; top: 2px; right: 0; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px;
+    background: #f5365c; color: #fff; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; }
+.vg-bell-tips { padding: 12px 14px 4px; font-size: 13px; line-height: 1.45; white-space: normal; }
+.vg-notice-title { font-weight: 700; margin-bottom: 6px; }
+.vg-bell-tips ul { padding-left: 18px; margin: 0 0 8px; }
+.vg-bell-tips li { margin-bottom: 6px; }
 
 /* Colori (20 nov 2026, 17:00): viola pieno solo su cio' che si clicca. Per tornare a prima: tag backup-prima-dei-colori */
 .innerMainPage .card .form-group select.form-control {
@@ -179,8 +175,6 @@ body.vg-neworder .vg-order-notes + #service_description { margin-top: 14px; marg
 /* l'esempio di link nel campo vuoto deve sembrare un esempio, non un testo gia' scritto */
 #order-form input::placeholder { color: #5f6375; opacity: 1; }
 .vg-order-notes p { margin: 0 0 6px; font-size: 13px; line-height: 1.45; color: #b9bcc8; }
-body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-size: 13px; }
-
 /* Nuovo ordine: numero del servizio in un riquadrino viola tenue prima del nome (lo mette restyle-2026.js) */
 .vg-sid {
     display: inline-block; flex: none; margin-right: 8px; padding: 1px 8px; border-radius: 999px;

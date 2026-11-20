@@ -46,14 +46,8 @@
             return c && !c.classList.contains('service-title') && /^\s*\d+\s*$/.test(c.textContent);
         });
     }
-    function servizi() {
-        var righe = righeServizi();
-        if (!righe.length) return;
-        righe.forEach(function (r) {
-            var c = r.firstElementChild, id = c.textContent.trim();
-            c.textContent = '';
-            c.appendChild(el('span', 'vg-sid', id));
-        });
+    // i 4 riquadri coi numeri e il Live status; conta(ids) li riempie
+    function quadro() {
         var blocco = el('div', 'vg-status-page'), griglia = el('div', 'vg-st-boxes'), caselle = {};
         [['new', 'New services'], ['g', STATI.g], ['y', STATI.y], ['r', STATI.r]].forEach(function (v) {
             var b = el('div', 'vg-st-box vg-st-' + (v[0] === 'new' ? 'g vg-st-new' : v[0]));
@@ -64,21 +58,54 @@
         });
         blocco.appendChild(griglia);
         blocco.appendChild(live());
+        blocco.conta = function (ids) {
+            var n = { new: 0, g: 0, y: 0, r: 0 };
+            ids.forEach(function (id) { n[nuovo(id) && stato(id) === 'g' ? 'new' : stato(id)]++; });   // un nuovo arancione o rosso conta nel suo colore
+            Object.keys(n).forEach(function (k) { caselle[k].textContent = n[k]; });
+        };
+        return blocco;
+    }
+    function idDi(righe) { return righe.map(function (r) { return r.firstElementChild.textContent.trim(); }); }
+
+    function servizi() {
+        var righe = righeServizi();
+        if (!righe.length) return;
+        righe.forEach(function (r) {
+            var c = r.firstElementChild, id = c.textContent.trim();
+            c.textContent = '';
+            c.appendChild(el('span', 'vg-sid', id));
+        });
+        var blocco = quadro();
         var barra = document.querySelector('.vg-plat'), ricerca = document.querySelector('.services-page .search-section');
         if (barra) barra.parentNode.insertBefore(blocco, barra.nextSibling);
         else if (ricerca) ricerca.parentNode.insertBefore(blocco, ricerca);
         else return;
-        function conta() {
-            var n = { new: 0, g: 0, y: 0, r: 0 };
-            righe.forEach(function (r) {
-                if (r.classList.contains('vg-plat-off')) return;   // altra piattaforma (quadratini di restyle-2026.js)
-                var id = r.firstElementChild.textContent.trim();
-                n[nuovo(id) && stato(id) === 'g' ? 'new' : stato(id)]++;   // un nuovo arancione o rosso conta nel suo colore
-            });
-            Object.keys(n).forEach(function (k) { caselle[k].textContent = n[k]; });
+        function conta() {   // solo la piattaforma scelta (le altre hanno vg-plat-off, da restyle-2026.js)
+            blocco.conta(idDi(righe.filter(function (r) { return !r.classList.contains('vg-plat-off'); })));
         }
         conta();
         new MutationObserver(conta).observe(righe[0].parentNode, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    }
+
+    // New order: il quadro di TUTTI i servizi sopra il modulo, al primo New order dopo il login (Mirko, 20 nov 2026 20:48).
+    // vg-avviso-visto lo azzera restyle-2026.js sulle pagine da non loggati. I servizi si contano dalla pagina Services.
+    function quadroNuovoOrdine() {
+        var modulo = document.getElementById('order-form');
+        try {
+            if (!modulo || localStorage.getItem('vg-avviso-visto') === '1') return;
+            localStorage.setItem('vg-avviso-visto', '1');
+        } catch (e) { return; }
+        fetch('/services', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (html) {
+            var pagina = new DOMParser().parseFromString(html, 'text/html');
+            var ids = Array.prototype.map.call(pagina.querySelectorAll('.services-page tr[data-index] > td:first-child'),
+                function (c) { return c.textContent.trim(); }).filter(function (t) { return /^\d+$/.test(t); });
+            if (!ids.length) return;
+            var blocco = quadro();
+            blocco.classList.add('vg-status-welcome');
+            blocco.insertBefore(el('p', 'vg-status-title', 'Service status'), blocco.firstChild);
+            blocco.conta(ids);
+            modulo.parentNode.insertBefore(blocco, modulo);
+        }).catch(function () {});
     }
 
     // New order: stato del servizio scelto e legenda sotto la descrizione; segue la descrizione lunga, corta o assente
@@ -137,6 +164,7 @@
                 if (!pronto) { giri++; return setTimeout(prova, 200); }
                 servizi();
                 nuovoOrdine();
+                quadroNuovoOrdine();
                 coloraRiquadri();
                 var inCoda = false;
                 new MutationObserver(function () {

@@ -138,18 +138,7 @@
         cella.appendChild(el('span', 'vg-status vg-status-' + tipo, testo));
     }
 
-    // Ricordo dell'avviso: si azzera su ogni pagina da non loggato (login, home), cosi' torna al login dopo
-    function avvisoGiaVisto(azione) {
-        try {
-            if (azione === 'leggi') return localStorage.getItem('vg-avviso-visto') === '1';
-            if (azione === 'segna') localStorage.setItem('vg-avviso-visto', '1');
-            else localStorage.removeItem('vg-avviso-visto');
-        } catch (e) { /* senza memoria del browser l'avviso si vede come prima */ }
-        return false;
-    }
-
-    // Nuovo ordine: avviso "Good to know" sopra il modulo, con testo fisso: resta anche se Mirko spegne
-    // la categoria "General Instructions" nel pannello. Si vede solo al primo "New order" dopo il login.
+    // I consigli di "Good to know", con testo fisso: restano anche se Mirko spegne la categoria "General Instructions"
     var CONSIGLI = [
         '⭐ We add new services all the time. In each category, order the one with the highest ID: it\'s the newest and the most stable. The date next to the category name shows the last update.',
         '⏱️ No delivery time shown? It\'s a new service, so the first orders may take a bit longer.',
@@ -157,16 +146,37 @@
         '❓ Can\'t find what you need? Open a ticket and we\'ll set up a custom service for you.',
         '💳 Want to pay by credit card? Open a ticket and we\'ll review your request.'
     ];
-    function avvisoNuovoOrdine() {
-        var modulo = document.getElementById('order-form');
-        if (!modulo || document.querySelector('.vg-notice') || avvisoGiaVisto('leggi')) return;
-        avvisoGiaVisto('segna');
-        var avviso = el('div', 'vg-notice');
-        avviso.appendChild(el('p', 'vg-notice-title', 'Good to know'));
-        var lista = el('ul');
-        CONSIGLI.forEach(function (t) { lista.appendChild(el('li', '', t)); });
-        avviso.appendChild(lista);
-        modulo.parentNode.insertBefore(avviso, modulo);
+    // "Good to know" sta nel menu della campanella in alto (Mirko, 20 nov 2026, 20:48: prima stava sopra New order).
+    // Pallino rosso "1" a ogni login finche' la persona non ha aperto la campanella in VOLTE_CAMPANELLA login diversi.
+    // Il conto e' del browser (vg-bell-visti); vg-bell-sess si azzera da non loggati come vg-avviso-visto.
+    var VOLTE_CAMPANELLA = 3;
+    function memoria(chiave, valore) {
+        try {
+            if (valore === undefined) return localStorage.getItem(chiave);
+            if (valore === null) localStorage.removeItem(chiave); else localStorage.setItem(chiave, valore);
+        } catch (e) { /* senza memoria del browser il pallino si vede a ogni pagina */ }
+        return null;
+    }
+    function campanella() {
+        var bottone = document.getElementById('notification-button'), lista = document.getElementById('spam_messages');
+        if (!bottone || !lista || document.querySelector('.vg-bell-tips')) return;
+        var voce = el('div', 'list-group-item vg-bell-tips');
+        voce.appendChild(el('p', 'vg-notice-title', 'Good to know'));
+        var elenco = el('ul');
+        CONSIGLI.forEach(function (t) { elenco.appendChild(el('li', '', t)); });
+        voce.appendChild(elenco);
+        lista.insertBefore(voce, lista.firstChild);
+        var visti = parseInt(memoria('vg-bell-visti') || '0', 10) || 0;
+        if (visti >= VOLTE_CAMPANELLA || memoria('vg-bell-sess') === 'visto') return;
+        var pallino = el('span', 'vg-bell-dot', '1');
+        var link = bottone.querySelector('a') || bottone;
+        link.appendChild(pallino);
+        bottone.addEventListener('click', function () {
+            if (!pallino.parentNode) return;
+            pallino.remove();
+            memoria('vg-bell-sess', 'visto');
+            memoria('vg-bell-visti', String(visti + 1));
+        });
     }
 
     // New order: la descrizione del servizio sotto il tasto (Mirko: il modulo resta corto, chi vuole i dettagli scorre).
@@ -302,7 +312,9 @@
         if (document.querySelector('.vg-plat')) return;
         var presenti = {};
         nomi.forEach(function (n) { presenti[piattaformaDi(n)] = true; });
-        var voci = PIATTAFORME.concat([ALTRE]).filter(function (p) { return presenti[p.nome]; }).concat([TUTTE]);
+        var voci = PIATTAFORME.concat([ALTRE]).filter(function (p) { return presenti[p.nome]; });
+        // "All" in fondo; in testa quando e' la scelta iniziale (Services, Mirko 20 nov 2026 20:48)
+        voci = iniziale === TUTTE.nome ? [TUTTE].concat(voci) : voci.concat([TUTTE]);
         if (voci.length < 3) return;  // una piattaforma sola: i quadratini non servono
         var riga = el('div', 'vg-plat');
         voci.forEach(function (p) {
@@ -374,7 +386,7 @@
             // categoria scelta di un'altra piattaforma: si torna a "All Categories"
             if (tendina && tutteLeCategorie && tendina.value !== tutteLeCategorie.getAttribute('data-target') &&
                 fuori(tendina.value) && typeof window.dropdownChange === 'function') window.dropdownChange(tutteLeCategorie);
-        }, true, 'Instagram');
+        }, true, TUTTE.nome);
     }
 
     // Services: "View" apre una finestra con la descrizione e Order now, staccata dalla barra in alto, con la X sempre
@@ -453,7 +465,10 @@
     }
 
     ready(function () {
-        if (!document.getElementById('sidenav-main')) avvisoGiaVisto('azzera');  // il menu c'e' solo da loggati
+        if (!document.getElementById('sidenav-main')) {   // il menu c'e' solo da loggati: qui si e' usciti
+            memoria('vg-avviso-visto', null);   // quadro dei servizi in New order (stato-servizi.js): di nuovo al login
+            memoria('vg-bell-sess', null);
+        }
         // New order compatto (il CSS stringe gli spazi solo su questa pagina)
         if (document.getElementById('order-form')) document.body.classList.add('vg-neworder');
         [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, animazioniPrima, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
@@ -462,7 +477,7 @@
         // Dopo gli script del pannello, che girano dopo questo file
         window.addEventListener('load', function () {
             setTimeout(function () {
-                [avvisoNuovoOrdine, descrizioneSottoIlTasto, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia].forEach(function (f) {
+                [campanella, descrizioneSottoIlTasto, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia].forEach(function (f) {
                     try { f(0); } catch (e) { /* pagina lasciata com'era */ }
                 });
             }, 300);
