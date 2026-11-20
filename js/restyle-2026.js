@@ -122,45 +122,47 @@
         return false;
     }
 
-    // Nuovo ordine: la categoria "General Instructions" diventa un avviso sopra il modulo.
-    // Il pannello riempie le tendine dopo il caricamento: si riprova finche' i servizi ci sono (max ~4 s).
-    function istruzioniComeAvviso(tentativo) {
-        var categoria = document.getElementById('orderform-category');
-        var servizio = document.getElementById('orderform-service');
+    // Nuovo ordine: avviso "Good to know" sopra il modulo, con testo fisso: resta anche se Mirko spegne
+    // la categoria "General Instructions" nel pannello. Si vede solo al primo "New order" dopo il login.
+    var CONSIGLI = [
+        '⭐ We add new services all the time. In each category, order the one with the highest ID: it\'s the newest and the most stable. The date next to the category name shows the last update.',
+        '⏱️ No delivery time shown? It\'s a new service, so the first orders may take a bit longer.',
+        '🔎 Find a service fast: go to https://viralgrow.io/services, type its name in the search bar and order from there.',
+        '❓ Can\'t find what you need? Open a ticket and we\'ll set up a custom service for you.',
+        '💳 Want to pay by credit card? Open a ticket and we\'ll review your request.'
+    ];
+    function avvisoNuovoOrdine() {
         var modulo = document.getElementById('order-form');
-        if (!categoria || !servizio || !modulo || document.querySelector('.vg-notice')) return;
+        if (!modulo || document.querySelector('.vg-notice') || avvisoGiaVisto('leggi')) return;
+        avvisoGiaVisto('segna');
+        var avviso = el('div', 'vg-notice');
+        avviso.appendChild(el('p', 'vg-notice-title', 'Good to know'));
+        var lista = el('ul');
+        CONSIGLI.forEach(function (t) { lista.appendChild(el('li', '', t)); });
+        avviso.appendChild(lista);
+        modulo.parentNode.insertBefore(avviso, modulo);
+    }
+
+    // Se la categoria "General Instructions" c'e' ancora esce dalla tendina; se era quella scelta si passa alla prossima.
+    // Il pannello riempie le tendine dopo il caricamento: si riprova finche' le categorie ci sono (max ~4 s).
+    function togliCategoriaIstruzioni(tentativo) {
+        var categoria = document.getElementById('orderform-category');
+        if (!categoria) return;
         tentativo = tentativo || 0;
-        if (!servizio.options.length || categoria.options.length < 2) {
-            if (tentativo < 20) setTimeout(function () { istruzioniComeAvviso(tentativo + 1); }, 200);
+        if (categoria.options.length < 2) {
+            if (tentativo < 20) setTimeout(function () { togliCategoriaIstruzioni(tentativo + 1); }, 200);
             return;
         }
         var opzione = Array.prototype.find.call(categoria.options, function (o) {
             return /general instructions/i.test(o.textContent);
         });
         if (!opzione) return;
-        // Se il cliente arriva gia' su un'altra categoria, si toglie solo la voce delle istruzioni
-        if (categoria.value !== opzione.value) { opzione.remove(); return; }
-        // Le istruzioni sono i "servizi" gia' caricati nella tendina: diventano le righe dell'avviso
-        var righe = Array.prototype.map.call(servizio.options, function (o) {
-            return o.textContent
-                .replace(/\s+-\s+\$?[\d.,]+\s*\$?(\s*per\s*\d+)?\s*$/i, '')  // prezzo in coda
-                .replace(/^\s*\d+\s*[-|]?\s*/, '')                           // ID in testa
-                .trim();
-        }).filter(Boolean);
-        var prossima = Array.prototype.find.call(categoria.options, function (o) { return o !== opzione && o.value; });
-        if (!prossima || !righe.length) return;
+        var eraScelta = categoria.value === opzione.value;
         opzione.remove();
+        var prossima = Array.prototype.find.call(categoria.options, function (o) { return o.value; });
+        if (!eraScelta || !prossima) return;
         categoria.value = prossima.value;
         categoria.dispatchEvent(new Event('change', { bubbles: true }));
-        // L'avviso si vede solo al primo "New order" dopo il login, poi non piu'
-        if (avvisoGiaVisto('leggi')) return;
-        avvisoGiaVisto('segna');
-        var avviso = el('div', 'vg-notice');
-        avviso.appendChild(el('p', 'vg-notice-title', 'Good to know'));
-        var lista = el('ul');
-        righe.forEach(function (t) { lista.appendChild(el('li', '', t)); });
-        avviso.appendChild(lista);
-        modulo.parentNode.insertBefore(avviso, modulo);
     }
 
     // Ticket: oggetti rapidi sopra il campo Subject
@@ -205,13 +207,15 @@
 
     ready(function () {
         if (!document.getElementById('sidenav-main')) avvisoGiaVisto('azzera');  // il menu c'e' solo da loggati
+        // New order compatto (il CSS stringe gli spazi solo su questa pagina)
+        if (document.getElementById('order-form')) document.body.classList.add('vg-neworder');
         [titoloPagina, videoInCima, dal2020, secondoTitolo, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
         // Dopo gli script del pannello, che girano dopo questo file
         window.addEventListener('load', function () {
             setTimeout(function () {
-                [istruzioniComeAvviso, pulsantiCopia].forEach(function (f) {
+                [avvisoNuovoOrdine, togliCategoriaIstruzioni, pulsantiCopia].forEach(function (f) {
                     try { f(0); } catch (e) { /* pagina lasciata com'era */ }
                 });
             }, 300);

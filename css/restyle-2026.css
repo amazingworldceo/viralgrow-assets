@@ -155,6 +155,17 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
 /* Titolo della pagina (New order, Add funds...): lo aggiunge restyle-2026.js dal menu */
 .vg-page-title { color: #fff; font-size: 24px; font-weight: 700; margin: 0 0 16px; }
 
+/* New order senza scroll, su telefono e PC: titolo in alto, spazi stretti, Submit visibile subito */
+body.vg-neworder .innerMainPage.pt-7 { padding-top: 20px !important; padding-bottom: 12px !important; }
+body.vg-neworder .vg-page-title { font-size: 22px; margin-bottom: 10px; }
+body.vg-neworder .innerMainPage .card-body { padding: 14px 16px; }
+body.vg-neworder #order-form .form-group { margin-bottom: 10px; }
+body.vg-neworder #order-form label { margin-bottom: 4px; }
+body.vg-neworder #order-form .form-control { padding-top: 8px; padding-bottom: 8px; }
+body.vg-neworder #order-form small, body.vg-neworder #order-form .help-block { margin-top: 2px; display: block; }
+body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 2px; padding-top: 12px; padding-bottom: 12px; }
+body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-size: 13px; }
+
 /* Ordini: stato come pillola colorata con puntino */
 .vg-status {
     --c: 138, 143, 163;
