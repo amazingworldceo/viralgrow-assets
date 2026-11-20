@@ -253,6 +253,11 @@ body.vg-pop-open { overflow: hidden; }
 .vg-status-part { --c: 251, 133, 66; }   /* Partial: arancione */
 .vg-status-stop { --c: 245, 54, 92; }    /* Canceled: rosso */
 .vg-status-run::before { animation: vg-pulse 1.4s ease-in-out infinite; }
+/* PC: il tema fissa colonne tutte uguali e la pillola "Completed" invadeva "Remains"; i link lunghi vanno a capo */
+@media (min-width: 768px) {
+    table.vg-cards { table-layout: auto; }
+    table.vg-cards td a { overflow-wrap: anywhere; }
+}
 @keyframes vg-pulse { 50% { opacity: .25; } }
 
 /* Ticket: oggetti rapidi */
