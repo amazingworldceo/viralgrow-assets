@@ -20,7 +20,7 @@
 
 /* Home: "Create new account" e "Sign in" della stessa misura, su telefono e su PC */
 .main-banner-section .started-btn { display: flex; gap: 12px; flex-wrap: wrap; }
-.main-banner-section .started-btn .btn { flex: 1 1 0; max-width: 240px; margin: 0 !important; text-align: center; white-space: nowrap; }
+.main-banner-section .started-btn .btn { flex: 1 1 0; min-width: 0; max-width: 240px; margin: 0 !important; padding-left: 12px; padding-right: 12px; text-align: center; white-space: nowrap; }
 
 /* Home: riquadri Best price, Friendly dashboard, Support 24/7 e cerchi 1-2-3-4 col bordo viola dei riquadri interni */
 .left-world-card .card {
