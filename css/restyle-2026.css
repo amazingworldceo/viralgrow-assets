@@ -18,14 +18,21 @@
 /* Home: il video Vimeo al posto dell'animazione (lo sposta restyle-2026.js), largo quanto la colonna */
 .main-banner-section .banner-img.vg-hero-video { width: 100%; max-width: 100% !important; }
 
-/* Pulsante "Sign in" accanto a "Get Started Now!" (lo aggiunge restyle-2026.js) */
-.started-btn .vg-signin-btn {
-    margin-left: 12px;
-    background: transparent;
-    border: 1px solid #5d59ff;
+/* Home: "Create new account" e "Sign in" della stessa misura, su telefono e su PC */
+.main-banner-section .started-btn { display: flex; gap: 12px; flex-wrap: wrap; }
+.main-banner-section .started-btn .btn { flex: 1 1 0; max-width: 240px; margin: 0 !important; text-align: center; white-space: nowrap; }
+
+/* Home: riquadri Best price, Friendly dashboard, Support 24/7 e cerchi 1-2-3-4 col bordo viola dei riquadri interni */
+.left-world-card .card {
+    background: rgba(93, 89, 255, .08);
+    border: 1px solid rgba(93, 89, 255, .45);
+    border-radius: 14px;
+}
+.how-works-item > span {
+    background: rgba(93, 89, 255, .12);
+    border: 2px solid rgba(93, 89, 255, .6);
     color: #fff;
 }
-.started-btn .vg-signin-btn:hover { background: #5d59ff; color: #fff; }
 
 /* FAQ: le domande oltre la quinta restano chiuse finche' non si tocca "Show all questions" */
 .accordion .card.vg-faq-hidden { display: none; }
@@ -234,7 +241,8 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
     .main-banner-section .banner-txt h1 { order: 1; text-align: center; }
     .main-banner-section .banner-txt h2 { order: 2; text-align: center; }
     .main-banner-section .banner-img { order: 3; }
-    .main-banner-section .started-btn { order: 4; text-align: center; margin-bottom: 10px; }
+    .main-banner-section .started-btn { order: 4; justify-content: center; margin-bottom: 10px; }
+    .main-banner-section .started-btn .btn { max-width: none; }
     .main-banner-section { padding-top: 10px; }
     .main-banner-section .banner-txt h2 p:not(:first-child) { display: none; }
     .main-banner-section .started-btn .btn { margin-top: 8px; }

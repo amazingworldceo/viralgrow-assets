@@ -52,6 +52,15 @@
         sezione.style.display = 'none';
     }
 
+    // Home: il secondo titolo ripeteva quello in cima; ora ne dice un'altra
+    function secondoTitolo() {
+        var titoli = document.querySelectorAll('.banner-txt h1');
+        if (titoli.length < 2 || !/social media tool/i.test(titoli[1].textContent)) return;
+        titoli[1].textContent = '';
+        titoli[1].appendChild(el('span', '', 'Grow faster.'));
+        titoli[1].appendChild(document.createTextNode(' Pay less.'));
+    }
+
     // Home: 5 domande per gruppo, le altre con "Show all questions"
     function faqCompatte() {
         document.querySelectorAll('.faq-section .accordion').forEach(function (gruppo) {
@@ -189,7 +198,7 @@
 
     ready(function () {
         if (!document.getElementById('sidenav-main')) avvisoGiaVisto('azzera');  // il menu c'e' solo da loggati
-        [titoloPagina, videoInCima, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
+        [titoloPagina, videoInCima, secondoTitolo, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
         // Dopo gli script del pannello, che girano dopo questo file
