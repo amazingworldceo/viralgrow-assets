@@ -165,7 +165,8 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
 
 @media only screen and (max-width: 767px) {
     /* Ordini: i filtri di stato su una riga che scorre di lato, da "All" a sinistra (ricerca in fondo) */
-    .newOrder-page .nav-pills.nav-fill.flex-column {
+    .newOrder-page .nav-pills.nav-fill.flex-column,
+    .refill-page .nav-pills.nav-fill.flex-column {
         flex-direction: row !important;
         flex-wrap: nowrap;
         justify-content: flex-start;
@@ -174,9 +175,12 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
         gap: 8px;
         padding-bottom: 6px;
     }
-    .newOrder-page .nav-pills.nav-fill .nav-item { flex: 0 0 auto; }
-    .newOrder-page .nav-pills.nav-fill .nav-item.search { flex: 0 0 220px; order: 99; margin: 0; }
-    .newOrder-page .nav-pills.nav-fill .nav-link { white-space: nowrap; padding: 8px 16px; margin: 0 !important; }
+    .newOrder-page .nav-pills.nav-fill .nav-item,
+    .refill-page .nav-pills.nav-fill .nav-item { flex: 0 0 auto; }
+    .newOrder-page .nav-pills.nav-fill .nav-item.search,
+    .refill-page .nav-pills.nav-fill .nav-item.search { flex: 0 0 220px; order: 99; margin: 0; }
+    .newOrder-page .nav-pills.nav-fill .nav-link,
+    .refill-page .nav-pills.nav-fill .nav-link { white-space: nowrap; padding: 8px 16px; margin: 0 !important; }
 
     /* Moduli (nuovo ordine, fondi, ticket): pulsante di invio grande e su tutta la riga */
     .innerMainPage form button[type="submit"].btn-primary {
