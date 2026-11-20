@@ -58,7 +58,6 @@
         sezione.style.display = 'none';
     }
 
-    // Home: il secondo titolo ripeteva quello in cima; ora ne dice un'altra
     // Home: copertina animata sopra il video (copertina/copertina.css e .js, stesso tag di questo file)
     function caricaCopertina() {
         if (!BASE || !document.querySelector('.vg-hero-video .banner-video')) return;
@@ -76,6 +75,7 @@
         if (titolo && !titolo.querySelector('.vg-since')) titolo.appendChild(el('span', 'vg-since', 'Since 2020'));
     }
 
+    // Home: il secondo titolo ripeteva quello in cima; ora ne dice un'altra
     function secondoTitolo() {
         var titoli = document.querySelectorAll('.banner-txt h1');
         if (titoli.length < 2 || !/social media tool/i.test(titoli[1].textContent)) return;
