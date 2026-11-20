@@ -436,6 +436,17 @@ body.vg-pop-open { overflow: hidden; }
 .sidenav-toggler-line { height: 3px; border-radius: 2px; }
 .sidenav-toggler-line:not(:last-child) { margin-bottom: 4px; }
 
-/* menu laterale aperto (telefono e schermi sotto i 1200 px): un tocco fuori lo chiude (Mirko, 20 nov 2026 21:22).
-   argon.js aggiunge gia' <div class="backdrop" data-action="sidenav-unpin">, ma il tema non gli dava misura */
-.backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1040; background: rgba(0, 0, 0, .35); cursor: pointer; }
+/* menu laterale aperto sotto i 1200 px: un tocco fuori lo chiude (Mirko, 20 nov 2026 21:22-21:29).
+   Il menu si apre con la classe nav-open (script del tasto in fondo ad argon.js), che aggiunge gia' <div class="bodyClick">
+   e lo toglie al tocco: il tema non lo stendeva su tutto lo schermo. Lo sfondo .backdrop di argon chiude un altro stato
+   (pinned) e lasciava il menu aperto: va spento. */
+@media (max-width: 1199.98px) {
+    .bodyClick { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1045; background: transparent; cursor: pointer; }
+    .backdrop { display: none !important; }
+}
+/* il tasto cambia aspetto solo con nav-open (menu davvero aperto), non con lo stato "active" di argon che va fuori passo:
+   era il colore che si accendeva e spegneva */
+.sidenav-toggler.active .sidenav-toggler-inner:before { transform: scale(0); }
+.sidenav-toggler.active .sidenav-toggler-line:first-child, .sidenav-toggler.active .sidenav-toggler-line:last-child { width: 24px; transform: none; }
+.nav-open .sidenav-toggler-inner .sidenav-toggler-line:first-child,
+.nav-open .sidenav-toggler-inner .sidenav-toggler-line:last-child { width: 17px; transform: translateX(7px); }
