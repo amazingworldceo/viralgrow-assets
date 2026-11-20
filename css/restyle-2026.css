@@ -17,6 +17,12 @@
 
 /* Home: il video Vimeo al posto dell'animazione (lo sposta restyle-2026.js), largo quanto la colonna */
 .main-banner-section .banner-img.vg-hero-video { width: 100%; max-width: 100% !important; }
+/* Video semplice: niente ombre viola sotto, solo angoli arrotondati di 10 */
+.vg-hero-video::before, .vg-hero-video::after { display: none !important; }
+.vg-hero-video .banner-video { border-radius: 10px; overflow: hidden; }
+
+/* "Get Started Now!" e "Get 10% Bonus" dopo i passi 1-4: stesso stacco che hanno dopo le FAQ */
+.how-works .started-btn p { margin-top: 10px; }
 
 /* Home: "Create new account" e "Sign in" della stessa misura, su telefono e su PC */
 .main-banner-section .started-btn { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -263,7 +269,7 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
     .main-banner-section .banner-txt h1 { order: 1; text-align: center; }
     .main-banner-section .banner-txt h2 { order: 2; text-align: center; }
     .main-banner-section .banner-img { order: 3; }
-    .main-banner-section .started-btn { order: 4; width: 100%; justify-content: center; margin: 22px 0 10px; }
+    .main-banner-section .started-btn { order: 4; width: 100%; justify-content: center; margin: 36px 0 10px; }
     .vg-login-box { margin-top: 36px; }
     .main-banner-section .started-btn .btn { max-width: none; }
     .main-banner-section { padding-top: 10px; }
