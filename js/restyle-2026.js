@@ -76,7 +76,10 @@
         if (categoria.value !== opzione.value) { opzione.remove(); return; }
         // Le istruzioni sono i "servizi" gia' caricati nella tendina: diventano le righe dell'avviso
         var righe = Array.prototype.map.call(servizio.options, function (o) {
-            return o.textContent.replace(/\s+-\s+\$?[\d.,]+\s*\$?(\s*per\s*\d+)?\s*$/i, '').trim();
+            return o.textContent
+                .replace(/\s+-\s+\$?[\d.,]+\s*\$?(\s*per\s*\d+)?\s*$/i, '')  // prezzo in coda
+                .replace(/^\s*\d+\s*[-|]?\s*/, '')                           // ID in testa
+                .trim();
         }).filter(Boolean);
         var prossima = Array.prototype.find.call(categoria.options, function (o) { return o !== opzione && o.value; });
         if (!prossima || !righe.length) return;
@@ -137,7 +140,11 @@
         });
         // Dopo gli script del pannello, che girano dopo questo file
         window.addEventListener('load', function () {
-            setTimeout(function () { try { istruzioniComeAvviso(0); } catch (e) { /* pagina lasciata com'era */ } }, 300);
+            setTimeout(function () {
+                [istruzioniComeAvviso, pulsantiCopia].forEach(function (f) {
+                    try { f(0); } catch (e) { /* pagina lasciata com'era */ }
+                });
+            }, 300);
         });
         // Le istruzioni dei metodi di pagamento cambiano quando si sceglie un metodo diverso
         var metodo = document.getElementById('method');
