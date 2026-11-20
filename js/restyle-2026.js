@@ -537,9 +537,10 @@
             });
         }
         dopoIlPannello(function () {
-            lancia([descrizioneSottoIlTasto, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia]);
+            lancia([descrizioneSottoIlTasto, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia, bottoneTicket]);
         });
-        window.addEventListener('load', function () { setTimeout(function () { lancia([campanella]); }, 300); });
+        // le istruzioni di Add funds le scrive il tema dopo: Copy e "Open a ticket" si riprovano al load
+        window.addEventListener('load', function () { setTimeout(function () { lancia([campanella, pulsantiCopia, bottoneTicket]); }, 300); });
         // Le istruzioni dei metodi di pagamento cambiano quando si sceglie un metodo diverso
         var metodo = document.getElementById('method');
         if (metodo) metodo.addEventListener('change', function () { setTimeout(function () { pulsantiCopia(); bottoneTicket(); }, 300); });
