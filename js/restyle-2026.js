@@ -69,6 +69,16 @@
         cella.appendChild(el('span', 'vg-status vg-status-' + tipo, testo));
     }
 
+    // Ricordo dell'avviso: si azzera su ogni pagina da non loggato (login, home), cosi' torna al login dopo
+    function avvisoGiaVisto(azione) {
+        try {
+            if (azione === 'leggi') return localStorage.getItem('vg-avviso-visto') === '1';
+            if (azione === 'segna') localStorage.setItem('vg-avviso-visto', '1');
+            else localStorage.removeItem('vg-avviso-visto');
+        } catch (e) { /* senza memoria del browser l'avviso si vede come prima */ }
+        return false;
+    }
+
     // Nuovo ordine: la categoria "General Instructions" diventa un avviso sopra il modulo.
     // Il pannello riempie le tendine dopo il caricamento: si riprova finche' i servizi ci sono (max ~4 s).
     function istruzioniComeAvviso(tentativo) {
@@ -99,6 +109,9 @@
         opzione.remove();
         categoria.value = prossima.value;
         categoria.dispatchEvent(new Event('change', { bubbles: true }));
+        // L'avviso si vede solo al primo "New order" dopo il login, poi non piu'
+        if (avvisoGiaVisto('leggi')) return;
+        avvisoGiaVisto('segna');
         var avviso = el('div', 'vg-notice');
         avviso.appendChild(el('p', 'vg-notice-title', 'Good to know'));
         var lista = el('ul');
@@ -148,6 +161,7 @@
     }
 
     ready(function () {
+        if (!document.getElementById('sidenav-main')) avvisoGiaVisto('azzera');  // il menu c'e' solo da loggati
         [pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
