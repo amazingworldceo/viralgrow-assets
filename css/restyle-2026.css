@@ -146,6 +146,9 @@ body .innerMainPage .card .form-group .select2-selection.form-control {
 }
 body span.select2-dropdown { background: #1a1d26; border: 1px solid rgba(93, 89, 255, .6); }
 body span.select2-dropdown .select2-results__option { color: #fff; }
+/* un po' d'aria tra un servizio e l'altro (lista di New order e tendina "All Categories" di Services) */
+body span.select2-dropdown .select2-results__option[id] { padding: 10px 12px; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+.search-section #dropdown-selector a.dropdown-item { padding-top: 11px; padding-bottom: 11px; border-bottom: 1px solid rgba(255, 255, 255, .08); }
 body span.select2-dropdown .select2-results__option--highlighted { background: #5d59ff; }
 .newOrder-page .table-responsive thead.thead-light,
 .refill-page .table-responsive thead.thead-light { background: #0f1015; }
