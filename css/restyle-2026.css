@@ -306,7 +306,7 @@ body.vg-pop-open { overflow: hidden; }
 .vg-pay-warn > p:first-child { color: #f5365c; }   /* "Important" rosso come "PayPal bonus" e' verde */
 /* "Open a ticket" nei passi di pagamento (lo mette restyle-2026.js) */
 .vg-ticket-btn {
-    display: inline-block; margin: 8px 0 2px; padding: 6px 14px; border-radius: 8px;
+    display: table; margin: 8px 0 2px; padding: 6px 14px; border-radius: 8px;
     background: #5d59ff; color: #fff !important; font-size: 14px; font-weight: 600;
 }
 /* Mass order: l'esempio grigio (non sembra gia' scritto) e il campo piu' basso */
