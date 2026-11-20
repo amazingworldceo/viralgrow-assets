@@ -55,6 +55,11 @@
     }
 
     // Home: il secondo titolo ripeteva quello in cima; ora ne dice un'altra
+    function dal2020() {
+        var titolo = document.querySelector('.main-banner-section .banner-txt h1');
+        if (titolo && !titolo.querySelector('.vg-since')) titolo.appendChild(el('span', 'vg-since', 'Since 2020'));
+    }
+
     function secondoTitolo() {
         var titoli = document.querySelectorAll('.banner-txt h1');
         if (titoli.length < 2 || !/social media tool/i.test(titoli[1].textContent)) return;
@@ -200,7 +205,7 @@
 
     ready(function () {
         if (!document.getElementById('sidenav-main')) avvisoGiaVisto('azzera');  // il menu c'e' solo da loggati
-        [titoloPagina, videoInCima, secondoTitolo, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
+        [titoloPagina, videoInCima, dal2020, secondoTitolo, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
         // Dopo gli script del pannello, che girano dopo questo file

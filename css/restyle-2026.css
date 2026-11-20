@@ -17,6 +17,17 @@
 
 /* Home: il video Vimeo al posto dell'animazione (lo sposta restyle-2026.js), largo quanto la colonna */
 .main-banner-section .banner-img.vg-hero-video { width: 100%; max-width: 100% !important; }
+/* "Since 2020" sotto il titolo principale */
+.main-banner-section h1 .vg-since {
+    display: block;
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #a9a7ff;
+}
+
 /* Video semplice: niente ombre viola sotto, solo angoli arrotondati di 10 */
 .vg-hero-video::before, .vg-hero-video::after { display: none !important; }
 .vg-hero-video .banner-video { border-radius: 10px; overflow: hidden; }
