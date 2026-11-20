@@ -156,7 +156,7 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
 .vg-page-title { color: #fff; font-size: 24px; font-weight: 700; margin: 0 0 16px; }
 
 /* New order senza scroll, su telefono e PC: titolo in alto, spazi stretti, Submit visibile subito */
-body.vg-neworder .innerMainPage.pt-7 { padding-top: 20px !important; padding-bottom: 12px !important; }
+body.vg-neworder .innerMainPage.pt-7 { padding-bottom: 12px !important; }  /* lo spazio in alto resta: serve a non finire sotto la barra fissa */
 body.vg-neworder .vg-page-title { font-size: 22px; margin-bottom: 10px; }
 body.vg-neworder .innerMainPage .card-body { padding: 14px 16px; }
 body.vg-neworder #order-form .form-group { margin-bottom: 10px; }
