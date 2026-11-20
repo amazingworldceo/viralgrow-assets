@@ -309,6 +309,13 @@ body.vg-pop-open { overflow: hidden; }
     display: table; margin: 8px 0 2px; padding: 6px 14px; border-radius: 8px;
     background: #5d59ff; color: #fff !important; font-size: 14px; font-weight: 600;
 }
+/* Carta per i clienti scelti (metodo Manual #5): 10 importi, 2 per riga sul telefono, 5 su PC */
+.vg-pay-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 4px 0 12px; }
+.vg-pay-links a {
+    display: block; padding: 10px 0; border-radius: 8px; text-align: center;
+    background: #5d59ff; color: #fff !important; font-size: 16px; font-weight: 700; text-decoration: none !important;
+}
+@media (min-width: 768px) { .vg-pay-links { grid-template-columns: repeat(5, 1fr); } }
 /* Mass order: l'esempio grigio (non sembra gia' scritto) e il campo piu' basso */
 .massorder-page textarea::placeholder { color: #5f6375; opacity: 1; }
 .massorder-page textarea.form-control { height: 200px; }
