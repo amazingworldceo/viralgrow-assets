@@ -1,0 +1,42 @@
+/* Stato dei servizi (ADM-33, Mirko 20 nov 2026): verde, arancione, rosso; nuovi = verde col bordo dorato. Stile B. */
+.vg-sid.vg-st-g { color: #7ff0bd; background: rgba(45, 206, 137, .18); border-color: rgba(45, 206, 137, .7); }
+.vg-sid.vg-st-y { color: #ffb07f; background: rgba(251, 133, 66, .18); border-color: rgba(251, 133, 66, .75); }
+.vg-sid.vg-st-r { color: #ff8fa5; background: rgba(245, 54, 92, .2); border-color: rgba(245, 54, 92, .75); }
+.vg-sid.vg-st-new { border: 2px solid #d4af37; line-height: 16px; }
+.services-page td .vg-sid { margin-right: 0; }
+
+.vg-st-txt-g { color: #7ff0bd; }
+.vg-st-txt-y { color: #ffb07f; }
+.vg-st-txt-r { color: #ff8fa5; }
+
+/* Live status: pallino verde che pulsa piano */
+.vg-live { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 12px; color: #a9abbd; }
+.vg-dot { position: relative; flex: none; width: 8px; height: 8px; border-radius: 50%; background: #2dce89; }
+.vg-dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #2dce89; animation: vg-pulse 2.4s ease-out infinite; }
+@keyframes vg-pulse { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(2.8); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .vg-dot::after { animation: none; } }
+
+/* Services: 4 riquadri della stessa misura, 2 per riga sul telefono, 4 su PC */
+.vg-status-page { margin: 4px 0 16px; }
+.vg-st-boxes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 10px; }
+.vg-st-box { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 72px; padding: 8px;
+    border-radius: 10px; border: 1px solid; text-align: center; }
+.vg-st-box b { font-size: 22px; font-weight: 700; line-height: 1.1; }
+.vg-st-box span { font-size: 12px; line-height: 1.2; }
+.vg-st-box.vg-st-g { background: rgba(45, 206, 137, .14); border-color: rgba(45, 206, 137, .7); color: #7ff0bd; }
+.vg-st-box.vg-st-y { background: rgba(251, 133, 66, .15); border-color: rgba(251, 133, 66, .75); color: #ffb07f; }
+.vg-st-box.vg-st-r { background: rgba(245, 54, 92, .14); border-color: rgba(245, 54, 92, .7); color: #ff8fa5; }
+.vg-st-box.vg-st-new { border: 2px solid #d4af37; }
+@media (max-width: 767px) { .vg-st-boxes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* New order: stato del servizio scelto e legenda, sotto la descrizione (nel flusso: segue la sua lunghezza) */
+.vg-status-order { margin: 14px 0 6px; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 10px; }
+.vg-st-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+.vg-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 8px; font-size: 12px; color: #a9abbd; }
+.vg-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.vg-sw { display: inline-block; width: 12px; height: 12px; border-radius: 4px; border: 1px solid; }
+.vg-sw.vg-st-g { background: rgba(45, 206, 137, .18); border-color: rgba(45, 206, 137, .7); }
+.vg-sw.vg-st-y { background: rgba(251, 133, 66, .18); border-color: rgba(251, 133, 66, .75); }
+.vg-sw.vg-st-r { background: rgba(245, 54, 92, .2); border-color: rgba(245, 54, 92, .75); }
+.vg-sw.vg-st-new { border: 2px solid #d4af37; }
+.vg-status-order .vg-live { justify-content: flex-start; }

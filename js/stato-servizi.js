@@ -1,0 +1,150 @@
+/* Stato dei servizi sul sito (ADM-33, Mirko 20 nov 2026): il colore del riquadro #ID, lo stato del servizio scelto sotto la
+   descrizione in New order, i 4 riquadri con i numeri e il "Live status" in Services. I colori li pubblica ogni mattina il
+   job ViralGrow Admin (modulo stato_servizi) nel ramo `stato` del repo: {aggiornato, colori {id: 'y'|'r'}, nuovi [id]}.
+   Un servizio che non e' nel file e' verde. Senza file (rete) la pagina resta com'era. File separato da restyle-2026.js:
+   lo carica layout.twig, e con lo stesso tag carica stato-servizi.css. */
+(function () {
+    'use strict';
+    var DATI = 'https://raw.githubusercontent.com/amazingworldceo/viralgrow-assets/stato/colori.json';
+    var STATI = { g: 'Working well', y: 'Minor instability', r: 'Having issues now' };
+    var MESI = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var dati = null;
+
+    function el(tag, cls, testo) {
+        var e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (testo != null) e.textContent = testo;
+        return e;
+    }
+    function stato(id) { return (dati.colori && dati.colori[id]) || 'g'; }
+    function nuovo(id) { return (dati.nuovi || []).indexOf(String(id)) >= 0; }
+    function classi(id) { return 'vg-st-' + stato(id) + (nuovo(id) ? ' vg-st-new' : ''); }
+    function data() {
+        var p = (dati.aggiornato || '').split('-');
+        return p.length === 3 ? (+p[2]) + ' ' + MESI[+p[1] - 1] + ' ' + p[0] : '';
+    }
+    function live() {
+        var l = el('span', 'vg-live');
+        l.appendChild(el('i', 'vg-dot'));
+        l.appendChild(document.createTextNode('Live status · updated ' + data()));
+        return l;
+    }
+
+    // il riquadro #ID colorato, ovunque ci sia (New order: lo mette restyle-2026.js; Services: lo mettiamo noi)
+    function coloraRiquadri() {
+        document.querySelectorAll('.vg-sid').forEach(function (b) {
+            var id = b.textContent.replace(/\D/g, '');
+            var voluto = 'vg-sid ' + classi(id);
+            if (id && b.className !== voluto) b.className = voluto;
+        });
+    }
+
+    // Services: ID della tabella nel riquadro, 4 riquadri coi numeri della piattaforma scelta, Live status
+    function righeServizi() {
+        return Array.prototype.filter.call(document.querySelectorAll('.services-page tr[data-index]'), function (r) {
+            var c = r.firstElementChild;
+            return c && !c.classList.contains('service-title') && /^\s*\d+\s*$/.test(c.textContent);
+        });
+    }
+    function servizi() {
+        var righe = righeServizi();
+        if (!righe.length) return;
+        righe.forEach(function (r) {
+            var c = r.firstElementChild, id = c.textContent.trim();
+            c.textContent = '';
+            c.appendChild(el('span', 'vg-sid', id));
+        });
+        var blocco = el('div', 'vg-status-page'), griglia = el('div', 'vg-st-boxes'), caselle = {};
+        [['new', 'New services'], ['g', STATI.g], ['y', STATI.y], ['r', STATI.r]].forEach(function (v) {
+            var b = el('div', 'vg-st-box vg-st-' + (v[0] === 'new' ? 'g vg-st-new' : v[0]));
+            caselle[v[0]] = el('b', '', '0');
+            b.appendChild(caselle[v[0]]);
+            b.appendChild(el('span', '', v[1]));
+            griglia.appendChild(b);
+        });
+        blocco.appendChild(griglia);
+        blocco.appendChild(live());
+        var barra = document.querySelector('.vg-plat'), ricerca = document.querySelector('.services-page .search-section');
+        if (barra) barra.parentNode.insertBefore(blocco, barra.nextSibling);
+        else if (ricerca) ricerca.parentNode.insertBefore(blocco, ricerca);
+        else return;
+        function conta() {
+            var n = { new: 0, g: 0, y: 0, r: 0 };
+            righe.forEach(function (r) {
+                if (r.classList.contains('vg-plat-off')) return;   // altra piattaforma (quadratini di restyle-2026.js)
+                var id = r.firstElementChild.textContent.trim();
+                n[nuovo(id) && stato(id) === 'g' ? 'new' : stato(id)]++;   // un nuovo arancione o rosso conta nel suo colore
+            });
+            Object.keys(n).forEach(function (k) { caselle[k].textContent = n[k]; });
+        }
+        conta();
+        new MutationObserver(conta).observe(righe[0].parentNode, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    }
+
+    // New order: stato del servizio scelto e legenda sotto la descrizione; segue la descrizione lunga, corta o assente
+    function nuovoOrdine() {
+        var servizio = document.getElementById('orderform-service');
+        if (!servizio) return;
+        var box = el('div', 'vg-status-order');
+        function posto() {
+            var desc = document.getElementById('service_description');
+            var dopo = desc || document.querySelector('.vg-order-notes') || servizio.closest('.form-group');
+            if (dopo && box.previousElementSibling !== dopo) dopo.parentNode.insertBefore(box, dopo.nextSibling);
+        }
+        function aggiorna() {
+            var id = servizio.value;
+            box.textContent = '';
+            if (!/^\d+$/.test(id || '')) { box.style.display = 'none'; return; }
+            box.style.display = '';
+            var testa = el('div', 'vg-st-head');
+            testa.appendChild(el('span', 'vg-sid ' + classi(id), '#' + id));
+            testa.appendChild(el('b', 'vg-st-txt-' + stato(id), STATI[stato(id)] + (nuovo(id) ? ' · New service' : '')));
+            box.appendChild(testa);
+            var legenda = el('div', 'vg-legend');
+            [['g', STATI.g], ['y', STATI.y], ['r', STATI.r], ['g vg-st-new', 'New service']].forEach(function (v) {
+                var s = el('span');
+                s.appendChild(el('i', 'vg-sw vg-st-' + v[0]));
+                s.appendChild(document.createTextNode(v[1]));
+                legenda.appendChild(s);
+            });
+            box.appendChild(legenda);
+            box.appendChild(live());
+            posto();
+        }
+        aggiorna();
+        servizio.addEventListener('change', aggiorna);
+        if (window.jQuery) window.jQuery(servizio).on('change', aggiorna);   // select2 avvisa solo via jQuery
+        setTimeout(aggiorna, 800);   // restyle-2026.js sposta la descrizione dopo il caricamento
+    }
+
+    function parti() {
+        var mio = document.querySelector('script[src*="stato-servizi.js"]');
+        if (mio) {
+            var l = document.createElement('link');
+            l.rel = 'stylesheet';
+            l.href = mio.src.replace('/js/stato-servizi.js', '/css/stato-servizi.css');
+            document.head.appendChild(l);
+        }
+        fetch(DATI + '?v=' + new Date().toISOString().slice(0, 13), { cache: 'no-store' }).then(function (r) {
+            return r.ok ? r.json() : null;
+        }).then(function (d) {
+            if (!d || !d.aggiornato) return;
+            dati = d;
+            // i quadratini e i riquadri #ID li costruisce restyle-2026.js: si aspetta che ci siano (max ~4 s)
+            var giri = 0;
+            (function prova() {
+                var pronto = !document.querySelector('.services-page') || document.querySelector('.vg-plat') || giri > 20;
+                if (!pronto) { giri++; return setTimeout(prova, 200); }
+                servizi();
+                nuovoOrdine();
+                coloraRiquadri();
+                var inCoda = false;
+                new MutationObserver(function () {
+                    if (!inCoda) { inCoda = true; requestAnimationFrame(function () { inCoda = false; coloraRiquadri(); }); }
+                }).observe(document.body, { childList: true, subtree: true });
+            })();
+        }).catch(function () {});
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', parti);
+    else parti();
+})();
