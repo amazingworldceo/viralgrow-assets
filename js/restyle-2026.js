@@ -225,32 +225,25 @@
         aggiorna();
     }
 
-    // Nuovo ordine: quadratini con il logo della piattaforma accanto a "Category"; uno tocca Instagram e nella
-    // tendina restano solo le categorie Instagram. La piattaforma si legge dal nome della categoria.
+    // Quadratini con il logo della piattaforma sulla riga del titolo (New order e Services): uno tocca Instagram e
+    // restano solo le categorie Instagram. La piattaforma si legge dal nome della categoria; "All" sta in fondo.
     var PIATTAFORME = [
         { nome: 'Instagram', icona: 'fab fa-instagram', re: /insta|most ordered/i },  // "Most ordered" sono tutti Instagram (Mirko)
         { nome: 'TikTok', icona: 'fab fa-tiktok', re: /tik\s?tok/i },
         { nome: 'YouTube', icona: 'fab fa-youtube', re: /you\s?tube/i },
         { nome: 'Facebook', icona: 'fab fa-facebook', re: /facebook/i }
     ];
-    var TUTTE = { nome: 'All', icona: 'fas fa-th-large' }, ALTRE = { nome: 'Other', icona: 'fas fa-ellipsis-h' };
-    function piattaforme(tentativo) {
-        var categoria = document.getElementById('orderform-category');
-        if (!categoria || document.querySelector('.vg-plat')) return;
-        tentativo = tentativo || 0;
-        if (categoria.options.length < 2) {
-            if (tentativo < 20) setTimeout(function () { piattaforme(tentativo + 1); }, 200);
-            return;
-        }
-        var tutte = Array.prototype.filter.call(categoria.options, function (o) {
-            return o.value && !/general instructions/i.test(o.textContent);
-        });
-        var gruppi = {};
-        tutte.forEach(function (o) {
-            var p = PIATTAFORME.find(function (x) { return x.re.test(o.textContent); }) || ALTRE;
-            (gruppi[p.nome] = gruppi[p.nome] || []).push(o);
-        });
-        var voci = [TUTTE].concat(PIATTAFORME, [ALTRE]).filter(function (p) { return p === TUTTE || gruppi[p.nome]; });
+    var ALTRE = { nome: 'Other', icona: 'fas fa-ellipsis-h' }, TUTTE = { nome: 'All', icona: 'fas fa-th-large' };
+    function piattaformaDi(nomeCategoria) {
+        return (PIATTAFORME.find(function (p) { return p.re.test(nomeCategoria); }) || ALTRE).nome;
+    }
+
+    // nomi = nomi delle categorie della pagina; scegli(nome) filtra la pagina ("All" = tutto)
+    function barraPiattaforme(nomi, scegli) {
+        if (document.querySelector('.vg-plat')) return;
+        var presenti = {};
+        nomi.forEach(function (n) { presenti[piattaformaDi(n)] = true; });
+        var voci = PIATTAFORME.concat([ALTRE]).filter(function (p) { return presenti[p.nome]; }).concat([TUTTE]);
         if (voci.length < 3) return;  // una piattaforma sola: i quadratini non servono
         var riga = el('div', 'vg-plat');
         voci.forEach(function (p) {
@@ -260,20 +253,52 @@
             b.appendChild(el('span', '', p.nome));
             b.addEventListener('click', function () {
                 riga.querySelectorAll('.vg-plat-btn').forEach(function (x) { x.classList.toggle('active', x === b); });
-                var scelta = p === TUTTE ? tutte : gruppi[p.nome];
-                var prima = categoria.value;
-                categoria.textContent = '';
-                scelta.forEach(function (o) { categoria.appendChild(o); });
-                categoria.value = scelta.some(function (o) { return o.value === prima; }) ? prima : scelta[0].value;
-                if (categoria.value !== prima) categoria.dispatchEvent(new Event('change', { bubbles: true }));
+                scegli(p.nome);
             });
             riga.appendChild(b);
         });
-        var etichetta = categoria.parentNode.querySelector('label');
-        var testa = el('div', 'vg-cat-head');
-        if (etichetta) { etichetta.parentNode.insertBefore(testa, etichetta); testa.appendChild(etichetta); }
-        else categoria.parentNode.insertBefore(testa, categoria);
+        var titolo = document.querySelector('.innerMainPage .vg-page-title');
+        var pagina = document.querySelector('.innerMainPage .container');
+        var testa = el('div', 'vg-title-row');
+        if (titolo) { titolo.parentNode.insertBefore(testa, titolo); testa.appendChild(titolo); }
+        else if (pagina) pagina.insertBefore(testa, pagina.firstChild);
+        else return;
         testa.appendChild(riga);
+    }
+
+    // New order: nella tendina Category restano solo le categorie della piattaforma scelta
+    function piattaformeNuovoOrdine(tentativo) {
+        var categoria = document.getElementById('orderform-category');
+        if (!categoria) return;
+        tentativo = tentativo || 0;
+        if (categoria.options.length < 2) {
+            if (tentativo < 20) setTimeout(function () { piattaformeNuovoOrdine(tentativo + 1); }, 200);
+            return;
+        }
+        var tutte = Array.prototype.filter.call(categoria.options, function (o) {
+            return o.value && !/general instructions/i.test(o.textContent);
+        });
+        barraPiattaforme(tutte.map(function (o) { return o.textContent; }), function (nome) {
+            var scelta = nome === TUTTE.nome ? tutte : tutte.filter(function (o) { return piattaformaDi(o.textContent) === nome; });
+            var prima = categoria.value;
+            categoria.textContent = '';
+            scelta.forEach(function (o) { categoria.appendChild(o); });
+            categoria.value = scelta.some(function (o) { return o.value === prima; }) ? prima : scelta[0].value;
+            if (categoria.value !== prima) categoria.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    }
+
+    // Services: le righe (titolo della categoria e servizi) delle altre piattaforme si nascondono; la ricerca del tema resta com'e'
+    function piattaformeServizi() {
+        var righe = document.querySelectorAll('.services-page tr[data-index]');
+        if (!righe.length) return;
+        var nomi = [];
+        righe.forEach(function (r) { var n = r.getAttribute('data-index'); if (nomi.indexOf(n) < 0) nomi.push(n); });
+        barraPiattaforme(nomi, function (nome) {
+            righe.forEach(function (r) {
+                r.classList.toggle('vg-plat-off', nome !== TUTTE.nome && piattaformaDi(r.getAttribute('data-index')) !== nome);
+            });
+        });
     }
 
     // Ticket: oggetti rapidi sopra il campo Subject
@@ -326,7 +351,7 @@
         // Dopo gli script del pannello, che girano dopo questo file
         window.addEventListener('load', function () {
             setTimeout(function () {
-                [avvisoNuovoOrdine, togliCategoriaIstruzioni, piattaforme, numeroServizio, pulsantiCopia].forEach(function (f) {
+                [avvisoNuovoOrdine, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, numeroServizio, pulsantiCopia].forEach(function (f) {
                     try { f(0); } catch (e) { /* pagina lasciata com'era */ }
                 });
             }, 300);
