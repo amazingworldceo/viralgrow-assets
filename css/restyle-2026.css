@@ -241,6 +241,7 @@ body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-
 }
 .vg-copy-btn {
     flex: none; white-space: nowrap; word-break: normal;  /* accanto agli indirizzi crypto lunghi "Copy" non si spezza */
+    min-width: 64px; text-align: center;  /* largo gia' quanto "Copied": al clic l'indirizzo non si sposta */
     background: #5d59ff;
     border: 0;
     color: #fff;
@@ -256,6 +257,16 @@ body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-
     padding: 10px 14px 2px;
 }
 .vg-pay-warn ul { padding-left: 18px; }
+/* Bonus ricarica (verde), prima di "Important" */
+.vg-pay-bonus {
+    background: rgba(45, 206, 137, .10);
+    border: 1px solid rgba(45, 206, 137, .45);
+    border-radius: 10px;
+    padding: 10px 14px 2px;
+    margin-bottom: 14px;
+}
+.vg-pay-bonus p { color: #2dce89; margin-bottom: 6px; }
+.vg-pay-bonus ul { padding-left: 18px; }
 
 /* Home da laptop: titolo al centro su tutta la riga, poi testo | video, poi i due pulsanti al centro */
 @media only screen and (min-width: 768px) {
