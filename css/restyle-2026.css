@@ -182,7 +182,21 @@ body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-
 .vg-title-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; min-width: 0; }
 .vg-title-row .vg-page-title { margin: 0 !important; flex: none; }
 body.vg-neworder .vg-title-row { margin-bottom: 8px; }
-tr.vg-plat-off { display: none !important; }
+.vg-plat-off { display: none !important; }
+/* Services: quadratini piu' grandi su una riga loro sotto il titolo, tutti visibili senza scorrere (3 per riga su telefono) */
+.vg-plat.vg-plat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; overflow: visible; margin-bottom: 22px; }
+.vg-plat-grid .vg-plat-btn { justify-content: center; padding: 9px 8px; font-size: 14px; line-height: 18px; border-radius: 10px; }
+.vg-plat-grid .vg-plat-btn i { font-size: 16px; }
+/* Services: tasto View al centro della colonna Description */
+.table-manager td.service-description { text-align: center !important; vertical-align: middle !important; }
+/* Services: finestra della descrizione (la mette restyle-2026.js al posto di quella del tema) */
+.vg-pop { display: none; position: fixed; inset: 0; z-index: 100000; background: rgba(0, 0, 0, .65); padding: 96px 16px 32px; align-items: center; justify-content: center; }
+.vg-pop.open { display: flex; }
+body.vg-pop-open { overflow: hidden; }
+.vg-pop-box { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 560px; max-height: 100%; background: #1c1e2a; border: 1px solid rgba(255, 255, 255, .12); border-radius: 14px; box-shadow: 0 12px 40px rgba(0, 0, 0, .5); }
+.vg-pop-x { flex: none; align-self: flex-end; width: 40px; height: 40px; margin: 8px 8px 0 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #fff; font-size: 26px; line-height: 40px; padding: 0; cursor: pointer; }
+.vg-pop-body { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px 22px 22px; color: #d2d6d5; font-size: 15px; line-height: 1.5; }
+.vg-pop-body .order-btn { display: block; max-width: 320px; margin: 18px auto 0; }
 .vg-plat { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; min-width: 0; }
 .vg-plat::-webkit-scrollbar { display: none; }
 .vg-plat-btn {

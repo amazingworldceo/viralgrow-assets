@@ -238,8 +238,9 @@
         return (PIATTAFORME.find(function (p) { return p.re.test(nomeCategoria); }) || ALTRE).nome;
     }
 
-    // nomi = nomi delle categorie della pagina; scegli(nome) filtra la pagina ("All" = tutto)
-    function barraPiattaforme(nomi, scegli) {
+    // nomi = nomi delle categorie della pagina; scegli(nome) filtra la pagina ("All" = tutto);
+    // sotto = quadratini su una riga loro sotto il titolo (Services), se no accanto al titolo (New order)
+    function barraPiattaforme(nomi, scegli, sotto) {
         if (document.querySelector('.vg-plat')) return;
         var presenti = {};
         nomi.forEach(function (n) { presenti[piattaformaDi(n)] = true; });
@@ -259,6 +260,12 @@
         });
         var titolo = document.querySelector('.innerMainPage .vg-page-title');
         var pagina = document.querySelector('.innerMainPage .container');
+        if (sotto) {
+            riga.classList.add('vg-plat-grid');
+            if (titolo) titolo.parentNode.insertBefore(riga, titolo.nextSibling);
+            else if (pagina) pagina.insertBefore(riga, pagina.firstChild);
+            return;
+        }
         var testa = el('div', 'vg-title-row');
         if (titolo) { titolo.parentNode.insertBefore(testa, titolo); testa.appendChild(titolo); }
         else if (pagina) pagina.insertBefore(testa, pagina.firstChild);
@@ -288,17 +295,58 @@
         });
     }
 
-    // Services: le righe (titolo della categoria e servizi) delle altre piattaforme si nascondono; la ricerca del tema resta com'e'
+    // Services: le righe (titolo della categoria e servizi) delle altre piattaforme si nascondono e nella tendina
+    // "All Categories" restano solo le categorie della piattaforma scelta; la ricerca del tema resta com'e'
     function piattaformeServizi() {
         var righe = document.querySelectorAll('.services-page tr[data-index]');
         if (!righe.length) return;
         var nomi = [];
         righe.forEach(function (r) { var n = r.getAttribute('data-index'); if (nomi.indexOf(n) < 0) nomi.push(n); });
+        var voci = document.querySelectorAll('#dropdown-selector .dropdown-item');
+        var tutteLeCategorie = voci[0], tendina = document.getElementById('dropdown-categories');
         barraPiattaforme(nomi, function (nome) {
-            righe.forEach(function (r) {
-                r.classList.toggle('vg-plat-off', nome !== TUTTE.nome && piattaformaDi(r.getAttribute('data-index')) !== nome);
-            });
-        });
+            var fuori = function (categoria) { return nome !== TUTTE.nome && piattaformaDi(categoria) !== nome; };
+            righe.forEach(function (r) { r.classList.toggle('vg-plat-off', fuori(r.getAttribute('data-index'))); });
+            voci.forEach(function (a, i) { if (i) a.classList.toggle('vg-plat-off', fuori(a.getAttribute('data-target'))); });
+            // categoria scelta di un'altra piattaforma: si torna a "All Categories"
+            if (tendina && tutteLeCategorie && tendina.value !== tutteLeCategorie.getAttribute('data-target') &&
+                fuori(tendina.value) && typeof window.dropdownChange === 'function') window.dropdownChange(tutteLeCategorie);
+        }, true);
+    }
+
+    // Services: "View" apre una finestra con la descrizione e Order now, staccata dalla barra in alto, con la X sempre
+    // visibile; si chiude con la X, toccando fuori o con Esc. Sostituisce la finestra del tema, che sul telefono finiva
+    // sotto la barra e senza X raggiungibile.
+    function finestraDescrizione() {
+        if (!document.querySelector('.services-page td.service-description')) return;
+        var velo = el('div', 'vg-pop'), scatola = el('div', 'vg-pop-box'), chiudi = el('button', 'vg-pop-x', '×');
+        var testo = el('div', 'vg-pop-body');
+        chiudi.type = 'button';
+        chiudi.setAttribute('aria-label', 'Close');
+        scatola.appendChild(chiudi);
+        scatola.appendChild(testo);
+        velo.appendChild(scatola);
+        document.body.appendChild(velo);
+        function chiudiFinestra() { velo.classList.remove('open'); document.body.classList.remove('vg-pop-open'); }
+        chiudi.addEventListener('click', chiudiFinestra);
+        velo.addEventListener('click', function (e) { if (e.target === velo) chiudiFinestra(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') chiudiFinestra(); });
+        // in cattura: il clic non arriva al tema (modalShow) ne' a Bootstrap
+        window.addEventListener('click', function (e) {
+            var pulsante = e.target.closest && e.target.closest('.services-page td.service-description .btn');
+            if (!pulsante || pulsante.closest('.vg-pop')) return;
+            e.preventDefault();
+            e.stopPropagation();
+            var nascosto = pulsante.querySelector('.hidden');
+            testo.innerHTML = nascosto ? nascosto.innerHTML : '';
+            var ordina = testo.querySelector('.order-btn');
+            if (ordina) ordina.remove();
+            if (!testo.textContent.trim()) testo.textContent = 'At the moment details for this service is not available.';
+            if (ordina) testo.appendChild(ordina);
+            testo.scrollTop = 0;
+            velo.classList.add('open');
+            document.body.classList.add('vg-pop-open');
+        }, true);
     }
 
     // Ticket: oggetti rapidi sopra il campo Subject
@@ -351,7 +399,7 @@
         // Dopo gli script del pannello, che girano dopo questo file
         window.addEventListener('load', function () {
             setTimeout(function () {
-                [avvisoNuovoOrdine, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, numeroServizio, pulsantiCopia].forEach(function (f) {
+                [avvisoNuovoOrdine, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia].forEach(function (f) {
                     try { f(0); } catch (e) { /* pagina lasciata com'era */ }
                 });
             }, 300);
