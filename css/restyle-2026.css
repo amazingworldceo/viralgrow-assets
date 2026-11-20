@@ -435,3 +435,7 @@ body.vg-pop-open { overflow: hidden; }
 .sidenav-toggler-inner, .sidenav-toggler-line { width: 24px; }
 .sidenav-toggler-line { height: 3px; border-radius: 2px; }
 .sidenav-toggler-line:not(:last-child) { margin-bottom: 4px; }
+
+/* menu laterale aperto (telefono e schermi sotto i 1200 px): un tocco fuori lo chiude (Mirko, 20 nov 2026 21:22).
+   argon.js aggiunge gia' <div class="backdrop" data-action="sidenav-unpin">, ma il tema non gli dava misura */
+.backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1040; background: rgba(0, 0, 0, .35); cursor: pointer; }
