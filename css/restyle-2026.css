@@ -71,20 +71,7 @@
 .how-works-sec li:nth-child(2) .how-works-item > span::before { animation-delay: -3s; }
 .how-works-sec li:nth-child(3) .how-works-item > span::before { animation-delay: -2s; }
 .how-works-sec li:nth-child(4) .how-works-item > span::before { animation-delay: -1s; }
-.how-works-sec li:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    right: -6px;
-    top: 60px;
-    width: 10px;
-    height: 10px;
-    border-top: 2px solid rgba(141, 138, 255, .7);
-    border-right: 2px solid rgba(141, 138, 255, .7);
-    transform: rotate(45deg);
-    animation: vg-avanti 1.8s ease-in-out infinite;
-}
 @keyframes vg-giro { to { transform: rotate(360deg); } }
-@keyframes vg-avanti { 0%, 100% { opacity: .35; margin-right: 4px; } 50% { opacity: 1; margin-right: -2px; } }
 @keyframes vg-giu { 0%, 100% { opacity: .35; margin-bottom: 4px; } 50% { opacity: 1; margin-bottom: -2px; } }
 @media (prefers-reduced-motion: reduce) {
     .how-works-item > span::before, .how-works-sec li::after { animation: none !important; }
@@ -306,8 +293,19 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
     .main-banner-section .started-btn { order: 4; width: 100%; justify-content: center; margin: 36px 0 10px; }
     .vg-login-box { margin-top: 36px; }
 
-    /* Passi 1-4 uno sotto l'altro: la freccetta punta in giu', nello spazio tra un passo e l'altro */
-    .how-works-sec li:not(:last-child)::after { right: auto; left: calc(50% - 6px); top: auto; bottom: 34px; transform: rotate(135deg); animation-name: vg-giu; }
+    /* Passi 1-4 uno sotto l'altro: una freccetta in giu' tra un passo e l'altro (su PC il tema ha gia' le sue frecce curve) */
+    .how-works-sec li:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: calc(50% - 6px);
+        bottom: 34px;
+        width: 10px;
+        height: 10px;
+        border-top: 2px solid rgba(141, 138, 255, .7);
+        border-right: 2px solid rgba(141, 138, 255, .7);
+        transform: rotate(135deg);
+        animation: vg-giu 1.8s ease-in-out infinite;
+    }
     .main-banner-section .started-btn .btn { max-width: none; }
     .main-banner-section { padding-top: 10px; }
     .main-banner-section .banner-txt h2 p:not(:first-child) { display: none; }
