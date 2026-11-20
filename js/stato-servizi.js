@@ -109,9 +109,13 @@
     }
 
     // New order: stato del servizio scelto e legenda sotto la descrizione; segue la descrizione lunga, corta o assente
-    function nuovoOrdine() {
+    // Si aspetta che restyle-2026.js abbia spostato la descrizione sotto il tasto (.vg-order-notes, max ~5 s): cosi' il
+    // riquadro nasce gia' al suo posto e non salta da sotto Service a sotto la descrizione (Mirko, 20 nov 2026 21:30)
+    function nuovoOrdine(giri) {
         var servizio = document.getElementById('orderform-service');
         if (!servizio) return;
+        giri = giri || 0;
+        if (!document.querySelector('.vg-order-notes') && giri < 25) return setTimeout(function () { nuovoOrdine(giri + 1); }, 200);
         var box = el('div', 'vg-status-order');
         function posto() {
             var desc = document.getElementById('service_description');
@@ -141,7 +145,7 @@
         aggiorna();
         servizio.addEventListener('change', aggiorna);
         if (window.jQuery) window.jQuery(servizio).on('change', aggiorna);   // select2 avvisa solo via jQuery
-        setTimeout(aggiorna, 800);   // restyle-2026.js sposta la descrizione dopo il caricamento
+        setTimeout(aggiorna, 800);   // per un servizio che il pannello sceglie senza avvisare
     }
 
     function parti() {

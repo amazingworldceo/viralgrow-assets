@@ -307,14 +307,14 @@
 
     // nomi = nomi delle categorie della pagina; scegli(nome) filtra la pagina ("All" = tutto);
     // sotto = quadratini su una riga loro sotto il titolo (Services), se no accanto al titolo (New order);
-    // iniziale = piattaforma scelta all'apertura (Mirko: Instagram)
+    // iniziale = piattaforma scelta all'apertura
     function barraPiattaforme(nomi, scegli, sotto, iniziale) {
         if (document.querySelector('.vg-plat')) return;
         var presenti = {};
         nomi.forEach(function (n) { presenti[piattaformaDi(n)] = true; });
         var voci = PIATTAFORME.concat([ALTRE]).filter(function (p) { return presenti[p.nome]; });
-        // "All" in fondo; in testa quando e' la scelta iniziale (Services, Mirko 20 nov 2026 20:48)
-        voci = iniziale === TUTTE.nome ? [TUTTE].concat(voci) : voci.concat([TUTTE]);
+        // "All" in testa, poi Instagram, TikTok, YouTube, Facebook, Other (Mirko, 20 nov 2026)
+        voci = [TUTTE].concat(voci);
         if (voci.length < 3) return;  // una piattaforma sola: i quadratini non servono
         var riga = el('div', 'vg-plat');
         voci.forEach(function (p) {
@@ -357,9 +357,7 @@
         var tutte = Array.prototype.filter.call(categoria.options, function (o) {
             return o.value && !/general instructions/i.test(o.textContent);
         });
-        // si apre su Instagram, salvo una categoria gia' scelta di un'altra piattaforma (es. da "Order now")
-        var attuale = categoria.options[categoria.selectedIndex];
-        var iniziale = attuale && attuale.value ? piattaformaDi(attuale.textContent) : 'Instagram';
+        // si apre su All, come Services (Mirko, 20 nov 2026 21:30): una categoria gia' scelta resta scelta
         barraPiattaforme(tutte.map(function (o) { return o.textContent; }), function (nome) {
             var scelta = nome === TUTTE.nome ? tutte : tutte.filter(function (o) { return piattaformaDi(o.textContent) === nome; });
             var prima = categoria.value;
@@ -367,7 +365,7 @@
             scelta.forEach(function (o) { categoria.appendChild(o); });
             categoria.value = scelta.some(function (o) { return o.value === prima; }) ? prima : scelta[0].value;
             if (categoria.value !== prima) categoria.dispatchEvent(new Event('change', { bubbles: true }));
-        }, false, iniziale);
+        }, false, TUTTE.nome);
     }
 
     // Services: le righe (titolo della categoria e servizi) delle altre piattaforme si nascondono e nella tendina

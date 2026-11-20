@@ -120,8 +120,12 @@
 #notification-button > a { position: relative; }
 .vg-bell-dot { position: absolute; top: 2px; right: 0; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px;
     background: #f5365c; color: #fff; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; }
-.vg-bell-tips { padding: 12px 14px 4px; font-size: 13px; line-height: 1.45; white-space: normal; }
-.vg-notice-title { font-weight: 700; margin-bottom: 6px; }
+/* menu della campanella: colore calmo al posto del viola acceso del tema (Mirko, 20 nov 2026 21:30) */
+.navbar-expand .navbar-nav #notification-modal.dropdown-menu { background: #23253a; border: 1px solid rgba(93, 89, 255, .35); }
+.navbar-expand .navbar-nav #notification-modal.dropdown-menu::before { border-bottom-color: #23253a; }
+#notification-modal .list-group-flush .list-group-item { background: transparent; color: #d4d6e2; }
+.list-group-flush .list-group-item.vg-bell-tips { padding: 14px 16px 6px; font-size: 15px; line-height: 1.5; white-space: normal; color: #d4d6e2; }
+.list-group-flush .list-group-item.vg-bell-tips p.vg-notice-title { font-size: 16px !important; font-weight: 700; margin-bottom: 8px; color: #fff; }
 .vg-bell-tips ul { padding-left: 18px; margin: 0 0 8px; }
 .vg-bell-tips li { margin-bottom: 6px; }
 
@@ -416,3 +420,6 @@ body.vg-pop-open { overflow: hidden; }
     /* Footer: un po' di aria tra i blocchi di link */
     .footer-menu-sec { margin-bottom: 18px; }
 }
+
+/* menu in alto a sinistra (le tre righe) nel violetto di Order now (Mirko, 20 nov 2026 21:30) */
+.sidenav-toggler-dark .sidenav-toggler-line, .sidenav-toggler-line { background-color: #5d59ff; }
