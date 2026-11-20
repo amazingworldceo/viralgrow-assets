@@ -135,18 +135,16 @@
 .vg-pay-warn ul { padding-left: 18px; }
 
 @media only screen and (max-width: 767px) {
-    /* Ordini: i filtri di stato su una riga che scorre di lato */
+    /* Ordini: ricerca su tutta la riga, sotto i filtri di stato allineati a sinistra */
     .newOrder-page .nav-pills.nav-fill.flex-column {
         flex-direction: row !important;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        flex-wrap: wrap;
+        justify-content: flex-start;
         gap: 8px;
-        padding-bottom: 6px;
     }
     .newOrder-page .nav-pills.nav-fill .nav-item { flex: 0 0 auto; }
-    .newOrder-page .nav-pills.nav-fill .nav-item.search { flex: 0 0 220px; }
-    .newOrder-page .nav-pills.nav-fill .nav-link { white-space: nowrap; padding: 8px 16px; margin: 0 !important; }
+    .newOrder-page .nav-pills.nav-fill .nav-item.search { flex: 0 0 100%; margin: 0 0 4px; }
+    .newOrder-page .nav-pills.nav-fill .nav-link { white-space: nowrap; padding: 6px 14px; margin: 0 !important; }
 
     /* Ordini: una scheda per ordine al posto della tabella larga */
     .vg-cards thead { display: none; }
