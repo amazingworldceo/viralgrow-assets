@@ -182,7 +182,8 @@
             l.href = mio.src.replace('/js/stato-servizi.js', '/css/stato-servizi.css');
             document.head.appendChild(l);
         }
-        fetch(DATI + '?v=' + new Date().toISOString().slice(0, 13), { cache: 'no-store' }).then(function (r) {
+        // ?v=ora: il browser lo tiene in cache per l'ora, cosi' ogni cambio di pagina non lo riscarica
+        fetch(DATI + '?v=' + new Date().toISOString().slice(0, 13)).then(function (r) {
             return r.ok ? r.json() : null;
         }).then(function (d) {
             if (!d || !d.aggiornato) return;

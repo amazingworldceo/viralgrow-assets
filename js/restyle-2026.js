@@ -472,14 +472,19 @@
         [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, animazioniPrima, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
-        // Dopo gli script del pannello, che girano dopo questo file
-        window.addEventListener('load', function () {
-            setTimeout(function () {
-                [campanella, descrizioneSottoIlTasto, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia].forEach(function (f) {
-                    try { f(0); } catch (e) { /* pagina lasciata com'era */ }
-                });
-            }, 300);
+        // Dopo gli script del pannello (i loro "ready" di jQuery, registrati prima di questo): New order e Services si
+        // sistemano appena la pagina c'e', senza aspettare immagini e iframe (Mirko, 20 nov 2026 21:09: «lento a
+        // caricare»). La campanella resta dopo il load: il tema riempie la sua lista dopo.
+        function dopoIlPannello(fn) { if (window.jQuery) window.jQuery(function () { setTimeout(fn, 0); }); else setTimeout(fn, 0); }
+        function lancia(lista) {
+            lista.forEach(function (f) {
+                try { f(0); } catch (e) { /* pagina lasciata com'era */ }
+            });
+        }
+        dopoIlPannello(function () {
+            lancia([descrizioneSottoIlTasto, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia]);
         });
+        window.addEventListener('load', function () { setTimeout(function () { lancia([campanella]); }, 300); });
         // Le istruzioni dei metodi di pagamento cambiano quando si sceglie un metodo diverso
         var metodo = document.getElementById('method');
         if (metodo) metodo.addEventListener('change', function () { setTimeout(pulsantiCopia, 300); });

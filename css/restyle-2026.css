@@ -157,21 +157,21 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
 .refill-page .table-responsive thead.thead-light th { color: #a9a7ff; }
 
 /* Titolo della pagina (New order, Add funds...): lo aggiunge restyle-2026.js dal menu */
-.vg-page-title { color: #fff; font-size: 24px; font-weight: 700; margin: 0 0 16px; }
+/* tutti i titoli della stessa misura e al centro, il riquadro grigio piu' vicino (Mirko, 20 nov 2026 21:09) */
+.vg-page-title { color: #fff; font-size: 22px; font-weight: 700; margin: 0 0 10px; text-align: center; }
 
 /* New order senza scroll, su telefono e PC: titolo in alto, spazi stretti, Submit visibile subito */
 /* in alto 78px invece dei 96 del tema: sotto i ~70 il titolo finisce sotto la barra fissa */
 body.vg-neworder .innerMainPage.pt-7 { padding-top: 78px !important; padding-bottom: 12px !important; }
-body.vg-neworder .vg-page-title { font-size: 20px; margin-bottom: 8px; }
 body.vg-neworder .innerMainPage .card-body { padding: 8px 14px 20px; }
-body.vg-neworder #order-form .form-group { margin-bottom: 8px; }
+body.vg-neworder #order-form .form-group { margin-bottom: 12px; }
 body.vg-neworder #order-form label { margin-bottom: 2px; font-size: 14px; }
 /* tutti i campi alti uguali, tendine comprese (Service e' select2: testo centrato con flex) */
 body.vg-neworder #order-form .form-control:not(textarea) { height: 38px !important; padding: 0 12px; }
 body.vg-neworder #order-form .select2-selection.form-control { display: flex; align-items: center; }
 body.vg-neworder #order-form .select2-selection__rendered { padding: 0 !important; line-height: normal !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 body.vg-neworder #order-form small, body.vg-neworder #order-form .help-block { margin-top: 2px; display: block; }
-body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 20px; padding-top: 12px; padding-bottom: 12px; }
+body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 30px; padding-top: 12px; padding-bottom: 12px; }
 /* descrizione del servizio spostata sotto il tasto da restyle-2026.js */
 body.vg-neworder .vg-order-notes + #service_description { margin-top: 14px; margin-bottom: 0; }
 /* le due avvertenze fisse sotto "Order now" (le mette restyle-2026.js) */
@@ -188,9 +188,11 @@ body.vg-neworder .vg-order-notes + #service_description { margin-top: 14px; marg
 .select2-results__option--highlighted .vg-sid { color: #fff; background: rgba(255, 255, 255, .18); border-color: rgba(255, 255, 255, .4); }
 
 /* New order e Services: quadratini delle piattaforme sulla riga del titolo (scorrono di lato; li mette restyle-2026.js) */
-.vg-title-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; min-width: 0; }
-.vg-title-row .vg-page-title { margin: 0 !important; flex: none; }
-body.vg-neworder .vg-title-row { margin-bottom: 8px; }
+/* titolo al centro e quadratini sotto, al centro (se non ci stanno scorrono di lato) */
+.vg-title-row { display: flex; flex-direction: column; align-items: stretch; gap: 8px; margin-bottom: 12px; min-width: 0; }
+.vg-title-row .vg-page-title { margin: 0 !important; }
+.vg-title-row .vg-plat > :first-child { margin-left: auto; }
+.vg-title-row .vg-plat > :last-child { margin-right: auto; }
 .vg-plat-off { display: none !important; }
 /* Services: quadratini piu' grandi su una riga loro sotto il titolo, tutti visibili senza scorrere (3 per riga su telefono) */
 .vg-plat.vg-plat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; overflow: visible; margin-bottom: 22px; }
@@ -423,3 +425,7 @@ body.vg-pop-open { overflow: hidden; }
 
 /* menu in alto a sinistra (le tre righe) nel violetto di Order now (Mirko, 20 nov 2026 21:30) */
 .sidenav-toggler-dark .sidenav-toggler-line, .sidenav-toggler-line { background-color: #5d59ff; }
+/* e piu' grandi del 35% (Mirko, 20 nov 2026 21:10): 18x2 px diventano 24x3 px */
+.sidenav-toggler-inner, .sidenav-toggler-line { width: 24px; }
+.sidenav-toggler-line { height: 3px; border-radius: 2px; }
+.sidenav-toggler-line:not(:last-child) { margin-bottom: 4px; }
