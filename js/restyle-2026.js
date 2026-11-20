@@ -277,13 +277,26 @@
             if (testo && inizio.test(testo.nodeValue)) testo.nodeValue = testo.nodeValue.replace(inizio, '');
             dove.insertBefore(el('span', 'vg-sid', '#' + id), dove.firstChild);
         }
+        // il prezzo in fondo al nome (" - $4.455 per 1000") va su una riga sua, violetto, con 2 decimali (Mirko, 20 nov 2026 21:17)
+        var PREZZO = /\s*-\s*([^\d\s]{0,4})\s?([\d.,]+)\s*(per\s+1000)\s*$/i;
+        function prezzo(nodo) {
+            if (!nodo || nodo.querySelector('.vg-price')) return;
+            var giro = document.createTreeWalker(nodo, NodeFilter.SHOW_TEXT), t, ultimo = null;
+            while ((t = giro.nextNode())) if (t.nodeValue.trim()) ultimo = t;
+            var m = ultimo && ultimo.nodeValue.match(PREZZO);
+            var cifra = m && parseFloat(m[2].replace(/,/g, ''));
+            if (!m || isNaN(cifra)) return;
+            ultimo.nodeValue = ultimo.nodeValue.replace(PREZZO, '');
+            var due = cifra.toFixed(2);   // sotto il centesimo non si scrive $0.00
+            nodo.appendChild(el('span', 'vg-price', m[1] + (+due || !cifra ? due : String(+cifra.toPrecision(1))) + ' ' + m[3]));
+        }
         function aggiorna() {
             inCoda = false;
             var scelto = document.getElementById('select2-orderform-service-container');
-            if (scelto) metti(scelto, servizio.value);
+            if (scelto) { metti(scelto, servizio.value); prezzo(scelto); }
             document.querySelectorAll('[id^="select2-orderform-service-result-"]').forEach(function (li) {
                 var m = li.id.match(/-(\d+)$/);
-                if (m) metti(li, m[1], true);
+                if (m) { metti(li, m[1], true); prezzo(li.firstElementChild || li); }
             });
         }
         new MutationObserver(function () {

@@ -164,14 +164,20 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
 /* in alto 78px invece dei 96 del tema: sotto i ~70 il titolo finisce sotto la barra fissa */
 body.vg-neworder .innerMainPage.pt-7 { padding-top: 78px !important; padding-bottom: 12px !important; }
 body.vg-neworder .innerMainPage .card-body { padding: 8px 14px 20px; }
-body.vg-neworder #order-form .form-group { margin-bottom: 12px; }
+/* il modulo sta nella card-header del tema (padding 20/24 px): meno spazio nero prima di Category (Mirko, 20 nov 2026 21:17) */
+body.vg-neworder .newOrder-page .card-header { padding: 4px 14px 16px; border-bottom: 0; }
+body.vg-neworder #order-form .form-group { margin-bottom: 10px; }
 body.vg-neworder #order-form label { margin-bottom: 2px; font-size: 14px; }
 /* tutti i campi alti uguali, tendine comprese (Service e' select2: testo centrato con flex) */
 body.vg-neworder #order-form .form-control:not(textarea) { height: 38px !important; padding: 0 12px; }
 body.vg-neworder #order-form .select2-selection.form-control { display: flex; align-items: center; }
 body.vg-neworder #order-form .select2-selection__rendered { padding: 0 !important; line-height: normal !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* prezzo del servizio su una riga sua, violetto chiaro (lo mette restyle-2026.js); il campo Service si allunga */
+.vg-price { display: block; margin-top: 3px; font-size: 13px; font-weight: 600; line-height: 1.3; color: #a9a7ff; white-space: nowrap; }
+.select2-results__option--highlighted .vg-price { color: #fff; }
+body.vg-neworder #order-form .select2-selection.form-control:has(.vg-price) { height: auto !important; min-height: 38px; padding-top: 7px; padding-bottom: 7px; }
 body.vg-neworder #order-form small, body.vg-neworder #order-form .help-block { margin-top: 2px; display: block; }
-body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 30px; padding-top: 12px; padding-bottom: 12px; }
+body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 14px; padding-top: 12px; padding-bottom: 12px; }
 /* descrizione del servizio spostata sotto il tasto da restyle-2026.js */
 body.vg-neworder .vg-order-notes + #service_description { margin-top: 14px; margin-bottom: 0; }
 /* le due avvertenze fisse sotto "Order now" (le mette restyle-2026.js) */
