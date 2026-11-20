@@ -159,12 +159,12 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
 /* in alto 78px invece dei 96 del tema: sotto i ~70 il titolo finisce sotto la barra fissa */
 body.vg-neworder .innerMainPage.pt-7 { padding-top: 78px !important; padding-bottom: 12px !important; }
 body.vg-neworder .vg-page-title { font-size: 20px; margin-bottom: 8px; }
-body.vg-neworder .innerMainPage .card-body { padding: 8px 14px 12px; }
+body.vg-neworder .innerMainPage .card-body { padding: 8px 14px 20px; }
 body.vg-neworder #order-form .form-group { margin-bottom: 8px; }
 body.vg-neworder #order-form label { margin-bottom: 2px; font-size: 14px; }
 body.vg-neworder #order-form .form-control { padding-top: 6px; padding-bottom: 6px; height: auto; }
 body.vg-neworder #order-form small, body.vg-neworder #order-form .help-block { margin-top: 2px; display: block; }
-body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 2px; padding-top: 12px; padding-bottom: 12px; }
+body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 20px; padding-top: 12px; padding-bottom: 12px; }
 body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-size: 13px; }
 
 /* Ordini: stato come pillola colorata con puntino */
