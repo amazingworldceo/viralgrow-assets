@@ -178,6 +178,19 @@ body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-
 }
 .select2-results__option--highlighted .vg-sid { color: #fff; background: rgba(255, 255, 255, .18); border-color: rgba(255, 255, 255, .4); }
 
+/* Nuovo ordine: quadratini delle piattaforme sulla riga di "Category" (scorrono di lato; li mette restyle-2026.js) */
+.vg-cat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; min-width: 0; }
+.vg-cat-head label { margin-bottom: 0 !important; flex: none; }
+.vg-plat { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; min-width: 0; }
+.vg-plat::-webkit-scrollbar { display: none; }
+.vg-plat-btn {
+    flex: none; display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 8px;
+    font-size: 12px; font-weight: 600; line-height: 16px; white-space: nowrap;
+    color: #c9c7ff; background: rgba(93, 89, 255, .12); border: 1px solid rgba(93, 89, 255, .35);
+}
+.vg-plat-btn i { font-size: 13px; }
+.vg-plat-btn.active { color: #fff; background: #5d59ff; border-color: #5d59ff; }
+
 /* Ordini: stato come pillola colorata con puntino */
 .vg-status {
     --c: 138, 143, 163;
