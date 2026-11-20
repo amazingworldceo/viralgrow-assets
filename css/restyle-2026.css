@@ -40,7 +40,113 @@
 /* Pagamenti: immagine nuova, solo metodi attivi */
 .footer-menu-pay .pay-img img { max-width: 100%; height: auto; }
 
+/* --- Parte interna (20 nov 2026, pomeriggio) --- */
+
+/* Nuovo ordine: le istruzioni in un avviso sopra il modulo */
+.vg-notice {
+    background: rgba(93, 89, 255, .10);
+    border: 1px solid rgba(93, 89, 255, .45);
+    border-radius: 12px;
+    padding: 14px 16px 6px;
+    margin-bottom: 18px;
+    color: #e6e7ee;
+    font-size: 14px;
+}
+.vg-notice-title { font-weight: 700; margin-bottom: 6px; color: #fff; }
+.vg-notice ul { padding-left: 18px; margin: 0 0 8px; }
+.vg-notice li { margin-bottom: 6px; }
+
+/* Ticket: oggetti rapidi */
+.vg-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.vg-chip {
+    background: transparent;
+    border: 1px solid rgba(93, 89, 255, .6);
+    color: #fff;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+}
+.vg-chip.active { background: #5d59ff; }
+
+/* Aggiungi fondi: istruzioni PayPal a passi, email con "Copy", avvertenze in evidenza */
+.vg-pay { text-align: left; }
+.vg-pay-title { font-size: 16px; color: #fff; margin-bottom: 8px; }
+.vg-pay-steps { padding-left: 20px; margin-bottom: 14px; }
+.vg-pay-steps li { margin-bottom: 10px; }
+.vg-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+    padding: 8px 12px;
+    background: #0f1016;
+    border: 1px solid rgba(255, 255, 255, .15);
+    border-radius: 8px;
+    font-weight: 600;
+    color: #fff;
+    word-break: break-all;
+}
+.vg-copy-btn {
+    background: #5d59ff;
+    border: 0;
+    color: #fff;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.vg-pay-warn {
+    background: rgba(245, 54, 92, .10);
+    border: 1px solid rgba(245, 54, 92, .45);
+    border-radius: 10px;
+    padding: 10px 14px 2px;
+}
+.vg-pay-warn ul { padding-left: 18px; }
+
 @media only screen and (max-width: 767px) {
+    /* Ordini: i filtri di stato su una riga che scorre di lato */
+    .newOrder-page .nav-pills.nav-fill.flex-column {
+        flex-direction: row !important;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 8px;
+        padding-bottom: 6px;
+    }
+    .newOrder-page .nav-pills.nav-fill .nav-item { flex: 0 0 auto; }
+    .newOrder-page .nav-pills.nav-fill .nav-item.search { flex: 0 0 220px; }
+    .newOrder-page .nav-pills.nav-fill .nav-link { white-space: nowrap; padding: 8px 16px; margin: 0 !important; }
+
+    /* Ordini: una scheda per ordine al posto della tabella larga */
+    .vg-cards thead { display: none; }
+    .vg-cards, .vg-cards tbody, .vg-cards tr { display: block; width: 100%; }
+    .vg-cards tr {
+        background: #1a1d26;
+        border: 1px solid rgba(255, 255, 255, .06);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        padding: 8px 14px;
+    }
+    .vg-cards td {
+        display: flex !important;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100% !important;
+        padding: 6px 0 !important;
+        border: 0 !important;
+        white-space: normal !important;
+        text-align: right;
+        word-break: break-word;
+    }
+    .vg-cards td::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        color: #8a8fa3;
+        font-weight: 600;
+        text-align: left;
+    }
+    .vg-cards td:empty { display: none !important; }
+
     /* Prima il titolo e i pulsanti, poi l'illustrazione (prima era al contrario) */
     .main-banner-section .row { flex-direction: column; }
     .main-banner-section { padding-top: 10px; }
