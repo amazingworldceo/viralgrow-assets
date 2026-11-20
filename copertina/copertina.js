@@ -105,11 +105,9 @@
         if (document.readyState !== 'loading') fn();
         else document.addEventListener('DOMContentLoaded', fn);
     }
-    // restyle-2026.js sposta il video in cima al caricamento: si riprova anche a pagina caricata
+    // restyle-2026.js carica questo file solo quando il video e' gia' in cima: basta un tentativo
+    // (un secondo tentativo a pagina caricata rimetteva la copertina sopra il video gia' partito)
     pronto(function () {
         try { copertinaVideo(); } catch (e) { /* senza copertina il video resta com'era */ }
-        window.addEventListener('load', function () {
-            try { copertinaVideo(); } catch (e) { /* idem */ }
-        });
     });
 })();
