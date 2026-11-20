@@ -303,6 +303,19 @@ body.vg-pop-open { overflow: hidden; }
     padding: 10px 14px 2px;
 }
 .vg-pay-warn ul { padding-left: 18px; }
+.vg-pay-warn > p:first-child { color: #f5365c; }   /* "Important" rosso come "PayPal bonus" e' verde */
+/* "Open a ticket" nei passi di pagamento (lo mette restyle-2026.js) */
+.vg-ticket-btn {
+    display: inline-block; margin: 8px 0 2px; padding: 6px 14px; border-radius: 8px;
+    background: #5d59ff; color: #fff !important; font-size: 14px; font-weight: 600;
+}
+/* Mass order: l'esempio grigio (non sembra gia' scritto) e il campo piu' basso */
+.massorder-page textarea::placeholder { color: #5f6375; opacity: 1; }
+.massorder-page textarea.form-control { height: 200px; }
+/* API: il titolo e' gia' in cima alla pagina */
+.api-page h2.m-b-md { display: none; }
+/* Registrazione: l'immagine del vecchio sito non esiste piu' */
+.sign-up-img { display: none; }
 /* Bonus ricarica (verde), prima di "Important" */
 .vg-pay-bonus {
     background: rgba(45, 206, 137, .10);
@@ -355,6 +368,12 @@ body.vg-pop-open { overflow: hidden; }
         border-radius: 12px;
         margin: 8px auto 0;
     }
+    /* Account: grande solo "Change password", gli altri pulsanti normali */
+    .innerMainPage form button[type="submit"].btn-primary.vg-btn-small {
+        display: inline-block; width: auto; padding: 10px 24px; font-size: 15px; margin: 4px 0 0;
+    }
+    /* Registrazione sul telefono: il titolo grande dietro il modulo si vedeva sbiadito, si toglie */
+    .innerBannerSec { display: none; }
 
     /* Ordini: una scheda per ordine al posto della tabella larga */
     .vg-cards thead { display: none; }

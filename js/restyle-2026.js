@@ -39,11 +39,38 @@
     }
 
     // Parte interna: in cima a ogni pagina il suo nome, preso dalla voce attiva del menu
+    // (Account non e' nel menu: il nome viene dall'indirizzo)
     function titoloPagina() {
         var voce = document.querySelector('#sidenav-main .nav-item.active .nav-link-text');
+        var nome = voce ? voce.textContent.trim() : (/^\/account/.test(location.pathname) ? 'Account' : '');
         var pagina = document.querySelector('.innerMainPage .container');
-        if (!voce || !pagina || pagina.querySelector('.vg-page-title')) return;
-        pagina.insertBefore(el('h1', 'vg-page-title', voce.textContent.trim()), pagina.firstChild);
+        if (!nome || !pagina || pagina.querySelector('.vg-page-title')) return;
+        pagina.insertBefore(el('h1', 'vg-page-title', nome), pagina.firstChild);
+    }
+
+    // Pagine minori (Mirko, 20 nov 2026 22:02): Mass order con l'esempio vero; Account con un solo pulsante grande
+    // (Change password), gli altri piccoli; API senza il secondo titolo e con l'esempio allineato a sinistra;
+    // nei passi di pagamento "Open a ticket" diventa un pulsante
+    function pagineMinori() {
+        var massa = document.querySelector('.massorder-page textarea');
+        if (massa) massa.placeholder = 'One order per line: service ID | link | quantity\n' +
+            'Example: 12338 | https://www.instagram.com/p/... | 1000';
+        if (/^\/account/.test(location.pathname)) {
+            document.querySelectorAll('.innerMainPage form').forEach(function (f) {
+                var tasto = f.querySelector('button[type="submit"]');
+                if (tasto && !f.querySelector('input[type="password"]')) tasto.classList.add('vg-btn-small');
+            });
+        }
+        document.querySelectorAll('.api-page pre').forEach(function (p) { p.textContent = p.textContent.replace(/^\s+/, ''); });
+        bottoneTicket();
+    }
+    function bottoneTicket() {
+        document.querySelectorAll('.vg-pay-steps li').forEach(function (passo) {
+            if (passo.querySelector('.vg-ticket-btn') || !/open a ticket/i.test(passo.textContent)) return;
+            var a = el('a', 'vg-ticket-btn', 'Open a ticket');
+            a.href = '/tickets';
+            passo.appendChild(a);
+        });
     }
 
     // Home: il video Vimeo sale in cima al posto dell'animazione; la sua sezione piu' in basso sparisce
@@ -113,7 +140,22 @@
     // Ordini: ogni cella prende il nome della sua colonna, il CSS su telefono ne fa una scheda
     function ordiniASchede() {
         var tabella = document.querySelector('table.table-manager');
-        if (!tabella || !tabella.querySelector('th.orderLinkTh')) return;
+        if (tabella && tabella.querySelector('th.orderLinkTh')) aSchede(tabella);
+    }
+
+    // Affiliates: sul telefono le tabelle a schede (la colonna dei guadagni non resta fuori) e Copy sul link referral
+    function affiliatiASchede() {
+        if (!document.querySelector('.affiliates_visits_table')) return;
+        document.querySelectorAll('.innerMainPage table').forEach(aSchede);
+        var link = document.querySelector('.innerMainPage table tbody td');
+        if (link && /\/ref\//.test(link.textContent) && !link.querySelector('.vg-copy')) {
+            var campo = el('span', 'vg-copy', link.textContent.trim());
+            link.textContent = '';
+            link.appendChild(campo);
+        }
+    }
+
+    function aSchede(tabella) {
         var nomi = Array.prototype.map.call(tabella.querySelectorAll('thead th'), function (th) {
             return th.textContent.trim();
         });
@@ -482,7 +524,7 @@
         }
         // New order compatto (il CSS stringe gli spazi solo su questa pagina)
         if (document.getElementById('order-form')) document.body.classList.add('vg-neworder');
-        [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, animazioniPrima, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
+        [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, animazioniPrima, faqCompatte, ordiniASchede, affiliatiASchede, oggettiTicket, pagineMinori, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
         // Dopo gli script del pannello (i loro "ready" di jQuery, registrati prima di questo): New order e Services si
@@ -500,6 +542,6 @@
         window.addEventListener('load', function () { setTimeout(function () { lancia([campanella]); }, 300); });
         // Le istruzioni dei metodi di pagamento cambiano quando si sceglie un metodo diverso
         var metodo = document.getElementById('method');
-        if (metodo) metodo.addEventListener('change', function () { setTimeout(pulsantiCopia, 300); });
+        if (metodo) metodo.addEventListener('change', function () { setTimeout(function () { pulsantiCopia(); bottoneTicket(); }, 300); });
     });
 })();
