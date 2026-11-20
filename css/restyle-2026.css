@@ -168,6 +168,8 @@ body.vg-neworder #order-form .select2-selection.form-control { display: flex; al
 body.vg-neworder #order-form .select2-selection__rendered { padding: 0 !important; line-height: normal !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 body.vg-neworder #order-form small, body.vg-neworder #order-form .help-block { margin-top: 2px; display: block; }
 body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 20px; padding-top: 12px; padding-bottom: 12px; }
+/* descrizione del servizio spostata sotto il tasto da restyle-2026.js */
+body.vg-neworder #order-form button[type="submit"] + #service_description { margin-top: 22px; margin-bottom: 0; }
 body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-size: 13px; }
 
 /* Nuovo ordine: numero del servizio in un riquadrino viola tenue prima del nome (lo mette restyle-2026.js) */

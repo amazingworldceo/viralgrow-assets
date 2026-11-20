@@ -171,6 +171,14 @@
 
     // Se la categoria "General Instructions" c'e' ancora esce dalla tendina; se era quella scelta si passa alla prossima.
     // Il pannello riempie le tendine dopo il caricamento: si riprova finche' le categorie ci sono (max ~4 s).
+    // New order: la descrizione del servizio sotto il tasto (Mirko: il modulo resta corto, chi vuole i dettagli scorre).
+    // Si sposta il blocco intero: il tema continua a riempirlo e a mostrarlo/nasconderlo per id.
+    function descrizioneSottoIlTasto() {
+        var blocco = document.getElementById('service_description');
+        var tasto = document.querySelector('#order-form button[type="submit"]');
+        if (blocco && tasto) tasto.parentNode.insertBefore(blocco, tasto.nextSibling);
+    }
+
     function togliCategoriaIstruzioni(tentativo) {
         var categoria = document.getElementById('orderform-category');
         if (!categoria) return;
@@ -405,7 +413,7 @@
         // Dopo gli script del pannello, che girano dopo questo file
         window.addEventListener('load', function () {
             setTimeout(function () {
-                [avvisoNuovoOrdine, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia].forEach(function (f) {
+                [avvisoNuovoOrdine, descrizioneSottoIlTasto, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia].forEach(function (f) {
                     try { f(0); } catch (e) { /* pagina lasciata com'era */ }
                 });
             }, 300);
