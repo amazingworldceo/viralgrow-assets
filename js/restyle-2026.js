@@ -25,6 +25,14 @@
         hero.appendChild(a);
     }
 
+    // Parte interna: in cima a ogni pagina il suo nome, preso dalla voce attiva del menu
+    function titoloPagina() {
+        var voce = document.querySelector('#sidenav-main .nav-item.active .nav-link-text');
+        var pagina = document.querySelector('.innerMainPage .container');
+        if (!voce || !pagina || pagina.querySelector('.vg-page-title')) return;
+        pagina.insertBefore(el('h1', 'vg-page-title', voce.textContent.trim()), pagina.firstChild);
+    }
+
     // Home: 5 domande per gruppo, le altre con "Show all questions"
     function faqCompatte() {
         document.querySelectorAll('.faq-section .accordion').forEach(function (gruppo) {
@@ -162,7 +170,7 @@
 
     ready(function () {
         if (!document.getElementById('sidenav-main')) avvisoGiaVisto('azzera');  // il menu c'e' solo da loggati
-        [pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
+        [titoloPagina, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
         // Dopo gli script del pannello, che girano dopo questo file

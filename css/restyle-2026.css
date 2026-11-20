@@ -68,10 +68,22 @@
 .innerMainPage .card .form-group .form-control { border-color: rgba(255, 255, 255, .12); }
 .innerMainPage .card .form-group .form-control:focus,
 .innerMainPage .card .form-group select.form-control:focus { border-color: #5d59ff; }
+/* Tendina "Service" (select2): stessi colori; "body" davanti perche' il tema la colora dentro la pagina */
+body .innerMainPage .card .form-group .select2-selection.form-control {
+    background-color: #0f1015;
+    border: 1px solid rgba(93, 89, 255, .6);
+    color: #fff;
+}
+body span.select2-dropdown { background: #1a1d26; border: 1px solid rgba(93, 89, 255, .6); }
+body span.select2-dropdown .select2-results__option { color: #fff; }
+body span.select2-dropdown .select2-results__option--highlighted { background: #5d59ff; }
 .newOrder-page .table-responsive thead.thead-light,
 .refill-page .table-responsive thead.thead-light { background: #0f1015; }
 .newOrder-page .table-responsive thead.thead-light th,
 .refill-page .table-responsive thead.thead-light th { color: #a9a7ff; }
+
+/* Titolo della pagina (New order, Add funds...): lo aggiunge restyle-2026.js dal menu */
+.vg-page-title { color: #fff; font-size: 24px; font-weight: 700; margin: 0 0 16px; }
 
 /* Ordini: stato come pillola colorata con puntino */
 .vg-status {
