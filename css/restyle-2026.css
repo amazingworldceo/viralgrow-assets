@@ -240,6 +240,7 @@ body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-
     word-break: break-all;
 }
 .vg-copy-btn {
+    flex: none; white-space: nowrap; word-break: normal;  /* accanto agli indirizzi crypto lunghi "Copy" non si spezza */
     background: #5d59ff;
     border: 0;
     color: #fff;
