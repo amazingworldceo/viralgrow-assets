@@ -176,6 +176,8 @@ body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 20p
 body.vg-neworder .vg-order-notes + #service_description { margin-top: 14px; margin-bottom: 0; }
 /* le due avvertenze fisse sotto "Order now" (le mette restyle-2026.js) */
 .vg-order-notes { margin-top: 16px; }
+/* l'esempio di link nel campo vuoto deve sembrare un esempio, non un testo gia' scritto */
+#order-form input::placeholder { color: #5f6375; opacity: 1; }
 .vg-order-notes p { margin: 0 0 6px; font-size: 13px; line-height: 1.45; color: #b9bcc8; }
 body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-size: 13px; }
 
