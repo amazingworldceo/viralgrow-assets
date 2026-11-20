@@ -56,6 +56,37 @@
 .vg-notice ul { padding-left: 18px; margin: 0 0 8px; }
 .vg-notice li { margin-bottom: 6px; }
 
+/* Ordini: stato come pillola colorata con puntino */
+.vg-status {
+    --c: 138, 143, 163;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: rgb(var(--c));
+    background: rgba(var(--c), .14);
+    border: 1px solid rgba(var(--c), .40);
+}
+.vg-status::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgb(var(--c));
+}
+.vg-status-ok   { --c: 45, 206, 137; }   /* Completed: verde */
+.vg-status-run  { --c: 17, 205, 239; }   /* In progress: blu */
+.vg-status-proc { --c: 141, 138, 255; }  /* Processing: viola del sito */
+.vg-status-wait { --c: 255, 196, 61; }   /* Pending: giallo */
+.vg-status-part { --c: 251, 133, 66; }   /* Partial: arancione */
+.vg-status-stop { --c: 245, 54, 92; }    /* Canceled: rosso */
+.vg-status-run::before { animation: vg-pulse 1.4s ease-in-out infinite; }
+@keyframes vg-pulse { 50% { opacity: .25; } }
+
 /* Ticket: oggetti rapidi */
 .vg-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
 .vg-chip {

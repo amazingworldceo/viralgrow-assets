@@ -48,12 +48,25 @@
         var nomi = Array.prototype.map.call(tabella.querySelectorAll('thead th'), function (th) {
             return th.textContent.trim();
         });
+        var colonnaStato = nomi.findIndex(function (n) { return /^status$/i.test(n); });
         tabella.querySelectorAll('tbody tr').forEach(function (riga) {
             Array.prototype.forEach.call(riga.children, function (cella, i) {
                 if (nomi[i]) cella.setAttribute('data-label', nomi[i]);
+                if (i === colonnaStato) statoColorato(cella);
             });
         });
         tabella.classList.add('vg-cards');
+    }
+
+    // Ordini: lo stato diventa una pillola colorata (verde Completed, rosso Canceled...)
+    var STATI = { 'completed': 'ok', 'in progress': 'run', 'processing': 'proc', 'pending': 'wait',
+                  'partial': 'part', 'canceled': 'stop', 'cancelled': 'stop' };
+    function statoColorato(cella) {
+        var testo = cella.textContent.trim();
+        var tipo = STATI[testo.toLowerCase()];
+        if (!tipo || cella.querySelector('.vg-status')) return;
+        cella.textContent = '';
+        cella.appendChild(el('span', 'vg-status vg-status-' + tipo, testo));
     }
 
     // Nuovo ordine: la categoria "General Instructions" diventa un avviso sopra il modulo.
