@@ -169,8 +169,6 @@
         modulo.parentNode.insertBefore(avviso, modulo);
     }
 
-    // Se la categoria "General Instructions" c'e' ancora esce dalla tendina; se era quella scelta si passa alla prossima.
-    // Il pannello riempie le tendine dopo il caricamento: si riprova finche' le categorie ci sono (max ~4 s).
     // New order: la descrizione del servizio sotto il tasto (Mirko: il modulo resta corto, chi vuole i dettagli scorre).
     // Si sposta il blocco intero: il tema continua a riempirlo e a mostrarlo/nasconderlo per id.
     // Sotto il tasto, prima della descrizione: le due avvertenze che valgono per tutti i servizi (Mirko, 20 nov 2026)
@@ -190,7 +188,7 @@
     // descrizioni dei servizi), con un esempio nel campo vuoto
     function linkGiusto(n) {
         n = n.toLowerCase();
-        if (/spotify/.test(n)) return /listener/.test(n) ? ['Spotify artist, track, album or playlist link', 'https://open.spotify.com/artist/...']
+        if (/spotify/.test(n)) return /listener/.test(n) ? ['Spotify ARTIST, track, album or playlist link', 'https://open.spotify.com/artist/...']
             : ['Spotify TRACK link', 'https://open.spotify.com/track/...'];
         if (/telegram/.test(n) && !/instagram/.test(n)) return /member|automatic/.test(n) ? ['Telegram CHANNEL link', 'https://t.me/yourchannel']
             : ['Telegram POST link', 'https://t.me/yourchannel/123'];
@@ -226,6 +224,9 @@
         servizio.addEventListener('change', aggiorna);
         if (window.jQuery) window.jQuery(servizio).on('change', aggiorna);  // select2 avvisa solo via jQuery
     }
+
+    // Se la categoria "General Instructions" c'e' ancora esce dalla tendina; se era quella scelta si passa alla prossima.
+    // Il pannello riempie le tendine dopo il caricamento: si riprova finche' le categorie ci sono (max ~4 s).
 
     function togliCategoriaIstruzioni(tentativo) {
         var categoria = document.getElementById('orderform-category');

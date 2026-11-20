@@ -43,11 +43,16 @@
     flex-direction: column;
     gap: 6px;
 }
+/* Riquadri dei contatori: misura fissa e uguale per tutti e due, il numero che cresce non li sposta */
 .vg-cover-stat {
-    display: inline-flex;
+    box-sizing: border-box;
+    width: 10.5em;
+    height: 2.1em;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 6px;
-    padding: 4px 10px;
+    padding: 0 10px;
     border-radius: 20px;
     background: rgba(15, 16, 22, .72);
     border: 1px solid rgba(93, 89, 255, .55);
