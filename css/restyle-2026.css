@@ -42,6 +42,9 @@
 
 /* --- Parte interna (20 nov 2026, pomeriggio) --- */
 
+/* Menu laterale: mai sottolineato (su iPhone lo restava dopo un tocco) */
+#sidenav-main a, #sidenav-main a:hover, #sidenav-main a:focus, #sidenav-main a:active { text-decoration: none !important; }
+
 /* Nuovo ordine: le istruzioni in un avviso sopra il modulo */
 .vg-notice {
     background: rgba(93, 89, 255, .10);
