@@ -245,6 +245,19 @@ body.vg-neworder .vg-notice { margin-bottom: 12px; padding: 10px 14px 2px; font-
 }
 .vg-pay-warn ul { padding-left: 18px; }
 
+/* Home da laptop: titolo al centro su tutta la riga, poi testo | video, poi i due pulsanti al centro */
+@media only screen and (min-width: 768px) {
+    .main-banner-section .row { display: grid; grid-template-columns: 1fr 1fr; column-gap: 30px; align-items: center; margin: 0; }
+    .main-banner-section .row > [class*="col-"],
+    .main-banner-section .banner-txt { display: contents; }
+    .main-banner-section .banner-txt h1 { grid-column: 1 / -1; text-align: center; }
+    .main-banner-section .banner-txt h2 { grid-column: 1; grid-row: 2; }
+    .main-banner-section .banner-img { grid-column: 2; grid-row: 2; }
+    .main-banner-section .started-btn { grid-column: 1 / -1; justify-content: center; margin-top: 30px; }
+    /* accanto al modulo di accesso "Get Started Now!" non serve */
+    .sign-inSection .started-btn { display: none; }
+}
+
 @media only screen and (max-width: 767px) {
     /* Ordini: i filtri di stato su una riga che scorre di lato, da "All" a sinistra (ricerca in fondo) */
     .newOrder-page .nav-pills.nav-fill.flex-column,

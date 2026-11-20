@@ -84,6 +84,16 @@
         titoli[1].appendChild(document.createTextNode(' Pay less.'));
     }
 
+    // Home da laptop: le animazioni partono appena la sezione entra nello schermo e durano 0,6 s
+    function animazioniPrima() {
+        if (window.innerWidth < 768) return;
+        document.querySelectorAll('[data-aos]').forEach(function (e) {
+            e.setAttribute('data-aos-offset', '0');
+            e.setAttribute('data-aos-duration', '600');
+        });
+        window.addEventListener('load', function () { if (window.AOS) window.AOS.refreshHard(); });
+    }
+
     // Home: 5 domande per gruppo, le altre con "Show all questions"
     function faqCompatte() {
         document.querySelectorAll('.faq-section .accordion').forEach(function (gruppo) {
@@ -225,7 +235,7 @@
         if (!document.getElementById('sidenav-main')) avvisoGiaVisto('azzera');  // il menu c'e' solo da loggati
         // New order compatto (il CSS stringe gli spazi solo su questa pagina)
         if (document.getElementById('order-form')) document.body.classList.add('vg-neworder');
-        [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
+        [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, animazioniPrima, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
         // Dopo gli script del pannello, che girano dopo questo file
