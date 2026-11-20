@@ -191,6 +191,34 @@
         categoria.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
+    // Nuovo ordine: il numero del servizio in un riquadrino prima del nome (sul servizio scelto e nella lista),
+    // cosi' il cliente lo ritrova nella pagina Services. Select2 ridisegna la tendina: si rimette a ogni cambio.
+    function numeroServizio() {
+        var servizio = document.getElementById('orderform-service');
+        if (!servizio) return;
+        var inCoda = false;
+        function metti(nodo, id) {
+            if (!/^\d+$/.test(id || '')) return;
+            var b = nodo.querySelector('.vg-sid');
+            if (b && b.textContent === '#' + id) return;
+            if (b) b.remove();
+            nodo.insertBefore(el('span', 'vg-sid', '#' + id), nodo.firstChild);
+        }
+        function aggiorna() {
+            inCoda = false;
+            var scelto = document.getElementById('select2-orderform-service-container');
+            if (scelto) metti(scelto, servizio.value);
+            document.querySelectorAll('[id^="select2-orderform-service-result-"]').forEach(function (li) {
+                var m = li.id.match(/-(\d+)$/);
+                if (m) metti(li, m[1]);
+            });
+        }
+        new MutationObserver(function () {
+            if (!inCoda) { inCoda = true; requestAnimationFrame(aggiorna); }
+        }).observe(document.body, { childList: true, subtree: true });
+        aggiorna();
+    }
+
     // Ticket: oggetti rapidi sopra il campo Subject
     function oggettiTicket() {
         var oggetto = document.getElementById('subject');
@@ -241,7 +269,7 @@
         // Dopo gli script del pannello, che girano dopo questo file
         window.addEventListener('load', function () {
             setTimeout(function () {
-                [avvisoNuovoOrdine, togliCategoriaIstruzioni, pulsantiCopia].forEach(function (f) {
+                [avvisoNuovoOrdine, togliCategoriaIstruzioni, numeroServizio, pulsantiCopia].forEach(function (f) {
                     try { f(0); } catch (e) { /* pagina lasciata com'era */ }
                 });
             }, 300);
