@@ -173,10 +173,58 @@
     // Il pannello riempie le tendine dopo il caricamento: si riprova finche' le categorie ci sono (max ~4 s).
     // New order: la descrizione del servizio sotto il tasto (Mirko: il modulo resta corto, chi vuole i dettagli scorre).
     // Si sposta il blocco intero: il tema continua a riempirlo e a mostrarlo/nasconderlo per id.
+    // Sotto il tasto, prima della descrizione: le due avvertenze che valgono per tutti i servizi (Mirko, 20 nov 2026)
+    var AVVERTENZE = ['🔓 Keep your account and link public until the order is done.',
+        '⏳ One order per link at a time. Wait for it to finish before ordering again.'];
     function descrizioneSottoIlTasto() {
-        var blocco = document.getElementById('service_description');
         var tasto = document.querySelector('#order-form button[type="submit"]');
-        if (blocco && tasto) tasto.parentNode.insertBefore(blocco, tasto.nextSibling);
+        if (!tasto || document.querySelector('.vg-order-notes')) return;
+        var note = el('div', 'vg-order-notes');
+        AVVERTENZE.forEach(function (t) { note.appendChild(el('p', '', t)); });
+        tasto.parentNode.insertBefore(note, tasto.nextSibling);
+        var blocco = document.getElementById('service_description');
+        if (blocco) note.parentNode.insertBefore(blocco, note.nextSibling);
+    }
+
+    // New order: il titolo del campo Link dice quale link incollare per il servizio scelto (stesse regole delle
+    // descrizioni dei servizi), con un esempio nel campo vuoto
+    function linkGiusto(n) {
+        n = n.toLowerCase();
+        if (/spotify/.test(n)) return /listener/.test(n) ? ['Spotify artist, track, album or playlist link', 'https://open.spotify.com/artist/...']
+            : ['Spotify TRACK link', 'https://open.spotify.com/track/...'];
+        if (/telegram/.test(n) && !/instagram/.test(n)) return /member|automatic/.test(n) ? ['Telegram CHANNEL link', 'https://t.me/yourchannel']
+            : ['Telegram POST link', 'https://t.me/yourchannel/123'];
+        if (/youtube/.test(n)) {
+            if (/subscriber/.test(n)) return ['YouTube CHANNEL link', 'https://www.youtube.com/@yourchannel'];
+            return [/live/.test(n) ? 'YouTube LIVE STREAM link' : 'YouTube VIDEO link', 'https://www.youtube.com/watch?v=...'];
+        }
+        if (/tik\s?tok/.test(n)) return /follower/.test(n) ? ['TikTok PROFILE link', 'https://www.tiktok.com/@username']
+            : ['TikTok VIDEO link', 'https://www.tiktok.com/@username/video/...'];
+        if (/facebook/.test(n)) return [/video/.test(n) ? 'Facebook VIDEO link' : 'Facebook POST link', 'https://www.facebook.com/...'];
+        if (/insta|most ordered/.test(n)) {
+            if (/follower|auto|last 5 posts|story/.test(n)) return ['Instagram PROFILE link (or @username)', 'https://www.instagram.com/username'];
+            if (/view/.test(n)) return ['Instagram REEL or VIDEO link', 'https://www.instagram.com/reel/...'];
+            return ['Instagram POST or REEL link', 'https://www.instagram.com/p/...'];
+        }
+        return null;
+    }
+    function campoLink() {
+        var servizio = document.getElementById('orderform-service');
+        var categoria = document.getElementById('orderform-category');
+        var campo = document.querySelector('#order-form input[name$="[link]"]');
+        var gruppo = campo && campo.closest('.form-group');
+        var etichetta = gruppo && gruppo.querySelector('label');
+        if (!servizio || !etichetta) return;
+        var originale = etichetta.textContent;
+        function aggiorna() {
+            var s = servizio.options[servizio.selectedIndex], c = categoria && categoria.options[categoria.selectedIndex];
+            var giusto = linkGiusto((s ? s.textContent : '') + ' ' + (c ? c.textContent : ''));
+            etichetta.textContent = giusto ? giusto[0] : originale;
+            campo.placeholder = giusto ? giusto[1] : '';
+        }
+        aggiorna();
+        servizio.addEventListener('change', aggiorna);
+        if (window.jQuery) window.jQuery(servizio).on('change', aggiorna);  // select2 avvisa solo via jQuery
     }
 
     function togliCategoriaIstruzioni(tentativo) {
@@ -413,7 +461,7 @@
         // Dopo gli script del pannello, che girano dopo questo file
         window.addEventListener('load', function () {
             setTimeout(function () {
-                [avvisoNuovoOrdine, descrizioneSottoIlTasto, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia].forEach(function (f) {
+                [avvisoNuovoOrdine, descrizioneSottoIlTasto, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia].forEach(function (f) {
                     try { f(0); } catch (e) { /* pagina lasciata com'era */ }
                 });
             }, 300);

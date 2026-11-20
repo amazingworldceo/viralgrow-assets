@@ -21,12 +21,13 @@
         return n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : String(n);
     }
 
-    function contatore(etichetta, partenza, passoMax) {
+    // Il numero sale di 0.1K (100) ogni "ogni" giri da 650 ms: 120K, 120.1K, 120.2K...
+    function contatore(etichetta, partenza, ogni) {
         var riga = el('div', 'vg-cover-stat');
         var numero = el('b', '', formato(partenza));
         riga.appendChild(document.createTextNode(etichetta + ' '));
         riga.appendChild(numero);
-        return { riga: riga, valore: partenza, numero: numero, passoMax: passoMax };
+        return { riga: riga, valore: partenza, numero: numero, ogni: ogni };
     }
 
     function copertinaVideo() {
@@ -46,8 +47,8 @@
         cover.appendChild(img);
 
         var stats = el('div', 'vg-cover-stats');
-        var like = contatore('♥ Likes', 12400, 37);
-        var fan = contatore('Followers', 3210, 9);
+        var like = contatore('♥ Likes', 1500, 1);
+        var fan = contatore('Followers', 120000, 2);
         stats.appendChild(like.riga);
         stats.appendChild(fan.riga);
         cover.appendChild(stats);
@@ -75,9 +76,12 @@
 
         var timer = null;
         if (!fermo) {
+            var giro = 0;
             timer = setInterval(function () {
+                giro++;
                 [like, fan].forEach(function (c) {
-                    c.valore += 1 + Math.floor(Math.random() * c.passoMax);
+                    if (giro % c.ogni) return;
+                    c.valore += 100;
                     c.numero.textContent = formato(c.valore);
                 });
                 var cuore = el('span', 'vg-cover-heart', '♥');
