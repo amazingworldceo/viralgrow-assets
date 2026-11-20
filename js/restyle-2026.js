@@ -18,6 +18,8 @@
     function pulsanteSignIn() {
         var login = document.querySelector('.main-landing-section form');
         if (login && !login.id) login.id = 'vg-login';
+        var scatola = login && login.closest('.banner-img');
+        if (scatola) scatola.classList.add('vg-login-box');
         var hero = document.querySelector('.main-banner-section .started-btn');
         if (!hero || hero.querySelector('.vg-signin-btn')) return;
         var registrati = hero.querySelector('a[href="/signup"]');
