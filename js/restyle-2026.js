@@ -56,12 +56,18 @@
         tabella.classList.add('vg-cards');
     }
 
-    // Nuovo ordine: la categoria "General Instructions" diventa un avviso sopra il modulo
-    function istruzioniComeAvviso() {
+    // Nuovo ordine: la categoria "General Instructions" diventa un avviso sopra il modulo.
+    // Il pannello riempie le tendine dopo il caricamento: si riprova finche' i servizi ci sono (max ~4 s).
+    function istruzioniComeAvviso(tentativo) {
         var categoria = document.getElementById('orderform-category');
         var servizio = document.getElementById('orderform-service');
         var modulo = document.getElementById('order-form');
-        if (!categoria || !servizio || !modulo) return;
+        if (!categoria || !servizio || !modulo || document.querySelector('.vg-notice')) return;
+        tentativo = tentativo || 0;
+        if (!servizio.options.length || categoria.options.length < 2) {
+            if (tentativo < 20) setTimeout(function () { istruzioniComeAvviso(tentativo + 1); }, 200);
+            return;
+        }
         var opzione = Array.prototype.find.call(categoria.options, function (o) {
             return /general instructions/i.test(o.textContent);
         });
@@ -126,8 +132,12 @@
     }
 
     ready(function () {
-        [pulsanteSignIn, faqCompatte, ordiniASchede, istruzioniComeAvviso, oggettiTicket, pulsantiCopia].forEach(function (f) {
+        [pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
+        });
+        // Dopo gli script del pannello, che girano dopo questo file
+        window.addEventListener('load', function () {
+            setTimeout(function () { try { istruzioniComeAvviso(0); } catch (e) { /* pagina lasciata com'era */ } }, 300);
         });
         // Le istruzioni dei metodi di pagamento cambiano quando si sceglie un metodo diverso
         var metodo = document.getElementById('method');
