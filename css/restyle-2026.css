@@ -152,6 +152,16 @@
     .newOrder-page .nav-pills.nav-fill .nav-item.search { flex: 0 0 220px; order: 99; margin: 0; }
     .newOrder-page .nav-pills.nav-fill .nav-link { white-space: nowrap; padding: 8px 16px; margin: 0 !important; }
 
+    /* Moduli (nuovo ordine, fondi, ticket): pulsante di invio grande e su tutta la riga */
+    .innerMainPage form button[type="submit"].btn-primary {
+        display: block;
+        width: 100%;
+        padding: 16px 20px;
+        font-size: 17px;
+        border-radius: 12px;
+        margin: 8px auto 0;
+    }
+
     /* Ordini: una scheda per ordine al posto della tabella larga */
     .vg-cards thead { display: none; }
     .vg-cards, .vg-cards tbody, .vg-cards tr { display: block; width: 100%; }
