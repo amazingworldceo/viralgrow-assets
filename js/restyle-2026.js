@@ -66,7 +66,8 @@
     }
     function bottoneTicket() {
         document.querySelectorAll('.vg-pay-steps li').forEach(function (passo) {
-            if (passo.querySelector('.vg-ticket-btn') || !/open a ticket/i.test(passo.textContent)) return;
+            // il metodo carta coi link ha gia' il suo pulsante sotto gli importi
+            if (passo.closest('.vg-pay').querySelector('.vg-ticket-btn') || !/open a ticket/i.test(passo.textContent)) return;
             var a = el('a', 'vg-ticket-btn', 'Open a ticket');
             a.href = '/tickets';
             passo.appendChild(a);

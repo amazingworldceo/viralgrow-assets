@@ -316,6 +316,7 @@ body.vg-pop-open { overflow: hidden; }
     background: #5d59ff; color: #fff !important; font-size: 16px; font-weight: 700; text-decoration: none !important;
 }
 @media (min-width: 768px) { .vg-pay-links { grid-template-columns: repeat(5, 1fr); } }
+.vg-ticket-btn.vg-ticket-big { margin: 6px auto 10px; padding: 12px 32px; font-size: 17px; font-weight: 700; }
 /* Mass order: l'esempio grigio (non sembra gia' scritto) e il campo piu' basso */
 .massorder-page textarea::placeholder { color: #5f6375; opacity: 1; }
 .massorder-page textarea.form-control { height: 200px; }
