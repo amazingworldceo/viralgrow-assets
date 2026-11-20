@@ -197,12 +197,18 @@
         var servizio = document.getElementById('orderform-service');
         if (!servizio) return;
         var inCoda = false;
-        function metti(nodo, id) {
+        // nella lista il testo sta in un blocco interno: il riquadro va li' dentro, sulla stessa riga del nome
+        function metti(nodo, id, dentro) {
             if (!/^\d+$/.test(id || '')) return;
             var b = nodo.querySelector('.vg-sid');
             if (b && b.textContent === '#' + id) return;
             if (b) b.remove();
-            nodo.insertBefore(el('span', 'vg-sid', '#' + id), nodo.firstChild);
+            var dove = (dentro && nodo.firstElementChild) || nodo;
+            // molti nomi iniziano gia' con "11899 - ": col riquadro il numero non si ripete
+            var testo = document.createTreeWalker(dove, NodeFilter.SHOW_TEXT).nextNode();
+            var inizio = new RegExp('^\\s*' + id + '\\s*-\\s*');
+            if (testo && inizio.test(testo.nodeValue)) testo.nodeValue = testo.nodeValue.replace(inizio, '');
+            dove.insertBefore(el('span', 'vg-sid', '#' + id), dove.firstChild);
         }
         function aggiorna() {
             inCoda = false;
@@ -210,7 +216,7 @@
             if (scelto) metti(scelto, servizio.value);
             document.querySelectorAll('[id^="select2-orderform-service-result-"]').forEach(function (li) {
                 var m = li.id.match(/-(\d+)$/);
-                if (m) metti(li, m[1]);
+                if (m) metti(li, m[1], true);
             });
         }
         new MutationObserver(function () {
