@@ -15,6 +15,9 @@
     background: #fff;
 }
 
+/* Home: il video Vimeo al posto dell'animazione (lo sposta restyle-2026.js), largo quanto la colonna */
+.main-banner-section .banner-img.vg-hero-video { width: 100%; max-width: 100% !important; }
+
 /* Pulsante "Sign in" accanto a "Get Started Now!" (lo aggiunge restyle-2026.js) */
 .started-btn .vg-signin-btn {
     margin-left: 12px;

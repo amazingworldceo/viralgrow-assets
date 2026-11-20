@@ -40,6 +40,18 @@
         pagina.insertBefore(el('h1', 'vg-page-title', voce.textContent.trim()), pagina.firstChild);
     }
 
+    // Home: il video Vimeo sale in cima al posto dell'animazione; la sua sezione piu' in basso sparisce
+    function videoInCima() {
+        var posto = document.querySelector('.main-banner-section .banner-img');
+        var sezione = document.querySelector('.banner-video-section');
+        var video = sezione && sezione.querySelector('.banner-video');
+        if (!posto || !video) return;
+        posto.textContent = '';
+        posto.classList.add('vg-hero-video');
+        posto.appendChild(video);
+        sezione.style.display = 'none';
+    }
+
     // Home: 5 domande per gruppo, le altre con "Show all questions"
     function faqCompatte() {
         document.querySelectorAll('.faq-section .accordion').forEach(function (gruppo) {
@@ -177,7 +189,7 @@
 
     ready(function () {
         if (!document.getElementById('sidenav-main')) avvisoGiaVisto('azzera');  // il menu c'e' solo da loggati
-        [titoloPagina, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
+        [titoloPagina, videoInCima, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
         // Dopo gli script del pannello, che girano dopo questo file
