@@ -2,6 +2,10 @@
    istruzioni fuori dal catalogo, oggetti rapidi dei ticket, pulsante Copia). Ogni pezzo agisce solo
    se trova la sua pagina; se qualcosa non torna, lascia la pagina com'era. */
 (function () {
+    // Cartella del tag da cui arriva questo file (es. .../viralgrow-assets@v1.25/): serve a caricare la copertina del video
+    var me = document.currentScript;
+    var BASE = me && me.src ? me.src.replace(/js\/restyle-2026\.js.*$/, '') : '';
+
     function ready(fn) {
         if (document.readyState !== 'loading') fn();
         else document.addEventListener('DOMContentLoaded', fn);
@@ -55,6 +59,18 @@
     }
 
     // Home: il secondo titolo ripeteva quello in cima; ora ne dice un'altra
+    // Home: copertina animata sopra il video (copertina/copertina.css e .js, stesso tag di questo file)
+    function caricaCopertina() {
+        if (!BASE || !document.querySelector('.vg-hero-video .banner-video')) return;
+        var css = el('link');
+        css.rel = 'stylesheet';
+        css.href = BASE + 'copertina/copertina.css';
+        document.head.appendChild(css);
+        var js = el('script');
+        js.src = BASE + 'copertina/copertina.js';
+        document.body.appendChild(js);
+    }
+
     function dal2020() {
         var titolo = document.querySelector('.main-banner-section .banner-txt h1');
         if (titolo && !titolo.querySelector('.vg-since')) titolo.appendChild(el('span', 'vg-since', 'Since 2020'));
@@ -209,7 +225,7 @@
         if (!document.getElementById('sidenav-main')) avvisoGiaVisto('azzera');  // il menu c'e' solo da loggati
         // New order compatto (il CSS stringe gli spazi solo su questa pagina)
         if (document.getElementById('order-form')) document.body.classList.add('vg-neworder');
-        [titoloPagina, videoInCima, dal2020, secondoTitolo, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
+        [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, faqCompatte, ordiniASchede, oggettiTicket, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
         // Dopo gli script del pannello, che girano dopo questo file

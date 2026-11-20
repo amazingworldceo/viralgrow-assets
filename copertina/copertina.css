@@ -1,0 +1,164 @@
+/* ViralGrow.io - copertina del video Vimeo in cima alla home (20 nov 2026).
+   Foto di una mano con il telefono, sopra: cuori che salgono, like e follower che crescono,
+   notifiche "liked your post", play viola al centro. Al tocco sparisce e parte il video. */
+
+.vg-hero-video .banner-video { position: relative; border-radius: 10px; overflow: hidden; }
+
+.vg-cover {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #0f1016;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+.vg-cover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+/* Velo scuro a sinistra: i numeri si leggono su qualunque foto */
+.vg-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(90deg, rgba(10, 11, 20, .72) 0%, rgba(10, 11, 20, .25) 45%, rgba(10, 11, 20, 0) 70%);
+    pointer-events: none;
+}
+
+/* Like e follower che crescono */
+.vg-cover-stats {
+    position: absolute;
+    left: 5%;
+    top: 9%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.vg-cover-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(15, 16, 22, .72);
+    border: 1px solid rgba(93, 89, 255, .55);
+    color: #fff;
+    font-size: clamp(10px, 2.6vw, 14px);
+    font-weight: 600;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+.vg-cover-stat b { color: #a9a7ff; font-weight: 700; }
+
+/* Notifiche "liked your post" */
+.vg-cover-notes {
+    position: absolute;
+    left: 5%;
+    bottom: 9%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.vg-cover-note {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 10px 5px 6px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .94);
+    color: #1a1d26;
+    font-size: clamp(9px, 2.3vw, 12px);
+    white-space: nowrap;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+    opacity: 0;
+    transform: translateY(8px);
+    animation: vg-nota 6s ease-in-out infinite;
+}
+.vg-cover-note:nth-child(2) { animation-delay: 3s; }
+.vg-cover-note i {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8d8aff, #5d59ff);
+}
+.vg-cover-note span { color: #e8364f; }
+@keyframes vg-nota {
+    0%, 8% { opacity: 0; transform: translateY(8px); }
+    14%, 46% { opacity: 1; transform: translateY(0); }
+    54%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+
+/* Cuori che salgono dal telefono */
+.vg-cover-hearts { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.vg-cover-heart {
+    position: absolute;
+    bottom: 18%;
+    font-size: clamp(14px, 3.6vw, 22px);
+    line-height: 1;
+    color: #ff3d6e;
+    text-shadow: 0 2px 8px rgba(255, 61, 110, .45);
+    animation: vg-cuore 2.6s ease-out forwards;
+}
+@keyframes vg-cuore {
+    0% { opacity: 0; transform: translate(0, 0) scale(.6); }
+    15% { opacity: 1; transform: translate(0, -12%) scale(1); }
+    100% { opacity: 0; transform: translate(var(--dx, 0px), -180px) scale(1.1); }
+}
+
+/* Play viola al centro */
+.vg-cover-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 4;
+    width: clamp(54px, 15vw, 76px);
+    height: clamp(54px, 15vw, 76px);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #5d59ff;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 8px 26px rgba(93, 89, 255, .55);
+    cursor: pointer;
+}
+.vg-cover-play::before {
+    content: '';
+    position: absolute;
+    left: 54%;
+    top: 50%;
+    border-style: solid;
+    border-width: 11px 0 11px 18px;
+    border-color: transparent transparent transparent #fff;
+    transform: translate(-50%, -50%);
+}
+.vg-cover-play::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid rgba(141, 138, 255, .7);
+    animation: vg-onda 2s ease-out infinite;
+}
+@keyframes vg-onda {
+    0% { opacity: .9; transform: scale(.9); }
+    100% { opacity: 0; transform: scale(1.35); }
+}
+
+/* Chi ha chiesto meno movimento: copertina ferma */
+@media (prefers-reduced-motion: reduce) {
+    .vg-cover-note { animation: none; opacity: 1; transform: none; }
+    .vg-cover-note:nth-child(2) { display: none; }
+    .vg-cover-play::after, .vg-cover-heart { animation: none; display: none; }
+}
