@@ -59,6 +59,20 @@
 .vg-notice ul { padding-left: 18px; margin: 0 0 8px; }
 .vg-notice li { margin-bottom: 6px; }
 
+/* Colori (20 nov 2026, 17:00): viola pieno solo su cio' che si clicca. Per tornare a prima: tag backup-prima-dei-colori */
+.innerMainPage .card .form-group select.form-control {
+    background-color: #0f1015;
+    border: 1px solid rgba(93, 89, 255, .6);
+    color: #fff;
+}
+.innerMainPage .card .form-group .form-control { border-color: rgba(255, 255, 255, .12); }
+.innerMainPage .card .form-group .form-control:focus,
+.innerMainPage .card .form-group select.form-control:focus { border-color: #5d59ff; }
+.newOrder-page .table-responsive thead.thead-light,
+.refill-page .table-responsive thead.thead-light { background: #0f1015; }
+.newOrder-page .table-responsive thead.thead-light th,
+.refill-page .table-responsive thead.thead-light th { color: #a9a7ff; }
+
 /* Ordini: stato come pillola colorata con puntino */
 .vg-status {
     --c: 138, 143, 163;
