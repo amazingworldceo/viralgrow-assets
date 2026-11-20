@@ -20,8 +20,15 @@
         if (login && !login.id) login.id = 'vg-login';
         var hero = document.querySelector('.main-banner-section .started-btn');
         if (!hero || hero.querySelector('.vg-signin-btn')) return;
+        var registrati = hero.querySelector('a[href="/signup"]');
+        if (registrati) registrati.textContent = 'Create new account';
         var a = el('a', 'btn btn-primary vg-signin-btn', 'Sign in');
         a.href = login ? '#vg-login' : '/';
+        // Il modulo di accesso arriva al centro dello schermo, non attaccato in alto
+        if (login) a.addEventListener('click', function (e) {
+            e.preventDefault();
+            login.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
         hero.appendChild(a);
     }
 

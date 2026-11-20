@@ -224,8 +224,14 @@ body span.select2-dropdown .select2-results__option--highlighted { background: #
     }
     .vg-cards td:empty { display: none !important; }
 
-    /* Prima il titolo e i pulsanti, poi l'illustrazione (prima era al contrario) */
-    .main-banner-section .row { flex-direction: column; }
+    /* Home: titolo, poi il video, subito sotto i due pulsanti (Create new account, Sign in) */
+    .main-banner-section .row { flex-direction: column; margin: 0; }
+    .main-banner-section .row > [class*="col-"],
+    .main-banner-section .banner-txt { display: contents; }
+    .main-banner-section .banner-txt h1 { order: 1; text-align: center; }
+    .main-banner-section .banner-txt h2 { order: 2; text-align: center; }
+    .main-banner-section .banner-img { order: 3; }
+    .main-banner-section .started-btn { order: 4; text-align: center; margin-bottom: 10px; }
     .main-banner-section { padding-top: 10px; }
     .main-banner-section .banner-txt h2 p:not(:first-child) { display: none; }
     .main-banner-section .started-btn .btn { margin-top: 8px; }
