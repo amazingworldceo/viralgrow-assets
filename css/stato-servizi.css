@@ -44,3 +44,10 @@
 /* New order: quadro di tutti i servizi, al primo New order dopo il login */
 .vg-status-welcome { margin: 0 0 16px; }
 .vg-status-title { margin: 0 0 8px; font-weight: 700; color: #fff; }
+
+/* Services: i 4 riquadri sono filtri (clic = solo quei servizi, secondo clic = tutti) */
+.vg-st-clic .vg-st-box { cursor: pointer; user-select: none; transition: opacity .15s, box-shadow .15s; }
+.vg-st-clic .vg-st-box:hover { box-shadow: 0 0 0 1px currentColor; }
+.vg-st-filtro .vg-st-box:not(.vg-st-on) { opacity: .45; }
+.vg-st-box.vg-st-on { box-shadow: 0 0 0 2px currentColor; }
+.vg-st-off { display: none !important; }

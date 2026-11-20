@@ -19,6 +19,8 @@
     function stato(id) { return (dati.colori && dati.colori[id]) || 'g'; }
     function nuovo(id) { return (dati.nuovi || []).indexOf(String(id)) >= 0; }
     function classi(id) { return 'vg-st-' + stato(id) + (nuovo(id) ? ' vg-st-new' : ''); }
+    // il riquadro in cui conta un servizio: un nuovo arancione o rosso conta nel suo colore
+    function riquadro(id) { return nuovo(id) && stato(id) === 'g' ? 'new' : stato(id); }
     function data() {
         var p = (dati.aggiornato || '').split('-');
         return p.length === 3 ? (+p[2]) + ' ' + MESI[+p[1] - 1] + ' ' + p[0] : '';
@@ -51,6 +53,7 @@
         var blocco = el('div', 'vg-status-page'), griglia = el('div', 'vg-st-boxes'), caselle = {};
         [['new', 'New services'], ['g', STATI.g], ['y', STATI.y], ['r', STATI.r]].forEach(function (v) {
             var b = el('div', 'vg-st-box vg-st-' + (v[0] === 'new' ? 'g vg-st-new' : v[0]));
+            b.setAttribute('data-k', v[0]);
             caselle[v[0]] = el('b', '', '0');
             b.appendChild(caselle[v[0]]);
             b.appendChild(el('span', '', v[1]));
@@ -60,7 +63,7 @@
         blocco.appendChild(live());
         blocco.conta = function (ids) {
             var n = { new: 0, g: 0, y: 0, r: 0 };
-            ids.forEach(function (id) { n[nuovo(id) && stato(id) === 'g' ? 'new' : stato(id)]++; });   // un nuovo arancione o rosso conta nel suo colore
+            ids.forEach(function (id) { n[riquadro(id)]++; });
             Object.keys(n).forEach(function (k) { caselle[k].textContent = n[k]; });
         };
         return blocco;
@@ -85,6 +88,29 @@
         }
         conta();
         new MutationObserver(conta).observe(righe[0].parentNode, { attributes: true, subtree: true, attributeFilter: ['class'] });
+
+        // clic su un riquadro = sotto restano solo quei servizi; secondo clic = tutti (Mirko, 20 nov 2026 21:02).
+        // Si somma al filtro della piattaforma; i titoli delle categorie rimaste vuote si nascondono.
+        var titoli = Array.prototype.filter.call(document.querySelectorAll('.services-page tr[data-index]'), function (r) {
+            return r.firstElementChild && r.firstElementChild.classList.contains('service-title');
+        });
+        var scelto = null;
+        function filtra() {
+            righe.forEach(function (r) { r.classList.toggle('vg-st-off', !!scelto && riquadro(idDi([r])[0]) !== scelto); });
+            var piene = {};
+            righe.forEach(function (r) { if (!r.classList.contains('vg-st-off')) piene[r.getAttribute('data-index')] = true; });
+            titoli.forEach(function (t) { t.classList.toggle('vg-st-off', !piene[t.getAttribute('data-index')]); });
+            blocco.classList.toggle('vg-st-filtro', !!scelto);
+            blocco.querySelectorAll('.vg-st-box').forEach(function (b) { b.classList.toggle('vg-st-on', b.getAttribute('data-k') === scelto); });
+        }
+        blocco.classList.add('vg-st-clic');
+        blocco.querySelectorAll('.vg-st-box').forEach(function (b) {
+            b.setAttribute('role', 'button');
+            b.tabIndex = 0;
+            function scegli() { scelto = scelto === b.getAttribute('data-k') ? null : b.getAttribute('data-k'); filtra(); }
+            b.addEventListener('click', scegli);
+            b.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scegli(); } });
+        });
     }
 
     // New order: il quadro di TUTTI i servizi sopra il modulo, al primo New order dopo il login (Mirko, 20 nov 2026 20:48).
