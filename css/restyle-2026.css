@@ -257,6 +257,10 @@ body.vg-pop-open { overflow: hidden; }
    un buco vuoto tra menu e contenuto) */
 @media (min-width: 1200px) {
     .main-content .innerMainPage > .container { max-width: 1500px; margin-left: 0; padding-left: 24px; padding-right: 24px; }
+    /* New order su PC: modulo a sinistra, descrizione e stato a destra (le colonne le crea restyle-2026.js) */
+    body.vg-neworder #order-form { display: flex; gap: 32px; align-items: flex-start; }
+    .vg-order-main { flex: 1 1 0; min-width: 0; }
+    .vg-order-side { flex: 0 0 38%; min-width: 0; padding-top: 4px; }
 }
 /* PC: il tema fissa colonne tutte uguali e la pillola "Completed" invadeva "Remains"; i link lunghi vanno a capo */
 @media (min-width: 768px) {
