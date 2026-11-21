@@ -274,7 +274,15 @@ body.vg-pop-open { overflow: hidden; }
     body.vg-neworder #fields { display: contents; }
     body.vg-neworder #order_link, body.vg-neworder #order_quantity, body.vg-neworder #order_average_time,
     body.vg-neworder #order-form > .form-group:has(#charge) { grid-column: auto; }
-    body.vg-neworder #order-form > button[type="submit"] { justify-self: start; }
+    /* Order now piu' lungo e al centro; Service description a sinistra e stato del servizio a destra, alti uguali
+       (Mirko, 21 nov 2026, 01:38) */
+    body.vg-neworder #order-form > button[type="submit"] { justify-self: center; min-width: 320px; }
+    body.vg-neworder #order-form > #service_description,
+    body.vg-neworder #order-form > .vg-status-order { grid-column: auto; }
+    body.vg-neworder #order-form > #service_description { display: flex; flex-direction: column; }
+    body.vg-neworder #order-form > #service_description > .rounded-sm { flex: 1; }
+    /* il riquadro dello stato parte dove parte quello della descrizione (sotto la sua etichetta) */
+    body.vg-neworder #order-form > .vg-status-order { margin: 37px 0 0; }
 }
 /* PC: il tema fissa colonne tutte uguali e la pillola "Completed" invadeva "Remains"; i link lunghi vanno a capo */
 @media (min-width: 768px) {
