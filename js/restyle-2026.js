@@ -246,14 +246,7 @@
         AVVERTENZE.forEach(function (t) { note.appendChild(el('p', '', t)); });
         tasto.parentNode.insertBefore(note, tasto.nextSibling);
         var blocco = document.getElementById('service_description');
-        if (!blocco) return;
-        // due colonne: a sinistra il modulo, a destra descrizione e stato (lo mette stato-servizi.js dopo la descrizione).
-        // Sul telefono restano una sotto l'altra; su PC largo il CSS le affianca e tutto sta in uno schermo (Mirko, 21 nov 2026)
-        var modulo = tasto.form, sinistra = el('div', 'vg-order-main'), destra = el('div', 'vg-order-side');
-        Array.prototype.slice.call(modulo.children).forEach(function (c) { if (c !== blocco) sinistra.appendChild(c); });
-        modulo.appendChild(sinistra);
-        modulo.appendChild(destra);
-        destra.appendChild(blocco);
+        if (blocco) note.parentNode.insertBefore(blocco, note.nextSibling);
     }
 
     // New order: il titolo del campo Link dice quale link incollare per il servizio scelto (stesse regole delle
