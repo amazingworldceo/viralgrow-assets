@@ -21,9 +21,10 @@
     function classi(id) { return 'vg-st-' + stato(id) + (nuovo(id) ? ' vg-st-new' : ''); }
     // il riquadro in cui conta un servizio: un nuovo arancione o rosso conta nel suo colore
     function riquadro(id) { return nuovo(id) && stato(id) === 'g' ? 'new' : stato(id); }
+    // la data di oggi nel fuso di chi guarda: cambia alla sua mezzanotte, non quando gira il job (Mirko, 21 nov 2026)
     function data() {
-        var p = (dati.aggiornato || '').split('-');
-        return p.length === 3 ? (+p[2]) + ' ' + MESI[+p[1] - 1] + ' ' + p[0] : '';
+        var d = new Date();
+        return d.getDate() + ' ' + MESI[d.getMonth()] + ' ' + d.getFullYear();
     }
     function live() {
         var l = el('span', 'vg-live');
