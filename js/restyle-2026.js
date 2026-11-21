@@ -177,9 +177,12 @@
         var m = cella.textContent.match(/^\s*(\d+)\s*\|\s*([\s\S]*)$/);
         if (!m || cella.querySelector('.vg-sid')) return;
         var nome = m[2].replace(new RegExp('^' + m[1] + '\\s*-\\s*'), '').trim();
+        // riquadro e nome in un solo contenitore: nelle schede del telefono la cella e' flex e li separava
+        var tutto = el('span', 'vg-svc');
+        tutto.appendChild(el('span', 'vg-sid', '#' + m[1]));
+        tutto.appendChild(document.createTextNode(nome));
         cella.textContent = '';
-        cella.appendChild(el('span', 'vg-sid', '#' + m[1]));
-        cella.appendChild(document.createTextNode(nome));
+        cella.appendChild(tutto);
     }
 
     // Ordini: lo stato diventa una pillola colorata (verde Completed, rosso Canceled...)
