@@ -161,13 +161,25 @@
             return th.textContent.trim();
         });
         var colonnaStato = nomi.findIndex(function (n) { return /^status$/i.test(n); });
+        var colonnaServizio = nomi.findIndex(function (n) { return /^service$/i.test(n); });
         tabella.querySelectorAll('tbody tr').forEach(function (riga) {
             Array.prototype.forEach.call(riga.children, function (cella, i) {
                 if (nomi[i]) cella.setAttribute('data-label', nomi[i]);
                 if (i === colonnaStato) statoColorato(cella);
+                if (i === colonnaServizio) servizioConNumero(cella);
             });
         });
         tabella.classList.add('vg-cards');
+    }
+
+    // Orders: "11878 | 11878 - Instagram Save" diventa il riquadro "#11878" + il nome, come in Services e New order
+    function servizioConNumero(cella) {
+        var m = cella.textContent.match(/^\s*(\d+)\s*\|\s*([\s\S]*)$/);
+        if (!m || cella.querySelector('.vg-sid')) return;
+        var nome = m[2].replace(new RegExp('^' + m[1] + '\\s*-\\s*'), '').trim();
+        cella.textContent = '';
+        cella.appendChild(el('span', 'vg-sid', '#' + m[1]));
+        cella.appendChild(document.createTextNode(nome));
     }
 
     // Ordini: lo stato diventa una pillola colorata (verde Completed, rosso Canceled...)
