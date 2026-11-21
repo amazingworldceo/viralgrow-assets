@@ -257,6 +257,14 @@ body.vg-pop-open { overflow: hidden; }
    un buco vuoto tra menu e contenuto) */
 @media (min-width: 1200px) {
     .main-content .innerMainPage > .container { max-width: 1140px; margin-left: 0; padding-left: 24px; padding-right: 24px; }
+    /* New order su PC: Link | Quantity e Average time | Charge a coppie, il resto sotto come sul telefono: fino alle
+       avvertenze sta in uno schermo da laptop (1280x636, Mirko 21 nov 2026) */
+    body.vg-neworder #order-form { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; }
+    body.vg-neworder #order-form > *, body.vg-neworder #fields > * { grid-column: 1 / -1; }
+    body.vg-neworder #fields { display: contents; }
+    body.vg-neworder #order_link, body.vg-neworder #order_quantity, body.vg-neworder #order_average_time,
+    body.vg-neworder #order-form > .form-group:has(#charge) { grid-column: auto; }
+    body.vg-neworder #order-form > button[type="submit"] { justify-self: start; }
 }
 /* PC: il tema fissa colonne tutte uguali e la pillola "Completed" invadeva "Remains"; i link lunghi vanno a capo */
 @media (min-width: 768px) {
