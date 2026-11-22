@@ -232,6 +232,26 @@ body.vg-pop-open { overflow: hidden; }
 }
 .vg-plat-btn i { font-size: 13px; }
 .vg-plat-btn.active { color: #fff; background: #5d59ff; border-color: #5d59ff; }
+/* Orders: i filtri di stato tutti visibili insieme, riquadri come i quadratini di Services (Mirko, 22 nov 2026).
+   Telefono: All su tutta la riga e gli altri 6 a due a due; PC: tutti su una riga. La ricerca resta su una riga sua */
+#tabs-text:has(a[href="/orders/pending"]) {
+    display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; overflow: visible; padding-bottom: 0;
+    margin-bottom: 18px;
+}
+#tabs-text:has(a[href="/orders/pending"]) .nav-item { margin: 0; padding: 0 !important; min-width: 0; }
+#tabs-text:has(a[href="/orders/pending"]) .nav-item.search { grid-column: 1 / -1; order: 99; }
+#tabs-text:has(a[href="/orders/pending"]) .nav-item:has(a[href="/orders"]) { grid-column: 1 / -1; }
+#tabs-text:has(a[href="/orders/pending"]) .nav-link {
+    display: flex; align-items: center; justify-content: center; height: 100%; margin: 0 !important;
+    padding: 10px 8px; font-size: 14px; font-weight: 600; line-height: 18px; white-space: nowrap; border-radius: 10px;
+    color: #c9c7ff; background: rgba(93, 89, 255, .12); border: 1px solid rgba(93, 89, 255, .35); box-shadow: none;
+}
+#tabs-text:has(a[href="/orders/pending"]) .nav-link.active { color: #fff; background: #5d59ff; border-color: #5d59ff; }
+@media (min-width: 768px) {
+    #tabs-text:has(a[href="/orders/pending"]) { grid-template-columns: repeat(7, 1fr); }
+    #tabs-text:has(a[href="/orders/pending"]) .nav-item:has(a[href="/orders"]) { grid-column: auto; }
+    #tabs-text:has(a[href="/orders/pending"]) .nav-item.search { order: -1; margin: 0 0 4px; }
+}
 
 /* Ordini: stato come pillola colorata con puntino */
 .vg-status {
