@@ -616,3 +616,58 @@ body.vg-pop-open { overflow: hidden; }
 .main-landing-section .row > [class*="-offset-2"] > .well h3 { color: #fff; font-size: 18px; margin-top: 18px; }
 .main-landing-section .row > [class*="-offset-2"] > .well p,
 .main-landing-section .row > [class*="-offset-2"] > .well li { color: #d2d6d5; }
+
+/* ===== My favorites (Mirko, 22 nov 2026) ===== */
+/* il pulsante lungo quanto All + Instagram, su una riga sua sopra le piattaforme */
+.vg-plat-grid .vg-plat-btn.vg-fav-btn { grid-column: 1 / span 2; }
+.vg-plat-grid .vg-fav-btn + .vg-plat-btn { grid-column-start: 1; }
+.vg-plat-btn.vg-fav-btn i { color: #f5c518; }
+.vg-plat-btn.vg-fav-btn.active { background: linear-gradient(90deg, #5d59ff, #7a5cff); border-color: #5d59ff; }
+.vg-plat-btn.vg-fav-btn.active i { color: #ffd84d; }
+/* la stella */
+.vg-star { background: none; border: 0; padding: 0 6px 0 0; color: #8a8fa8; cursor: pointer; font-size: 15px; line-height: 1;
+    vertical-align: baseline; }
+.vg-star:hover { color: #f5c518; }
+.vg-star.on { color: #f5c518; }
+.vg-star[disabled] { opacity: .6; cursor: wait; }
+.vg-star:focus { outline: none; }
+.vg-label-star { display: flex !important; align-items: center; justify-content: space-between; gap: 8px; }
+.vg-label-star .vg-star { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; font-size: 13px; font-weight: 600;
+    border: 1px solid rgba(245, 197, 24, .45); border-radius: 999px; color: #f5c518; }
+.vg-label-star .vg-star:not(.on) { color: #c9cbe0; border-color: rgba(255, 255, 255, .2); }
+.vg-label-star .vg-star:not(.on) i { color: #f5c518; }
+/* l'elenco dei preferiti in New order */
+.vg-fav-list { margin: -10px 0 18px; display: flex; flex-direction: column; gap: 6px; max-height: 340px; overflow-y: auto;
+    overscroll-behavior: contain; }
+.vg-fav-list[hidden] { display: none; }
+.vg-fav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #1a1d26; border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 10px; color: #e4e6f0; cursor: pointer; transition: border-color .15s, background .15s; }
+.vg-fav-item:hover { border-color: rgba(93, 89, 255, .6); }
+.vg-fav-item.active { border-color: #5d59ff; background: rgba(93, 89, 255, .14); }
+.vg-fav-item .vg-sid { flex: none; margin: 0; }
+.vg-fav-name { flex: 1; min-width: 0; font-size: 14px; line-height: 1.35; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; }
+.vg-fav-price { flex: none; font-size: 13px; color: #a9acc4; white-space: nowrap; }
+.vg-fav-item .vg-star { flex: none; padding: 4px; }
+.vg-fav-empty, .vg-fav-none { margin: 0; padding: 14px 16px; background: #1a1d26; border: 1px dashed rgba(255, 255, 255, .15); border-radius: 10px;
+    color: #a9acc4; font-size: 14px; text-align: center; }
+.vg-fav-none { margin-bottom: 16px; }
+.vg-fav-off { display: none !important; }
+/* gli avvisi dei preferiti nella campanella */
+.list-group-flush .list-group-item.vg-bell-alert { padding: 12px 16px; white-space: normal; border-bottom: 1px solid rgba(255, 255, 255, .08);
+    border-left: 3px solid #f5365c; }
+.list-group-flush .list-group-item.vg-bell-ok { border-left-color: #2dce89; }
+.list-group-flush .list-group-item.vg-bell-off { border-left-color: #8a8fa8; }
+.vg-bell-alert p { margin: 0; }
+.vg-bell-alert-title { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 14px; }
+.vg-bell-alert-title .vg-sid { margin: 0; }
+.vg-bell-alert-name { margin-top: 4px !important; font-size: 13px; color: #d4d6e2; line-height: 1.35; overflow: hidden; display: -webkit-box;
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.vg-bell-alert-text { font-size: 12px; color: #a9acc4; margin-top: 2px !important; }
+.vg-bell-remove { margin-top: 8px; padding: 4px 10px; font-size: 12px; color: #fff; background: transparent; border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 6px; cursor: pointer; }
+@media (max-width: 767px) {
+    .vg-fav-item { padding: 8px 10px; gap: 8px; }
+    .vg-fav-name { font-size: 13px; }
+    .vg-fav-price { display: none; }
+}

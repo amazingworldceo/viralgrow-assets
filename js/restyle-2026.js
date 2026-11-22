@@ -415,14 +415,16 @@
         { nome: 'Facebook', icona: 'fab fa-facebook', re: /facebook/i }
     ];
     var ALTRE = { nome: 'Other', icona: 'fas fa-ellipsis-h' }, TUTTE = { nome: 'All', icona: 'fas fa-th-large' };
+    // "My favorites" in testa, lungo quanto All + Instagram (Mirko, 22 nov 2026)
+    var PREFERITI = { nome: 'My favorites', icona: 'fas fa-star' };
     function piattaformaDi(nomeCategoria) {
         return (PIATTAFORME.find(function (p) { return p.re.test(nomeCategoria); }) || ALTRE).nome;
     }
 
     // nomi = nomi delle categorie della pagina; scegli(nome) filtra la pagina ("All" = tutto);
     // sotto = quadratini su una riga loro sotto il titolo (Services), se no accanto al titolo (New order);
-    // iniziale = piattaforma scelta all'apertura
-    function barraPiattaforme(nomi, scegli, sotto, iniziale) {
+    // iniziale = piattaforma scelta all'apertura; conPreferiti = c'e' anche "My favorites" (solo da loggati)
+    function barraPiattaforme(nomi, scegli, sotto, iniziale, conPreferiti) {
         if (document.querySelector('.vg-plat')) return;
         var presenti = {};
         nomi.forEach(function (n) { presenti[piattaformaDi(n)] = true; });
@@ -430,9 +432,10 @@
         // "All" in testa, poi Instagram, TikTok, YouTube, Facebook, Other (Mirko, 20 nov 2026)
         voci = [TUTTE].concat(voci);
         if (voci.length < 3) return;  // una piattaforma sola: i quadratini non servono
+        if (conPreferiti) voci = [PREFERITI].concat(voci);
         var riga = el('div', 'vg-plat');
         voci.forEach(function (p) {
-            var b = el('button', 'vg-plat-btn' + (p === TUTTE ? ' active' : ''));
+            var b = el('button', 'vg-plat-btn' + (p === TUTTE ? ' active' : '') + (p === PREFERITI ? ' vg-fav-btn' : ''));
             b.type = 'button';
             b.appendChild(el('i', p.icona));
             b.appendChild(el('span', '', p.nome));
@@ -472,14 +475,21 @@
             return o.value && !/general instructions/i.test(o.textContent);
         });
         // si apre su All, come Services (Mirko, 20 nov 2026 21:30): una categoria gia' scelta resta scelta
+        var catalogo = servizi(), conPreferiti = !!catalogo;
+        // si apre su My favorites se ci sono preferiti, o se la top 10 si sta caricando (Mirko, 22 nov 2026); se no su All
+        var iniziale = conPreferiti && (preferiti(catalogo).length || serveTop10(catalogo)) ? PREFERITI.nome : TUTTE.nome;
         barraPiattaforme(tutte.map(function (o) { return o.textContent; }), function (nome) {
-            var scelta = nome === TUTTE.nome ? tutte : tutte.filter(function (o) { return piattaformaDi(o.textContent) === nome; });
+            var preferitiScelti = nome === PREFERITI.nome;
+            // My favorites: nella tendina tutte le categorie, cosi' ogni preferito si puo' scegliere
+            var scelta = nome === TUTTE.nome || preferitiScelti ? tutte : tutte.filter(function (o) { return piattaformaDi(o.textContent) === nome; });
             var prima = categoria.value;
             categoria.textContent = '';
             scelta.forEach(function (o) { categoria.appendChild(o); });
             categoria.value = scelta.some(function (o) { return o.value === prima; }) ? prima : scelta[0].value;
             if (categoria.value !== prima) categoria.dispatchEvent(new Event('change', { bubbles: true }));
-        }, true, TUTTE.nome);   // quadratini grandi sotto il titolo, come Services (Mirko, 22 nov 2026)
+            mostraPreferiti(preferitiScelti);
+        }, true, iniziale, conPreferiti);   // quadratini grandi sotto il titolo, come Services (Mirko, 22 nov 2026)
+        if (conPreferiti && serveTop10(catalogo)) caricaTop10(catalogo);
     }
 
     // Category di New order e Method di Add funds: lo stesso menu della tendina Service (select2), non quello del sistema
@@ -529,13 +539,16 @@
         var voci = document.querySelectorAll('#dropdown-selector .dropdown-item');
         var tutteLeCategorie = voci[0], tendina = document.getElementById('dropdown-categories');
         barraPiattaforme(nomi, function (nome) {
-            var fuori = function (categoria) { return nome !== TUTTE.nome && piattaformaDi(categoria) !== nome; };
+            schedaServizi = nome;
+            var fuori = function (categoria) { return nome !== TUTTE.nome && nome !== PREFERITI.nome && piattaformaDi(categoria) !== nome; };
             righe.forEach(function (r) { r.classList.toggle('vg-plat-off', fuori(r.getAttribute('data-index'))); });
             voci.forEach(function (a, i) { if (i) a.classList.toggle('vg-plat-off', fuori(a.getAttribute('data-target'))); });
             // categoria scelta di un'altra piattaforma: si torna a "All Categories"
             if (tendina && tutteLeCategorie && tendina.value !== tutteLeCategorie.getAttribute('data-target') &&
-                fuori(tendina.value) && typeof window.dropdownChange === 'function') window.dropdownChange(tutteLeCategorie);
-        }, true, TUTTE.nome);
+                (fuori(tendina.value) || nome === PREFERITI.nome) && typeof window.dropdownChange === 'function') window.dropdownChange(tutteLeCategorie);
+            filtraPreferitiServizi();
+        }, true, TUTTE.nome, !!document.getElementById('sidenav-main'));
+        stelleServizi();
     }
 
     // Numeri piu' umani in Services e New order (Mirko, 22 nov 2026): prezzi a 2 decimali; quantita' in K e M (il Max per
@@ -698,6 +711,349 @@
         });
     }
 
+    // ===== My favorites (Mirko, 22 nov 2026, regole riviste con Astra) =====
+    // I preferiti sono quelli del pannello: salvati nell'account (seguono il cliente su ogni dispositivo), letti da
+    // window.modules.siteOrder.services[id].favorite, cambiati con POST /services/switch-favorite-service.
+    // Top 10: al primo accesso senza preferiti, i 10 servizi piu' ordinati negli ultimi 60 giorni (solo Completed e solo
+    // servizi ancora attivi), aggiunti una volta sola; il pannello non ricorda le stelle tolte, quindi "fatto" lo
+    // ricorda il browser (vg-fav-init). Ogni errore lascia la pagina com'era.
+    var TOP = 10, GIORNI_TOP = 60, PAGINE_TOP = 10;
+    var schedaServizi = TUTTE.nome;
+    function servizi() { return window.modules && window.modules.siteOrder && window.modules.siteOrder.services; }
+    function nomeServizio(s) { return String(s.origin_name || s.name || '').replace(/^\s*\d+\s*-\s*/, ''); }
+    function preferiti(cat) {
+        return Object.keys(cat).map(function (k) { return cat[k]; }).filter(function (s) { return s.favorite; })
+            .sort(function (a, b) { return (a.added_to_favorite_at || 0) - (b.added_to_favorite_at || 0) || a.id - b.id; });
+    }
+    function cambiaPreferito(id, attivo) {
+        var token = window.modules && window.modules.layouts && window.modules.layouts.csrftoken;
+        return fetch('/services/switch-favorite-service?active=' + (attivo ? 1 : 0) + '&service_id=' + encodeURIComponent(id), {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+            body: '_csrf=' + encodeURIComponent(token || '')
+        }).then(function (r) { return r.json(); }).then(function (j) {
+            if (!j || j.status !== 'success') throw new Error('favorite');
+            var cat = servizi();
+            if (cat && cat[id]) { cat[id].favorite = !!attivo; cat[id].added_to_favorite_at = attivo ? Date.now() / 1000 : null; }
+            memoria('vg-cat', null);   // il riassunto per le altre pagine si rilegge
+            document.dispatchEvent(new CustomEvent('vg-preferiti'));
+        });
+    }
+    // la stella: piena = nei preferiti. Un clic la cambia nell'account; se il pannello dice no, torna com'era
+    function stella(id, attivo, conTesto) {
+        var b = el('button', 'vg-star' + (attivo ? ' on' : ''));
+        b.type = 'button';
+        b.setAttribute('data-vg-fav', id);
+        function disegna(on) {
+            b.classList.toggle('on', on);
+            b.innerHTML = '';
+            b.appendChild(el('i', on ? 'fas fa-star' : 'far fa-star'));
+            if (conTesto) b.appendChild(el('span', '', on ? 'Favorite' : 'Add to favorites'));
+            b.title = on ? 'Remove from My favorites' : 'Add to My favorites';
+        }
+        disegna(attivo);
+        b.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (b.disabled) return;
+            var nuovo = !b.classList.contains('on');
+            b.disabled = true;
+            disegna(nuovo);
+            cambiaPreferito(id, nuovo).catch(function () { disegna(!nuovo); }).then(function () { b.disabled = false; });
+        });
+        return b;
+    }
+    function scegliScheda(nome) {
+        var b = [].find.call(document.querySelectorAll('.vg-plat-btn'), function (x) { return x.textContent.trim() === nome; });
+        if (b && !b.classList.contains('active')) b.click();
+    }
+
+    // New order: l'elenco dei preferiti sotto i quadratini; un clic sceglie categoria e servizio come farebbe il cliente
+    var elencoAperto = false, top10InCorso = false;
+    function scegliServizio(s) {
+        var categoria = document.getElementById('orderform-category'), servizio = document.getElementById('orderform-service');
+        if (!categoria || !servizio) return;
+        if (categoria.value !== String(s.cid)) {
+            categoria.value = String(s.cid);
+            categoria.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        (function metti(volte) {
+            if (![].some.call(servizio.options, function (o) { return o.value === String(s.id); })) {
+                if (volte < 15) setTimeout(function () { metti(volte + 1); }, 100);
+                return;
+            }
+            if (servizio.value !== String(s.id)) {
+                servizio.value = String(s.id);
+                servizio.dispatchEvent(new Event('change', { bubbles: true }));   // evento vero: lo sente ogni jQuery
+            }
+            disegnaPreferiti();
+        })(0);
+    }
+    function disegnaPreferiti() {
+        var cat = servizi(), barra = document.querySelector('.vg-plat');
+        if (!cat || !barra) return;
+        var box = document.querySelector('.vg-fav-list');
+        if (!box) {
+            box = el('div', 'vg-fav-list');
+            barra.parentNode.insertBefore(box, barra.nextSibling);
+        }
+        box.hidden = !elencoAperto;
+        if (!elencoAperto) return;
+        box.textContent = '';
+        var lista = preferiti(cat), scelto = (document.getElementById('orderform-service') || {}).value;
+        if (!lista.length) {
+            box.appendChild(el('p', 'vg-fav-empty', top10InCorso ? 'Loading your most ordered services…'
+                : 'No favorites yet. Tap ☆ next to a service to save it here.'));
+            return;
+        }
+        lista.forEach(function (s) {
+            var riga = el('div', 'vg-fav-item' + (String(s.id) === scelto ? ' active' : ''));
+            riga.setAttribute('role', 'button');
+            riga.tabIndex = 0;
+            riga.appendChild(el('span', 'vg-sid', '#' + s.id));
+            var testo = el('span', 'vg-fav-name', nomeServizio(s));
+            riga.appendChild(testo);
+            riga.appendChild(el('span', 'vg-fav-price', soldi(parseFloat(s.price) || 0, '$') + '/1K'));
+            riga.appendChild(stella(s.id, true));
+            riga.addEventListener('click', function () { scegliServizio(s); });
+            riga.addEventListener('keydown', function (e) { if (e.key === 'Enter') scegliServizio(s); });
+            box.appendChild(riga);
+        });
+    }
+    function mostraPreferiti(aperto) {
+        elencoAperto = aperto;
+        setTimeout(disegnaPreferiti, 0);   // la barra entra nella pagina subito dopo il primo clic
+    }
+    // la stella accanto a "Service": segue il servizio scelto
+    function stellaNuovoOrdine() {
+        var servizio = document.getElementById('orderform-service'), etichetta = document.querySelector('label[for="orderform-service"]');
+        if (!servizio || !etichetta || !servizi() || etichetta.querySelector('.vg-star')) return;
+        etichetta.classList.add('vg-label-star');
+        function aggiorna() {
+            var vecchia = etichetta.querySelector('.vg-star'), s = servizi()[servizio.value];
+            if (vecchia) vecchia.remove();
+            if (s) etichetta.appendChild(stella(s.id, !!s.favorite, true));
+        }
+        aggiorna();
+        var dopo = function () { setTimeout(function () { aggiorna(); disegnaPreferiti(); }, 0); };
+        servizio.addEventListener('change', dopo);
+        if (window.jQuery) window.jQuery(servizio).on('change', dopo);   // il pannello cambia il servizio anche dal suo jQuery
+        document.addEventListener('vg-preferiti', function () { aggiorna(); disegnaPreferiti(); });
+    }
+
+    // Top 10 dagli ordini Completed degli ultimi 60 giorni (pagine /orders/completed/N, 100 righe, dal piu' recente)
+    function serveTop10(cat) {
+        if (preferiti(cat).length) return false;
+        var fatto = memoria('vg-fav-init');
+        return !fatto || (/^\d+$/.test(fatto) && Date.now() > +fatto);   // numero = riprova dopo quella data
+    }
+    function contaOrdini() {
+        var limite = Date.now() - GIORNI_TOP * 86400000, conti = {};
+        function pagina(n) {
+            return fetch('/orders/completed/' + n, { credentials: 'same-origin' }).then(function (r) {
+                if (!r.ok || /\/signin|\/auth/.test(r.url)) throw new Error('orders');
+                return r.text();
+            }).then(function (html) {
+                var doc = new DOMParser().parseFromString(html, 'text/html'), tab = doc.querySelector('table');
+                if (!tab) throw new Error('orders');
+                var nomi = [].map.call(tab.querySelectorAll('thead th'), function (th) { return th.textContent.trim().toLowerCase(); });
+                var cData = nomi.indexOf('date'), cServ = nomi.indexOf('service');
+                if (cData < 0 || cServ < 0) throw new Error('orders');
+                var righe = tab.querySelectorAll('tbody tr'), vecchio = false;
+                [].forEach.call(righe, function (tr, i) {
+                    var c = tr.children, quando = c[cData] && Date.parse(c[cData].textContent.trim().replace(' ', 'T'));
+                    var m = c[cServ] && /^\s*#?(\d+)/.exec(c[cServ].textContent);
+                    if (!m || !quando) return;
+                    if (quando < limite) { vecchio = true; return; }
+                    var v = conti[m[1]] || (conti[m[1]] = { n: 0, ultimo: 0 });
+                    v.n++;
+                    v.ultimo = Math.max(v.ultimo, quando);
+                });
+                var altra = doc.querySelector('.pagination a[href$="/orders/completed/' + (n + 1) + '"]');
+                if (!vecchio && altra && righe.length && n < PAGINE_TOP) return pagina(n + 1);
+                return conti;
+            });
+        }
+        return pagina(1);
+    }
+    function caricaTop10(cat) {
+        if (top10InCorso) return;
+        top10InCorso = true;
+        disegnaPreferiti();
+        contaOrdini().then(function (conti) {
+            var scelti = Object.keys(conti).filter(function (id) { return cat[id] && !cat[id].favorite; })
+                .sort(function (a, b) { return conti[b].n - conti[a].n || conti[b].ultimo - conti[a].ultimo; }).slice(0, TOP);
+            if (!scelti.length) { memoria('vg-fav-init', String(Date.now() + 7 * 86400000)); return; }   // niente ordini: si riprova fra 7 giorni
+            // uno alla volta, dal piu' ordinato: un errore a meta' lascia quelli gia' salvati
+            return scelti.reduce(function (p, id) { return p.then(function () { return cambiaPreferito(id, true); }); }, Promise.resolve())
+                .then(function () { memoria('vg-fav-init', 'fatto'); });
+        }).catch(function () {
+            memoria('vg-fav-init', String(Date.now() + 86400000));   // pannello o rete in errore: si riprova domani
+        }).then(function () {
+            top10InCorso = false;
+            if (!preferiti(cat).length && elencoAperto) scegliScheda(TUTTE.nome);   // nessun preferito: si apre All
+            else disegnaPreferiti();
+        });
+    }
+
+    // Services: la stella in ogni riga e il filtro My favorites. Qui il pannello non ha l'elenco dei servizi: lo legge
+    // da New order (un riassunto resta nel browser 10 minuti, cosi' le altre pagine restano leggere)
+    function riassunto(cat) {
+        var r = { t: Date.now(), ids: Object.keys(cat), fav: {} };
+        preferiti(cat).forEach(function (s) { r.fav[s.id] = nomeServizio(s); });
+        return r;
+    }
+    function leggiCatalogo(fresco) {
+        var cat = servizi();
+        if (cat) return Promise.resolve(riassunto(cat));
+        try {
+            var c = JSON.parse(memoria('vg-cat') || 'null');
+            if (!fresco && c && Date.now() - c.t < 600000) return Promise.resolve(c);
+        } catch (e) { /* riassunto rovinato: si rilegge */ }
+        return fetch('/', { credentials: 'same-origin' }).then(function (r) { return r.text(); }).then(function (html) {
+            var inizio = html.indexOf('window.modules.siteOrder = ');
+            if (inizio < 0) throw new Error('catalogo');
+            inizio = html.indexOf('{', inizio);
+            var prof = 0, stringa = false, fine = -1;
+            for (var i = inizio; i < html.length; i++) {
+                var ch = html[i];
+                if (stringa) { if (ch === '\\') i++; else if (ch === '"') stringa = false; continue; }
+                if (ch === '"') stringa = true;
+                else if (ch === '{') prof++;
+                else if (ch === '}' && !--prof) { fine = i; break; }
+            }
+            var dati = JSON.parse(html.slice(inizio, fine + 1));
+            if (!dati.services || Object.keys(dati.services).length < 10) throw new Error('catalogo');
+            var r = riassunto(dati.services);
+            memoria('vg-cat', JSON.stringify(r));
+            return r;
+        });
+    }
+    function filtraPreferitiServizi() {
+        var soloPreferiti = schedaServizi === PREFERITI.nome, conPreferiti = {};
+        var righe = document.querySelectorAll('.services-page tr[data-index]');
+        righe.forEach(function (r) {
+            var s = r.querySelector('.vg-star'), dentro = !soloPreferiti || (s && s.classList.contains('on'));
+            if (s) r.classList.toggle('vg-fav-off', !dentro);
+            if (s && dentro) conPreferiti[r.getAttribute('data-index')] = true;
+        });
+        righe.forEach(function (r) {   // i titoli delle categorie restano solo sopra i loro preferiti
+            if (!r.querySelector('.vg-star')) r.classList.toggle('vg-fav-off', soloPreferiti && !conPreferiti[r.getAttribute('data-index')]);
+        });
+        var vuoto = document.querySelector('.vg-fav-none');
+        if (soloPreferiti && !Object.keys(conPreferiti).length) {
+            if (!vuoto) {
+                vuoto = el('p', 'vg-fav-none', 'No favorites yet. Tap ☆ next to a service to save it here.');
+                var tab = document.querySelector('.services-page table');
+                if (tab) tab.parentNode.insertBefore(vuoto, tab);
+            }
+        } else if (vuoto) vuoto.remove();
+    }
+    function stelleServizi() {
+        if (!document.getElementById('sidenav-main') || !document.querySelector('.services-page tr[data-index]')) return;
+        leggiCatalogo(true).then(function (c) {
+            document.querySelectorAll('.services-page tr[data-index]').forEach(function (r) {
+                var nome = r.querySelector('td.service-name'), id = r.firstElementChild && r.firstElementChild.textContent.replace(/\D/g, '');
+                if (!nome || !id || nome.querySelector('.vg-star')) return;
+                nome.insertBefore(stella(id, !!c.fav[id]), nome.firstChild);
+            });
+            filtraPreferitiServizi();
+        }).catch(function () { /* senza elenco niente stelle: la pagina resta com'era */ });
+        // la stessa stella in piu' categorie: si allineano tutte; il filtro si aggiorna
+        document.addEventListener('vg-preferiti', function () { setTimeout(filtraPreferitiServizi, 0); });
+        document.addEventListener('click', function (e) {
+            var b = e.target.closest && e.target.closest('.services-page .vg-star');
+            if (!b) return;
+            setTimeout(function () {
+                document.querySelectorAll('.services-page .vg-star[data-vg-fav="' + b.getAttribute('data-vg-fav') + '"]').forEach(function (x) {
+                    if (x !== b) { x.classList.toggle('on', b.classList.contains('on')); x.firstChild.className = b.firstChild.className; }
+                });
+            }, 0);
+        }, true);
+    }
+
+    // Campanella: lo stato dei preferiti adesso, uguale su ogni dispositivo (Mirko, 22 nov 2026). Rosso = avviso finche'
+    // dura; tornato verde = "Service restored" per 24 ore; sparito dall'elenco = "currently unavailable" dopo due letture a
+    // 10 minuti l'una dall'altra, finche' il cliente non toglie la stella. Dati incerti (rete, file vecchio) = niente avviso.
+    var COLORI = 'https://raw.githubusercontent.com/amazingworldceo/viralgrow-assets/stato/colori.json';
+    function leggiJSON(chiave) { try { return JSON.parse(memoria(chiave) || '{}') || {}; } catch (e) { return {}; } }
+    function avvisiPreferiti() {
+        var lista = document.getElementById('spam_messages'), bottone = document.getElementById('notification-button');
+        if (!lista || !bottone || !document.getElementById('sidenav-main')) return;
+        Promise.all([leggiCatalogo(false), fetch(COLORI + '?v=' + new Date().toISOString().slice(0, 13)).then(function (r) { return r.json(); })])
+            .then(function (v) {
+                var c = v[0], stati = v[1], ora = Date.now();
+                var vecchi = !stati.aggiornato || ora - Date.parse(stati.aggiornato) > 3 * 86400000;
+                var colori = stati.colori || {}, attivi = {}, voci = [];
+                c.ids.forEach(function (id) { attivi[id] = true; });
+                var visti = leggiJSON('vg-fav-visti'), mancano = leggiJSON('vg-fav-mancano');
+                var rossi = leggiJSON('vg-fav-rossi'), tornati = leggiJSON('vg-fav-tornati');
+                Object.keys(c.fav).forEach(function (id) { visti[id] = c.fav[id]; delete mancano[id]; });
+                Object.keys(visti).forEach(function (id) {
+                    if (c.fav[id]) return;
+                    if (attivi[id]) { delete visti[id]; return; }    // c'e' ancora ma senza stella: tolta dal cliente
+                    mancano[id] = mancano[id] || ora;                  // sparito: avviso alla seconda lettura, 10 minuti dopo
+                    if (ora - mancano[id] > 600000) voci.push({ id: id, nome: visti[id], tipo: 'off' });
+                });
+                Object.keys(c.fav).forEach(function (id) {
+                    if (vecchi) return;
+                    if (colori[id] === 'r') { rossi[id] = ora; delete tornati[id]; voci.push({ id: id, nome: c.fav[id], tipo: 'r' }); }
+                    else if (rossi[id]) { tornati[id] = tornati[id] || ora; delete rossi[id]; }
+                    if (tornati[id] && ora - tornati[id] < 86400000) voci.push({ id: id, nome: c.fav[id], tipo: 'ok' });
+                });
+                Object.keys(tornati).forEach(function (id) { if (ora - tornati[id] >= 86400000 || !c.fav[id]) delete tornati[id]; });
+                memoria('vg-fav-visti', JSON.stringify(visti));
+                memoria('vg-fav-mancano', JSON.stringify(mancano));
+                memoria('vg-fav-rossi', JSON.stringify(rossi));
+                memoria('vg-fav-tornati', JSON.stringify(tornati));
+                disegnaAvvisi(lista, bottone, voci);
+            }).catch(function () { /* rete o dati incerti: la campanella resta com'e' */ });
+    }
+    var TESTI = { r: ['Having issues now', 'New orders may be slower than usual. We are on it.'],
+                  ok: ['Service restored', 'It is working well again.'],
+                  off: ['Currently unavailable', 'This service can’t be ordered right now.'] };
+    function disegnaAvvisi(lista, bottone, voci) {
+        lista.querySelectorAll('.vg-bell-alert').forEach(function (x) { x.remove(); });
+        var primo = lista.firstChild;
+        voci.forEach(function (v) {
+            var voce = el('div', 'list-group-item vg-bell-alert vg-bell-' + v.tipo);
+            var testa = el('p', 'vg-bell-alert-title');
+            testa.appendChild(el('span', 'vg-sid', '#' + v.id));
+            testa.appendChild(el('b', '', TESTI[v.tipo][0]));
+            voce.appendChild(testa);
+            voce.appendChild(el('p', 'vg-bell-alert-name', v.nome));
+            voce.appendChild(el('p', 'vg-bell-alert-text', TESTI[v.tipo][1]));
+            if (v.tipo === 'off') {
+                var togli = el('button', 'vg-bell-remove', 'Remove from favorites');
+                togli.type = 'button';
+                togli.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    togli.disabled = true;
+                    var fine = function () {
+                        var visti = leggiJSON('vg-fav-visti'), mancano = leggiJSON('vg-fav-mancano');
+                        delete visti[v.id]; delete mancano[v.id];
+                        memoria('vg-fav-visti', JSON.stringify(visti));
+                        memoria('vg-fav-mancano', JSON.stringify(mancano));
+                        voce.remove();
+                        contaAvvisi(bottone, lista);
+                    };
+                    cambiaPreferito(v.id, false).then(fine, fine);   // un servizio spento puo' non rispondere: si toglie lo stesso
+                });
+                voce.appendChild(togli);
+            }
+            lista.insertBefore(voce, primo);
+        });
+        contaAvvisi(bottone, lista);
+    }
+    function contaAvvisi(bottone, lista) {
+        var n = lista.querySelectorAll('.vg-bell-alert').length, link = bottone.querySelector('a') || bottone;
+        var pallino = link.querySelector('.vg-bell-dot');
+        if (!n) { if (pallino && pallino.classList.contains('vg-bell-n')) pallino.remove(); return; }
+        if (!pallino) { pallino = el('span', 'vg-bell-dot'); link.appendChild(pallino); }
+        pallino.classList.add('vg-bell-n');
+        pallino.textContent = String(n);
+    }
+
     ready(function () {
         if (!document.getElementById('sidenav-main')) {   // il menu c'e' solo da loggati: qui si e' usciti
             memoria('vg-avviso-visto', null);   // quadro dei servizi in New order (stato-servizi.js): di nuovo al login
@@ -718,10 +1074,10 @@
             });
         }
         dopoIlPannello(function () {
-            lancia([descrizioneSottoIlTasto, testaNuovoOrdine, numeriUmani, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, tendineUguali, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia, bottoneTicket]);
+            lancia([descrizioneSottoIlTasto, testaNuovoOrdine, numeriUmani, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, tendineUguali, stellaNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia, bottoneTicket]);
         });
         // le istruzioni di Add funds le scrive il tema dopo: Copy e "Open a ticket" si riprovano al load
-        window.addEventListener('load', function () { setTimeout(function () { lancia([campanella, pulsantiCopia, bottoneTicket]); }, 300); });
+        window.addEventListener('load', function () { setTimeout(function () { lancia([campanella, avvisiPreferiti, pulsantiCopia, bottoneTicket]); }, 300); });
         // Le istruzioni dei metodi di pagamento cambiano quando si sceglie un metodo diverso
         var metodo = document.getElementById('method');
         if (metodo) metodo.addEventListener('change', function () { setTimeout(function () { pulsantiCopia(); bottoneTicket(); }, 300); });
