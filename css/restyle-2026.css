@@ -256,6 +256,12 @@ body.vg-pop-open { overflow: hidden; }
 #tabs-text:has(a[href="/orders/pending"]) .nav-link[href="/orders/canceled"] { --c: 245, 54, 92; }
 #tabs-text:has(a[href="/orders/pending"]) .nav-link.active { color: #0f1015; background: rgb(var(--c)); border-color: rgb(var(--c)); }
 #tabs-text:has(a[href="/orders/pending"]) a[href="/orders"].active { color: #fff; }
+/* il numero degli ordini di quello stato (lo mette restyle-2026.js) */
+#tabs-text .nav-link .vg-n {
+    margin-left: 7px; min-width: 22px; padding: 1px 7px; border-radius: 10px; font-size: 12px; font-weight: 700; line-height: 16px;
+    text-align: center; color: inherit; background: rgba(var(--c), .22);
+}
+#tabs-text .nav-link.active .vg-n { background: rgba(0, 0, 0, .18); }
 .card-header:has(> #tabs-text a[href="/orders/pending"]) { padding-bottom: 0; border-bottom: 0; }
 .card-header:has(> #tabs-text a[href="/orders/pending"]) + .card-body { padding-top: 14px !important; }
 @media (max-width: 767px) {

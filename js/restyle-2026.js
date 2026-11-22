@@ -144,6 +144,50 @@
         if (tabella && tabella.querySelector('th.orderLinkTh')) aSchede(tabella);
     }
 
+    // Orders: in ogni riquadro di stato il numero dei suoi ordini (Mirko, 22 nov 2026). Il pannello non lo dice: si leggono
+    // le pagine dello stato come le apre il cliente (100 ordini per pagina, la paginazione mostra poche pagine per volta:
+    // si salta all'ultima che si vede finche' non ce ne sono altre). Prima l'ultimo conto della sessione, poi quello nuovo.
+    function righeOrdini(doc) {
+        return [].filter.call(doc.querySelectorAll('table.table-manager tbody tr'), function (tr) {
+            return tr.querySelectorAll('td').length > 4;
+        }).length;
+    }
+    function contaStato(stato) {
+        var perPagina = 0;
+        function pagina(n) {
+            return fetch('/orders/' + stato + '/' + n, { credentials: 'same-origin' }).then(function (r) { return r.text(); })
+                .then(function (html) {
+                    var doc = new DOMParser().parseFromString(html, 'text/html'), righe = righeOrdini(doc);
+                    var ultima = [].reduce.call(doc.querySelectorAll('.pagination a'), function (m, a) {
+                        var p = +a.textContent.trim(); return p > m ? p : m;
+                    }, n);
+                    if (n === 1) perPagina = righe;
+                    return ultima > n ? pagina(ultima) : (n - 1) * perPagina + righe;
+                });
+        }
+        return pagina(1);
+    }
+    function numeriOrdini() {
+        var barra = document.getElementById('tabs-text');
+        if (!barra || !barra.querySelector('a[href="/orders/pending"]') || !window.fetch || !window.DOMParser) return;
+        var conti = {};
+        try { conti = JSON.parse(sessionStorage.getItem('vg-ordini-n')) || {}; } catch (e) { /* senza memoria: si aspetta il conto */ }
+        var link = [].filter.call(barra.querySelectorAll('a.nav-link'), function (a) { return /^\/orders(\/[a-z]+)?$/.test(a.getAttribute('href')); });
+        function scrivi(a, n) {
+            var s = a.querySelector('.vg-n') || a.appendChild(el('span', 'vg-n'));
+            s.textContent = n;
+        }
+        link.forEach(function (a) {
+            var stato = (a.getAttribute('href').split('/')[2]) || 'all';
+            if (conti[stato] != null) scrivi(a, conti[stato]);
+            contaStato(stato).then(function (n) {
+                scrivi(a, n);
+                conti[stato] = n;
+                try { sessionStorage.setItem('vg-ordini-n', JSON.stringify(conti)); } catch (e) { /* va bene lo stesso */ }
+            }).catch(function () { /* senza rete il riquadro resta senza numero */ });
+        });
+    }
+
     // Affiliates: sul telefono le tabelle a schede (la colonna dei guadagni non resta fuori) e Copy sul link referral
     function affiliatiASchede() {
         if (!document.querySelector('.affiliates_visits_table')) return;
@@ -540,7 +584,7 @@
         }
         // New order compatto (il CSS stringe gli spazi solo su questa pagina)
         if (document.getElementById('order-form')) document.body.classList.add('vg-neworder');
-        [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, animazioniPrima, faqCompatte, ordiniASchede, affiliatiASchede, oggettiTicket, pagineMinori, pulsantiCopia].forEach(function (f) {
+        [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, animazioniPrima, faqCompatte, ordiniASchede, numeriOrdini, affiliatiASchede, oggettiTicket, pagineMinori, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
         // Dopo gli script del pannello (i loro "ready" di jQuery, registrati prima di questo): New order e Services si
