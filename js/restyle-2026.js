@@ -480,7 +480,44 @@
             scelta.forEach(function (o) { categoria.appendChild(o); });
             categoria.value = scelta.some(function (o) { return o.value === prima; }) ? prima : scelta[0].value;
             if (categoria.value !== prima) categoria.dispatchEvent(new Event('change', { bubbles: true }));
-        }, false, TUTTE.nome);
+        }, true, TUTTE.nome);   // quadratini grandi sotto il titolo, come Services (Mirko, 22 nov 2026)
+    }
+
+    // Category di New order e Method di Add funds: lo stesso menu della tendina Service (select2), non quello del sistema
+    // (Mirko, 22 nov 2026). Il select2 del pannello sta su una sua copia di jQuery: qui se ne carica uno su window.jQuery.
+    // La scelta passa come evento "change" vero, cosi' lo sentono gli script del pannello, qualunque jQuery usino.
+    var SELECT2 = 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/';
+    function caricaSelect2(fatto) {
+        var $ = window.jQuery;
+        if ($.fn.select2) return fatto($);
+        var css = el('link');
+        css.rel = 'stylesheet';
+        css.href = SELECT2 + 'css/select2.min.css';
+        document.head.insertBefore(css, document.head.querySelector('link[rel="stylesheet"]'));   // prima dei nostri colori
+        var js = document.createElement('script');
+        js.src = SELECT2 + 'js/select2.min.js';
+        js.onload = function () { if ($.fn.select2) fatto($); };
+        document.head.appendChild(js);
+    }
+    function tendineUguali() {
+        var campi = ['orderform-category', 'method'].map(function (id) { return document.getElementById(id); })
+            .filter(function (s) { return s && s.tagName === 'SELECT'; });
+        if (!campi.length || !window.jQuery) return;
+        caricaSelect2(function ($) {
+            campi.forEach(function (s) {
+                var $s = $(s);
+                if ($s.data('select2')) return;
+                $s.select2({ width: '100%', minimumResultsForSearch: Infinity });
+                $s.next('.select2-container').addClass('vg-s2').find('.select2-selection').addClass('form-control');
+                $s.on('select2:selecting', function (e) {
+                    e.preventDefault();
+                    $s.select2('close');
+                    if (s.value === e.params.args.data.id) return;
+                    s.value = e.params.args.data.id;
+                    s.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+            });
+        });
     }
 
     // Services: le righe (titolo della categoria e servizi) delle altre piattaforme si nascondono e nella tendina
@@ -597,7 +634,7 @@
             });
         }
         dopoIlPannello(function () {
-            lancia([descrizioneSottoIlTasto, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia, bottoneTicket]);
+            lancia([descrizioneSottoIlTasto, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, tendineUguali, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia, bottoneTicket]);
         });
         // le istruzioni di Add funds le scrive il tema dopo: Copy e "Open a ticket" si riprovano al load
         window.addEventListener('load', function () { setTimeout(function () { lancia([campanella, pulsantiCopia, bottoneTicket]); }, 300); });

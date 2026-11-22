@@ -154,12 +154,25 @@ body .innerMainPage .card .form-group .select2-selection.form-control {
     color: #fff;
 }
 body span.select2-dropdown { background: #1a1d26; border: 1px solid rgba(93, 89, 255, .6); }
-body span.select2-dropdown .select2-results__option { color: #fff; }
-/* un po' d'aria tra un servizio e l'altro (lista di New order e tendina "All Categories" di Services) */
-body span.select2-dropdown [id^="select2-orderform-service-result-"] { padding: 0; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+/* un po' d'aria tra una voce e l'altra in tutti i menu a tendina (Service, Category, Method) */
+body span.select2-dropdown .select2-results__option { color: #fff; padding: 10px 12px; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+body span.select2-dropdown [id^="select2-orderform-service-result-"] { padding: 0; }
 body span.select2-dropdown [id^="select2-orderform-service-result-"] > :first-child { padding: 10px 12px; }
-.search-section #dropdown-selector a.dropdown-item { padding-top: 11px; padding-bottom: 11px; border-bottom: 1px solid rgba(255, 255, 255, .08); }
-body span.select2-dropdown .select2-results__option--highlighted { background: #5d59ff; }
+body span.select2-dropdown .select2-results__option--highlighted,
+body span.select2-dropdown .select2-results__option[aria-selected="true"].select2-results__option--highlighted { background: #5d59ff; color: #fff; }
+body span.select2-dropdown .select2-results__option[aria-selected="true"] { background: rgba(93, 89, 255, .18); }
+/* Category e Method (select2 messo da restyle-2026.js): il campo come quello di Service, freccetta nostra */
+.vg-s2 .select2-selection--single.form-control { display: flex; align-items: center; height: auto !important; min-height: 38px; padding: 6px 44px 6px 12px; }
+.vg-s2 .select2-selection__rendered { padding: 0 !important; color: #fff !important; line-height: 1.4 !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vg-s2 .select2-selection__arrow { display: none; }
+/* Services, "All Categories": lo stesso menu delle tendine di New order (Mirko, 22 nov 2026) */
+.search-section #dropdown-selector .dropdown-menu { background: #1a1d26; border: 1px solid rgba(93, 89, 255, .6); border-radius: 4px; padding: 0; }
+.search-section #dropdown-selector a.dropdown-item {
+    color: #fff; padding: 10px 12px; white-space: normal; border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+.search-section #dropdown-selector a.dropdown-item:hover,
+.search-section #dropdown-selector a.dropdown-item:focus,
+.search-section #dropdown-selector a.dropdown-item.active { background: #5d59ff; color: #fff; }
 .newOrder-page .table-responsive thead.thead-light,
 .refill-page .table-responsive thead.thead-light { background: #0f1015; }
 .newOrder-page .table-responsive thead.thead-light th,
