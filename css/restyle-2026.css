@@ -233,20 +233,35 @@ body.vg-pop-open { overflow: hidden; }
 .vg-plat-btn i { font-size: 13px; }
 .vg-plat-btn.active { color: #fff; background: #5d59ff; border-color: #5d59ff; }
 /* Orders: i filtri di stato tutti visibili insieme, riquadri come i quadratini di Services (Mirko, 22 nov 2026).
-   Telefono: All su tutta la riga e gli altri 6 a due a due; PC: tutti su una riga. La ricerca resta su una riga sua */
+   Telefono: All su tutta la riga e gli altri 6 a due a due; PC: tutti su una riga. Ogni stato ha il colore della sua
+   pillola nella tabella (.vg-status-*); quello scelto si riempie del suo colore. Poco spazio prima degli ordini */
 #tabs-text:has(a[href="/orders/pending"]) {
-    display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; overflow: visible; padding-bottom: 0;
-    margin-bottom: 18px;
+    display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; overflow: visible; padding-bottom: 0; margin: 0;
 }
 #tabs-text:has(a[href="/orders/pending"]) .nav-item { margin: 0; padding: 0 !important; min-width: 0; }
 #tabs-text:has(a[href="/orders/pending"]) .nav-item.search { grid-column: 1 / -1; order: 99; }
 #tabs-text:has(a[href="/orders/pending"]) .nav-item:has(a[href="/orders"]) { grid-column: 1 / -1; }
 #tabs-text:has(a[href="/orders/pending"]) .nav-link {
+    --c: 93, 89, 255;
     display: flex; align-items: center; justify-content: center; height: 100%; margin: 0 !important;
     padding: 10px 8px; font-size: 14px; font-weight: 600; line-height: 18px; white-space: nowrap; border-radius: 10px;
-    color: #c9c7ff; background: rgba(93, 89, 255, .12); border: 1px solid rgba(93, 89, 255, .35); box-shadow: none;
+    color: rgb(var(--c)); background: rgba(var(--c), .14); border: 1px solid rgba(var(--c), .40); box-shadow: none;
 }
-#tabs-text:has(a[href="/orders/pending"]) .nav-link.active { color: #fff; background: #5d59ff; border-color: #5d59ff; }
+#tabs-text:has(a[href="/orders/pending"]) a[href="/orders"] { color: #c9c7ff; }
+#tabs-text a[href="/orders/pending"]    { --c: 255, 196, 61; }
+#tabs-text a[href="/orders/inprogress"] { --c: 17, 205, 239; }
+#tabs-text a[href="/orders/completed"]  { --c: 45, 206, 137; }
+#tabs-text a[href="/orders/partial"]    { --c: 251, 133, 66; }
+#tabs-text a[href="/orders/processing"] { --c: 141, 138, 255; }
+#tabs-text a[href="/orders/canceled"]   { --c: 245, 54, 92; }
+#tabs-text:has(a[href="/orders/pending"]) .nav-link.active { color: #0f1015; background: rgb(var(--c)); border-color: rgb(var(--c)); }
+#tabs-text:has(a[href="/orders/pending"]) a[href="/orders"].active { color: #fff; }
+.card-header:has(> #tabs-text a[href="/orders/pending"]) { padding-bottom: 0; border-bottom: 0; }
+.card-header:has(> #tabs-text a[href="/orders/pending"]) + .card-body { padding-top: 14px !important; }
+@media (max-width: 767px) {
+    /* la ricerca il tema la nasconde sul telefono: senza la sua riga vuota */
+    #tabs-text:has(a[href="/orders/pending"]) .nav-item.search { display: none; }
+}
 @media (min-width: 768px) {
     #tabs-text:has(a[href="/orders/pending"]) { grid-template-columns: repeat(7, 1fr); }
     #tabs-text:has(a[href="/orders/pending"]) .nav-item:has(a[href="/orders"]) { grid-column: auto; }
