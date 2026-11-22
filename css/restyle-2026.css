@@ -577,3 +577,9 @@ body.vg-pop-open { overflow: hidden; }
 .sidenav-toggler.active .sidenav-toggler-line:first-child, .sidenav-toggler.active .sidenav-toggler-line:last-child { width: 24px; transform: none; }
 .nav-open .sidenav-toggler-inner .sidenav-toggler-line:first-child,
 .nav-open .sidenav-toggler-inner .sidenav-toggler-line:last-child { width: 17px; transform: translateX(7px); }
+
+/* Blog, da visitatore: invito a iscriversi sotto ogni articolo (lo mette layout.twig; SEO, Mirko 22 nov 2026) */
+.vg-blog-cta { margin: 32px auto 8px; padding: 24px 20px; max-width: 720px; text-align: center; border-radius: 14px; background: rgba(93, 89, 255, .12); border: 1px solid rgba(93, 89, 255, .4); }
+.vg-blog-cta h2 { margin: 0 0 8px; font-size: 22px; color: #fff; }
+.vg-blog-cta p { margin: 0 0 16px; color: #d2d6d5; font-size: 16px; }
+.vg-blog-cta .btn { padding: 12px 28px; font-size: 16px; font-weight: 700; }
