@@ -248,12 +248,12 @@ body.vg-pop-open { overflow: hidden; }
     color: rgb(var(--c)); background: rgba(var(--c), .14); border: 1px solid rgba(var(--c), .40); box-shadow: none;
 }
 #tabs-text:has(a[href="/orders/pending"]) a[href="/orders"] { color: #c9c7ff; }
-#tabs-text a[href="/orders/pending"]    { --c: 255, 196, 61; }
-#tabs-text a[href="/orders/inprogress"] { --c: 17, 205, 239; }
-#tabs-text a[href="/orders/completed"]  { --c: 45, 206, 137; }
-#tabs-text a[href="/orders/partial"]    { --c: 251, 133, 66; }
-#tabs-text a[href="/orders/processing"] { --c: 141, 138, 255; }
-#tabs-text a[href="/orders/canceled"]   { --c: 245, 54, 92; }
+#tabs-text:has(a[href="/orders/pending"]) .nav-link[href="/orders/pending"] { --c: 255, 196, 61; }
+#tabs-text:has(a[href="/orders/pending"]) .nav-link[href="/orders/inprogress"] { --c: 17, 205, 239; }
+#tabs-text:has(a[href="/orders/pending"]) .nav-link[href="/orders/completed"] { --c: 45, 206, 137; }
+#tabs-text:has(a[href="/orders/pending"]) .nav-link[href="/orders/partial"] { --c: 251, 133, 66; }
+#tabs-text:has(a[href="/orders/pending"]) .nav-link[href="/orders/processing"] { --c: 141, 138, 255; }
+#tabs-text:has(a[href="/orders/pending"]) .nav-link[href="/orders/canceled"] { --c: 245, 54, 92; }
 #tabs-text:has(a[href="/orders/pending"]) .nav-link.active { color: #0f1015; background: rgb(var(--c)); border-color: rgb(var(--c)); }
 #tabs-text:has(a[href="/orders/pending"]) a[href="/orders"].active { color: #fff; }
 .card-header:has(> #tabs-text a[href="/orders/pending"]) { padding-bottom: 0; border-bottom: 0; }
