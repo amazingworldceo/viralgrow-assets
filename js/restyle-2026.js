@@ -787,6 +787,9 @@
                 servizio.dispatchEvent(new Event('change', { bubbles: true }));   // evento vero: lo sente ogni jQuery
             }
             disegnaPreferiti();
+            // il modulo sotto l'elenco: se non si vede, ci si arriva da soli
+            var campo = document.querySelector('label[for="orderform-service"]');
+            if (campo && campo.getBoundingClientRect().top > window.innerHeight * 0.6) campo.scrollIntoView({ behavior: 'smooth', block: 'center' });
         })(0);
     }
     function disegnaPreferiti() {

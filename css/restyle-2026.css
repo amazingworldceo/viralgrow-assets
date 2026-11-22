@@ -637,7 +637,7 @@ body.vg-pop-open { overflow: hidden; }
 .vg-label-star .vg-star:not(.on) { color: #c9cbe0; border-color: rgba(255, 255, 255, .2); }
 .vg-label-star .vg-star:not(.on) i { color: #f5c518; }
 /* l'elenco dei preferiti in New order */
-.vg-fav-list { margin: -10px 0 18px; display: flex; flex-direction: column; gap: 6px; max-height: 340px; overflow-y: auto;
+.vg-fav-list { margin: -10px 0 18px; display: flex; flex-direction: column; gap: 6px; max-height: 236px; overflow-y: auto;
     overscroll-behavior: contain; }
 .vg-fav-list[hidden] { display: none; }
 .vg-fav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #1a1d26; border: 1px solid rgba(255, 255, 255, .08);

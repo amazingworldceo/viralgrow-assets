@@ -84,8 +84,8 @@
         if (barra) barra.parentNode.insertBefore(blocco, barra.nextSibling);
         else if (ricerca) ricerca.parentNode.insertBefore(blocco, ricerca);
         else return;
-        function conta() {   // solo la piattaforma scelta (le altre hanno vg-plat-off, da restyle-2026.js)
-            blocco.conta(idDi(righe.filter(function (r) { return !r.classList.contains('vg-plat-off'); })));
+        function conta() {   // solo la piattaforma scelta (le altre hanno vg-plat-off; fuori da My favorites: vg-fav-off)
+            blocco.conta(idDi(righe.filter(function (r) { return !r.classList.contains('vg-plat-off') && !r.classList.contains('vg-fav-off'); })));
         }
         conta();
         new MutationObserver(conta).observe(righe[0].parentNode, { attributes: true, subtree: true, attributeFilter: ['class'] });
