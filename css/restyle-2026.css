@@ -166,7 +166,11 @@ body span.select2-dropdown .select2-results__option[aria-selected="true"] { back
 .vg-s2 .select2-selection__rendered { padding: 0 !important; color: #fff !important; line-height: 1.4 !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .vg-s2 .select2-selection__arrow { display: none; }
 /* Services, "All Categories": lo stesso menu delle tendine di New order (Mirko, 22 nov 2026) */
-.search-section #dropdown-selector .dropdown-menu { background: #1a1d26; border: 1px solid rgba(93, 89, 255, .6); border-radius: 4px; padding: 0; }
+/* il menu E' #dropdown-selector (prima la regola cercava un menu dentro e non si applicava): alto al massimo 320 px e scorre */
+.search-section .dropdown-menu#dropdown-selector {
+    max-height: 320px; overflow-y: auto; overscroll-behavior: contain;
+    background: #1a1d26; border: 1px solid rgba(93, 89, 255, .6); border-radius: 0 0 7px 7px; padding: 0; margin-top: 0;
+}
 .search-section #dropdown-selector a.dropdown-item {
     color: #fff; padding: 10px 12px; white-space: normal; border-bottom: 1px solid rgba(255, 255, 255, .08);
 }
