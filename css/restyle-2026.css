@@ -246,14 +246,18 @@ body.vg-pop-open { overflow: hidden; }
 .vg-pop-body .vg-desc-head { font-size: 16px; }
 /* Services: colonne a larghezza fissa, uguali con ogni filtro (piattaforma, Working well...); il nome e' largo e la
    tabella scorre di lato (Mirko, 22 nov 2026). Le larghezze le danno le intestazioni (table-layout: fixed). */
-.services-page table.table-manager { table-layout: fixed !important; width: 1155px !important; max-width: none; }
+.services-page table.table-manager { table-layout: fixed !important; width: 1135px !important; max-width: none; }
 .services-page table.table-manager thead th { width: 105px !important; }
 .services-page table.table-manager thead th:first-child { width: 80px !important; }
 .services-page table.table-manager thead th.width-service-name { width: 520px !important; }
-.services-page table.table-manager thead th:nth-child(5) { width: 135px !important; }   /* Max order: 2 147 483 647 su una riga */
+/* Min order e Max order: celle uguali e numeri al centro (Mirko, 22 nov 2026); i numeri sono gia' in K/M (restyle-2026.js) */
+.services-page table.table-manager thead th:nth-child(4),
+.services-page table.table-manager thead th:nth-child(5) { width: 110px !important; }
+.services-page table.table-manager th:nth-child(4), .services-page table.table-manager td:nth-child(4),
+.services-page table.table-manager th:nth-child(5), .services-page table.table-manager td:nth-child(5) { text-align: center !important; }
 .services-page table.table-manager td { overflow-wrap: normal; }
 @media (max-width: 767px) {
-    .services-page table.table-manager { width: 905px !important; }
+    .services-page table.table-manager { width: 885px !important; }
     .services-page table.table-manager thead th:first-child { width: 70px !important; }
     .services-page table.table-manager thead th.width-service-name { width: 280px !important; }
 }

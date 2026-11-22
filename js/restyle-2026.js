@@ -389,8 +389,7 @@
             var cifra = m && parseFloat(m[2].replace(/,/g, ''));
             if (!m || isNaN(cifra)) return;
             ultimo.nodeValue = ultimo.nodeValue.replace(PREZZO, '');
-            var due = cifra.toFixed(2);   // sotto il centesimo non si scrive $0.00
-            nodo.appendChild(el('span', 'vg-price', m[1] + (+due || !cifra ? due : String(+cifra.toPrecision(1))) + ' ' + m[3]));
+            nodo.appendChild(el('span', 'vg-price', m[1] + soldi(cifra) + ' ' + m[3]));
         }
         function aggiorna() {
             inCoda = false;
@@ -539,6 +538,61 @@
         }, true, TUTTE.nome);
     }
 
+    // Numeri piu' umani in Services e New order (Mirko, 22 nov 2026): prezzi a 2 decimali; quantita' in K e M (il Max per
+    // difetto e il Min per eccesso, cosi' non si promette mai piu' del vero; 2147483647 e' il "senza limite" del pannello);
+    // tempi medi oltre le 24 ore in giorni. Cambia solo il testo: il pannello controlla l'ordine sui numeri veri.
+    function soldi(cifra) {
+        // arrotondato a meta': 31.205 -> 31.21 (toFixed da solo darebbe 31.20); sotto il centesimo non si scrive $0.00
+        var due = (Math.round(cifra * 100 + 1e-7) / 100).toFixed(2);
+        return +due || !cifra ? due : String(+cifra.toPrecision(1));
+    }
+    function quantita(testo, perDifetto) {
+        var cifre = String(testo).replace(/\D/g, ''), n = +cifre;
+        if (!cifre) return null;
+        if (n >= 2147483647) return 'Unlimited';
+        if (n < 1000) return String(n);
+        var mille = n >= 1e6 ? 1e6 : 1e3, v = n / mille, passo = v >= 100 ? 1 : 10;
+        v = Math.round(v * passo * 1e6) / 1e6;   // niente 12.000000001 dai decimali del computer
+        v = (perDifetto ? Math.floor(v) : Math.ceil(v)) / passo;
+        if (mille === 1e3 && v >= 1000) return '1M';
+        return v + (mille === 1e6 ? 'M' : 'K');
+    }
+    function tempo(testo) {
+        var ore = (/(\d+)\s*hour/i.exec(testo) || [0, 0])[1], minuti = (/(\d+)\s*minute/i.exec(testo) || [0, 0])[1];
+        var totale = +ore + minuti / 60;
+        if (totale <= 24) return null;
+        var giorni = Math.round(totale / 24);
+        return '~' + giorni + (giorni === 1 ? ' day' : ' days');
+    }
+    function cambiaTesto(nodo, nuovo) { if (nuovo !== null && nodo.textContent !== nuovo) nodo.textContent = nuovo; }
+    function numeriUmani() {
+        document.querySelectorAll('.services-page tr[data-index]').forEach(function (r) {
+            var c = r.children;
+            if (c.length < 6) return;   // titolo della categoria
+            var p = c[2].textContent.trim(), m = /[\d][\d.,]*/.exec(p);
+            if (m) cambiaTesto(c[2], p.replace(m[0], soldi(parseFloat(m[0].replace(/,/g, '')))));
+            cambiaTesto(c[3], quantita(c[3].textContent, false));
+            cambiaTesto(c[4], quantita(c[4].textContent, true));
+            cambiaTesto(c[5], tempo(c[5].textContent));
+        });
+        var servizio = document.getElementById('orderform-service');
+        if (!servizio) return;
+        var MINMAX = /^\s*Min:\s*([\d\s  .,]+?)\s+-\s+Max:\s*([\d\s  .,]+?)\s*$/;
+        function nuovoOrdine() {
+            document.querySelectorAll('#order-form small.min-max').forEach(function (s) {
+                var m = MINMAX.exec(s.textContent);
+                if (m) cambiaTesto(s, 'Min: ' + quantita(m[1], false) + ' - Max: ' + quantita(m[2], true));
+            });
+            var t = document.getElementById('field-orderform-fields-average_time'), nuovo = t && tempo(t.value);
+            if (nuovo) t.value = nuovo;
+        }
+        document.querySelectorAll('#order-form small.min-max').forEach(function (s) {
+            new MutationObserver(nuovoOrdine).observe(s, { childList: true, characterData: true, subtree: true });
+        });
+        if (window.jQuery) window.jQuery(servizio).on('change', function () { setTimeout(nuovoOrdine, 0); setTimeout(nuovoOrdine, 400); });
+        nuovoOrdine();
+    }
+
     // Descrizione del servizio (Services e New order): in testa il numero e il nome, poi la descrizione, cosi' si sa
     // sempre di quale servizio si parla (Mirko, 22 nov 2026). Il riquadro #ID prende il colore dello stato (stato-servizi.js).
     function testaDescrizione(id, nome) {
@@ -663,7 +717,7 @@
             });
         }
         dopoIlPannello(function () {
-            lancia([descrizioneSottoIlTasto, testaNuovoOrdine, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, tendineUguali, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia, bottoneTicket]);
+            lancia([descrizioneSottoIlTasto, testaNuovoOrdine, numeriUmani, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, tendineUguali, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia, bottoneTicket]);
         });
         // le istruzioni di Add funds le scrive il tema dopo: Copy e "Open a ticket" si riprovano al load
         window.addEventListener('load', function () { setTimeout(function () { lancia([campanella, pulsantiCopia, bottoneTicket]); }, 300); });
