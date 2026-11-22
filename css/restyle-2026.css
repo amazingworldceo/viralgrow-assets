@@ -241,6 +241,13 @@ body.vg-pop-open { overflow: hidden; }
 #tabs-text:has(a[href="/orders/pending"]) .nav-item { margin: 0; padding: 0 !important; min-width: 0; }
 #tabs-text:has(a[href="/orders/pending"]) .nav-item.search { grid-column: 1 / -1; order: 99; }
 #tabs-text:has(a[href="/orders/pending"]) .nav-item:has(a[href="/orders"]) { grid-column: 1 / -1; }
+/* ordine della vita di un ordine (Mirko, 22 nov 2026): Pending, Processing, In progress, Completed, Partial, Canceled */
+#tabs-text .nav-item:has(a[href="/orders/pending"])    { order: 1; }
+#tabs-text .nav-item:has(a[href="/orders/processing"]) { order: 2; }
+#tabs-text .nav-item:has(a[href="/orders/inprogress"]) { order: 3; }
+#tabs-text .nav-item:has(a[href="/orders/completed"])  { order: 4; }
+#tabs-text .nav-item:has(a[href="/orders/partial"])    { order: 5; }
+#tabs-text .nav-item:has(a[href="/orders/canceled"])   { order: 6; }
 #tabs-text:has(a[href="/orders/pending"]) .nav-link {
     --c: 93, 89, 255;
     display: flex; align-items: center; justify-content: center; height: 100%; margin: 0 !important;
