@@ -389,7 +389,7 @@
             var cifra = m && parseFloat(m[2].replace(/,/g, ''));
             if (!m || isNaN(cifra)) return;
             ultimo.nodeValue = ultimo.nodeValue.replace(PREZZO, '');
-            nodo.appendChild(el('span', 'vg-price', m[1] + soldi(cifra) + ' ' + m[3]));
+            nodo.appendChild(el('span', 'vg-price', soldi(cifra, m[1]) + ' ' + m[3]));
         }
         function aggiorna() {
             inCoda = false;
@@ -541,10 +541,11 @@
     // Numeri piu' umani in Services e New order (Mirko, 22 nov 2026): prezzi a 2 decimali; quantita' in K e M (il Max per
     // difetto e il Min per eccesso, cosi' non si promette mai piu' del vero; 2147483647 e' il "senza limite" del pannello);
     // tempi medi oltre le 24 ore in giorni. Cambia solo il testo: il pannello controlla l'ordine sui numeri veri.
-    function soldi(cifra) {
-        // arrotondato a meta': 31.205 -> 31.21 (toFixed da solo darebbe 31.20); sotto il centesimo non si scrive $0.00
+    function soldi(cifra, simbolo) {
+        // sempre 2 decimali, arrotondati a meta' (31.205 -> 31.21: toFixed da solo darebbe 31.20); sotto il mezzo
+        // centesimo "< $0.01", perche' $0.00 sembrerebbe gratis (Mirko, 22 nov 2026: «solo due cifre decimali»)
         var due = (Math.round(cifra * 100 + 1e-7) / 100).toFixed(2);
-        return +due || !cifra ? due : String(+cifra.toPrecision(1));
+        return (+due || !cifra ? '' : '< ') + simbolo + (+due || !cifra ? due : '0.01');
     }
     function quantita(testo, perDifetto) {
         var cifre = String(testo).replace(/\D/g, ''), n = +cifre;
@@ -569,8 +570,8 @@
         document.querySelectorAll('.services-page tr[data-index]').forEach(function (r) {
             var c = r.children;
             if (c.length < 6) return;   // titolo della categoria
-            var p = c[2].textContent.trim(), m = /[\d][\d.,]*/.exec(p);
-            if (m) cambiaTesto(c[2], p.replace(m[0], soldi(parseFloat(m[0].replace(/,/g, '')))));
+            var p = /^(\D*)([\d][\d.,]*)(.*)$/.exec(c[2].textContent.trim());
+            if (p) cambiaTesto(c[2], soldi(parseFloat(p[2].replace(/,/g, '')), p[1]) + p[3]);
             cambiaTesto(c[3], quantita(c[3].textContent, false));
             cambiaTesto(c[4], quantita(c[4].textContent, true));
             cambiaTesto(c[5], tempo(c[5].textContent));
