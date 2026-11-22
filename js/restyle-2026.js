@@ -539,6 +539,33 @@
         }, true, TUTTE.nome);
     }
 
+    // Descrizione del servizio (Services e New order): in testa il numero e il nome, poi la descrizione, cosi' si sa
+    // sempre di quale servizio si parla (Mirko, 22 nov 2026). Il riquadro #ID prende il colore dello stato (stato-servizi.js).
+    function testaDescrizione(id, nome) {
+        id = String(id).replace(/\D/g, '');
+        var testa = el('div', 'vg-desc-head');
+        testa.setAttribute('data-id', id);
+        testa.appendChild(el('span', 'vg-sid', '#' + id));
+        testa.appendChild(el('span', '', nome.replace(/\s+/g, ' ').replace(new RegExp('^\\s*' + id + '\\s*-\\s*'), '').trim()));
+        return testa;
+    }
+    function testaNuovoOrdine() {
+        var servizio = document.getElementById('orderform-service'), blocco = document.getElementById('service_description');
+        if (!servizio || !blocco) return;
+        function aggiorna() {
+            var box = blocco.querySelector('.rounded-sm'), opzione = servizio.options[servizio.selectedIndex];
+            if (!box) return;
+            var vecchia = box.querySelector('.vg-desc-head');
+            if (vecchia && vecchia.getAttribute('data-id') === servizio.value) return;
+            if (vecchia) vecchia.remove();
+            if (opzione && /^\d+$/.test(servizio.value))
+                box.insertBefore(testaDescrizione(servizio.value, opzione.getAttribute('data-name') || opzione.text), box.firstChild);
+        }
+        new MutationObserver(aggiorna).observe(blocco, { childList: true, subtree: true });
+        if (window.jQuery) window.jQuery(servizio).on('change', function () { setTimeout(aggiorna, 0); });   // select2 avvisa via jQuery
+        aggiorna();
+    }
+
     // Services: "View" apre una finestra con la descrizione e Order now, staccata dalla barra in alto, con la X sempre
     // visibile; si chiude con la X, toccando fuori o con Esc. Sostituisce la finestra del tema, che sul telefono finiva
     // sotto la barra e senza X raggiungibile.
@@ -568,6 +595,8 @@
             if (ordina) ordina.remove();
             if (!testo.textContent.trim()) testo.textContent = 'At the moment details for this service is not available.';
             if (ordina) testo.appendChild(ordina);
+            var riga = pulsante.closest('tr'), nome = riga && riga.querySelector('td.service-name');
+            if (nome) testo.insertBefore(testaDescrizione(riga.firstElementChild.textContent, nome.textContent), testo.firstChild);
             testo.scrollTop = 0;
             velo.classList.add('open');
             document.body.classList.add('vg-pop-open');
@@ -634,7 +663,7 @@
             });
         }
         dopoIlPannello(function () {
-            lancia([descrizioneSottoIlTasto, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, tendineUguali, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia, bottoneTicket]);
+            lancia([descrizioneSottoIlTasto, testaNuovoOrdine, campoLink, togliCategoriaIstruzioni, piattaformeNuovoOrdine, tendineUguali, piattaformeServizi, finestraDescrizione, numeroServizio, pulsantiCopia, bottoneTicket]);
         });
         // le istruzioni di Add funds le scrive il tema dopo: Copy e "Open a ticket" si riprovano al load
         window.addEventListener('load', function () { setTimeout(function () { lancia([campanella, pulsantiCopia, bottoneTicket]); }, 300); });

@@ -236,6 +236,21 @@ body.vg-pop-open { overflow: hidden; }
 .vg-pop-x { flex: none; align-self: flex-end; width: 40px; height: 40px; margin: 8px 8px 0 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #fff; font-size: 26px; line-height: 40px; padding: 0; cursor: pointer; }
 .vg-pop-body { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px 22px 22px; color: #d2d6d5; font-size: 15px; line-height: 1.5; }
 .vg-pop-body .order-btn { display: block; max-width: 320px; margin: 18px auto 0; }
+/* Descrizione del servizio: numero e nome in testa (finestra di Services e riquadro di New order; li mette restyle-2026.js) */
+.vg-desc-head { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, .12); color: #fff; font-weight: 600; line-height: 1.45; }
+.vg-desc-head .vg-sid { margin: 1px 0 0; }
+.vg-pop-body .vg-desc-head { font-size: 16px; }
+/* Services: colonne a larghezza fissa, uguali con ogni filtro (piattaforma, Working well...); il nome e' largo e la
+   tabella scorre di lato (Mirko, 22 nov 2026). Le larghezze le danno le intestazioni (table-layout: fixed). */
+.services-page table.table-manager { table-layout: fixed !important; width: 1110px !important; max-width: none; }
+.services-page table.table-manager thead th { width: 102px !important; }
+.services-page table.table-manager thead th:first-child { width: 80px !important; }
+.services-page table.table-manager thead th.width-service-name { width: 520px !important; }
+@media (max-width: 767px) {
+    .services-page table.table-manager { width: 860px !important; }
+    .services-page table.table-manager thead th:first-child { width: 70px !important; }
+    .services-page table.table-manager thead th.width-service-name { width: 280px !important; }
+}
 .vg-plat { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; min-width: 0; }
 .vg-plat::-webkit-scrollbar { display: none; }
 .vg-plat-btn {
