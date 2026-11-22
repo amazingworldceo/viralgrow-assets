@@ -269,7 +269,10 @@ body.vg-pop-open { overflow: hidden; }
     #tabs-text:has(a[href="/orders/pending"]) .nav-item.search { display: none; }
 }
 @media (min-width: 768px) {
-    #tabs-text:has(a[href="/orders/pending"]) { grid-template-columns: repeat(7, 1fr); }
+    /* tutti su una riga se c'e' posto (PC), se no vanno a capo; testo un filo piu' piccolo per far stare il numero */
+    #tabs-text:has(a[href="/orders/pending"]) { grid-template-columns: repeat(auto-fit, minmax(124px, 1fr)); }
+    #tabs-text:has(a[href="/orders/pending"]) .nav-link { padding: 10px 4px; font-size: 13px; }
+    #tabs-text .nav-link .vg-n { margin-left: 5px; padding: 1px 5px; }
     #tabs-text:has(a[href="/orders/pending"]) .nav-item:has(a[href="/orders"]) { grid-column: auto; }
     #tabs-text:has(a[href="/orders/pending"]) .nav-item.search { order: -1; margin: 0 0 4px; }
 }
