@@ -583,3 +583,7 @@ body.vg-pop-open { overflow: hidden; }
 .vg-blog-cta h2 { margin: 0 0 8px; font-size: 22px; color: #fff; }
 .vg-blog-cta p { margin: 0 0 16px; color: #d2d6d5; font-size: 16px; }
 .vg-blog-cta .btn { padding: 12px 28px; font-size: 16px; font-weight: 700; }
+/* Blog, articolo: testo leggibile sul fondo scuro (il tema lo lascia blu scuro; 22 nov 2026) */
+.main-landing-section .col-lg-8.col-lg-offset-2 > .well h1 { color: #fff; }
+.main-landing-section .col-lg-8.col-lg-offset-2 > .well h2 { color: #a9a7ff; margin-top: 28px; }
+.main-landing-section .col-lg-8.col-lg-offset-2 > .well p, .main-landing-section .col-lg-8.col-lg-offset-2 > .well li { color: #d2d6d5; }
