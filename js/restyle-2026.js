@@ -206,11 +206,24 @@
         });
         var colonnaStato = nomi.findIndex(function (n) { return /^status$/i.test(n); });
         var colonnaServizio = nomi.findIndex(function (n) { return /^service$/i.test(n); });
+        var colonnaCosto = nomi.findIndex(function (n) { return /^charge$/i.test(n); });
+        // Orders (Mirko, 23 nov 2026): su PC colonne a misura fissa (vg-col-<nome> nel CSS), numeri allineati a destra
+        var numeri = nomi.map(function (n) { return /^(charge|start count|quantity|remains)$/i.test(n); });
+        if (nomi.some(function (n) { return /^start count$/i.test(n); })) {
+            tabella.classList.add('vg-orders');
+            tabella.querySelectorAll('thead th').forEach(function (th, i) {
+                th.classList.add('vg-col-' + nomi[i].toLowerCase().replace(/\W+/g, '-'));
+                if (numeri[i]) th.classList.add('vg-num');
+            });
+        }
         tabella.querySelectorAll('tbody tr').forEach(function (riga) {
             Array.prototype.forEach.call(riga.children, function (cella, i) {
                 if (nomi[i]) cella.setAttribute('data-label', nomi[i]);
+                if (numeri[i]) cella.classList.add('vg-num');
                 if (i === colonnaStato) statoColorato(cella);
                 if (i === colonnaServizio) servizioConNumero(cella);
+                // Charge sempre con 2 decimali: 0.05346 -> 0.05 (Mirko, 23 nov 2026)
+                if (i === colonnaCosto && /^\s*\d+(\.\d+)?\s*$/.test(cella.textContent)) cella.textContent = Number(cella.textContent).toFixed(2);
             });
         });
         tabella.classList.add('vg-cards');

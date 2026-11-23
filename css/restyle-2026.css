@@ -390,6 +390,16 @@ body.vg-pop-open { overflow: hidden; }
 @media (min-width: 768px) {
     table.vg-cards { table-layout: auto; }
     table.vg-cards td a { overflow-wrap: anywhere; }
+    table.vg-cards th.vg-num, table.vg-cards td.vg-num { text-align: right; }
+}
+/* Orders su PC: colonne a misura fissa, le piccole tutte uguali, Service la piu' larga (Mirko, 23 nov 2026) */
+@media (min-width: 1200px) {
+    table.vg-cards.vg-orders { table-layout: fixed; width: 100%; }
+    table.vg-orders th { width: 8%; word-break: normal; overflow-wrap: normal; }
+    table.vg-orders th.vg-col-date, table.vg-orders th.vg-col-status { width: 12%; }
+    table.vg-orders th.vg-col-link { width: 15%; }
+    table.vg-orders th.vg-col-service { width: 21%; }
+    table.vg-orders th, table.vg-orders td { padding-left: 10px; padding-right: 10px; }
 }
 @keyframes vg-pulse { 50% { opacity: .25; } }
 
