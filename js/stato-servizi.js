@@ -1,5 +1,5 @@
-/* Stato dei servizi sul sito (ADM-33, Mirko 20 nov 2026): il colore del riquadro #ID, lo stato del servizio scelto sotto la
-   descrizione in New order, i 4 riquadri con i numeri e il "Live status" in Services. I colori li pubblica ogni mattina il
+/* Stato dei servizi sul sito (ADM-33, Mirko 20 nov 2026): il colore del riquadro #ID, lo stato del servizio scelto sotto
+   Order now in New order, i 4 riquadri con i numeri e il "Live status" in Services. I colori li pubblica ogni mattina il
    job ViralGrow Admin (modulo stato_servizi) nel ramo `stato` del repo: {aggiornato, colori {id: 'y'|'r'}, nuovi [id]}.
    Un servizio che non e' nel file e' verde. Senza file (rete) la pagina resta com'era. File separato da restyle-2026.js:
    lo carica layout.twig, e con lo stesso tag carica stato-servizi.css. */
@@ -135,39 +135,24 @@
         }).catch(function () {});
     }
 
-    // New order: stato del servizio scelto e legenda sotto la descrizione; segue la descrizione lunga, corta o assente
-    // Si aspetta che restyle-2026.js abbia spostato la descrizione sotto il tasto (.vg-order-notes, max ~5 s): cosi' il
-    // riquadro nasce gia' al suo posto e non salta da sotto Service a sotto la descrizione (Mirko, 20 nov 2026 21:30)
+    // New order: una riga "Service status: Working well" sotto Order now, prima delle avvertenze; senza #ID (c'e' gia'
+    // sopra), senza legenda ne' Live status (Mirko, 23 nov 2026, 02:46). Si aspetta che restyle-2026.js abbia messo le
+    // avvertenze (.vg-order-notes, max ~5 s): le mette subito dopo il tasto, e la riga deve stare tra le due
     function nuovoOrdine(giri) {
         var servizio = document.getElementById('orderform-service');
-        if (!servizio) return;
+        var tasto = document.querySelector('#order-form button[type="submit"]');
+        if (!servizio || !tasto) return;
         giri = giri || 0;
         if (!document.querySelector('.vg-order-notes') && giri < 25) return setTimeout(function () { nuovoOrdine(giri + 1); }, 200);
-        var box = el('div', 'vg-status-order');
-        function posto() {
-            var desc = document.getElementById('service_description');
-            var dopo = desc || document.querySelector('.vg-order-notes') || servizio.closest('.form-group');
-            if (dopo && box.previousElementSibling !== dopo) dopo.parentNode.insertBefore(box, dopo.nextSibling);
-        }
+        var box = el('div', 'vg-status-line');
+        tasto.parentNode.insertBefore(box, tasto.nextSibling);
         function aggiorna() {
             var id = servizio.value;
             box.textContent = '';
             if (!/^\d+$/.test(id || '')) { box.style.display = 'none'; return; }
             box.style.display = '';
-            var testa = el('div', 'vg-st-head');
-            testa.appendChild(el('span', 'vg-sid ' + classi(id), '#' + id));
-            testa.appendChild(el('b', 'vg-st-txt-' + stato(id), STATI[stato(id)] + (nuovo(id) ? ' · New service' : '')));
-            box.appendChild(testa);
-            var legenda = el('div', 'vg-legend');
-            [['g', STATI.g], ['y', STATI.y], ['r', STATI.r], ['g vg-st-new', 'New service']].forEach(function (v) {
-                var s = el('span');
-                s.appendChild(el('i', 'vg-sw vg-st-' + v[0]));
-                s.appendChild(document.createTextNode(v[1]));
-                legenda.appendChild(s);
-            });
-            box.appendChild(legenda);
-            box.appendChild(live());
-            posto();
+            box.appendChild(document.createTextNode('Service status:'));
+            box.appendChild(el('b', 'vg-st-txt-' + stato(id), STATI[stato(id)]));
         }
         aggiorna();
         servizio.addEventListener('change', aggiorna);

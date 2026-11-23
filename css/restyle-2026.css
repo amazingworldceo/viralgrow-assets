@@ -205,9 +205,12 @@ body.vg-neworder .innerMainPage .card-body { padding: 8px 14px 20px; }
 body.vg-neworder .newOrder-page .card-header { padding: 22px 26px 26px; border-bottom: 0; }
 body.vg-neworder #order-form .form-group { margin-bottom: 26px; }
 body.vg-neworder #order-form label { margin-bottom: 8px; font-size: 14px; letter-spacing: .2px; }
+/* Link, Quantity, Average time e Charge un po' piu' vicini; Category e Service restano ariosi (Mirko, 23 nov 2026, 02:44) */
+body.vg-neworder #order-form .form-group:has(input.form-control) { margin-bottom: 20px; }
 @media (max-width: 767px) {
     body.vg-neworder .newOrder-page .card-header { padding: 16px 16px 20px; }
     body.vg-neworder #order-form .form-group { margin-bottom: 22px; }
+    body.vg-neworder #order-form .form-group:has(input.form-control) { margin-bottom: 16px; }
     body.vg-neworder #order-form label { margin-bottom: 6px; }
 }
 /* tutti i campi alti uguali, tendine comprese (Service e' select2: testo centrato con flex) */
@@ -379,15 +382,9 @@ body.vg-pop-open { overflow: hidden; }
     body.vg-neworder #fields { display: contents; }
     body.vg-neworder #order_link, body.vg-neworder #order_quantity, body.vg-neworder #order_average_time,
     body.vg-neworder #order-form > .form-group:has(#charge) { grid-column: auto; }
-    /* Order now piu' lungo e al centro; Service description a sinistra e stato del servizio a destra, alti uguali
-       (Mirko, 21 nov 2026, 01:38) */
+    /* Order now piu' lungo e al centro (Mirko, 21 nov 2026, 01:38); la descrizione e' a tutta larghezza da quando lo
+       stato del servizio e' una riga sotto il tasto (23 nov 2026) */
     body.vg-neworder #order-form > button[type="submit"] { justify-self: center; min-width: 320px; }
-    body.vg-neworder #order-form > #service_description,
-    body.vg-neworder #order-form > .vg-status-order { grid-column: auto; }
-    body.vg-neworder #order-form > #service_description { display: flex; flex-direction: column; }
-    body.vg-neworder #order-form > #service_description > .rounded-sm { flex: 1; }
-    /* il riquadro dello stato parte dove parte quello della descrizione (sotto la sua etichetta) */
-    body.vg-neworder #order-form > .vg-status-order { margin: 37px 0 0; }
 }
 /* PC: il tema fissa colonne tutte uguali e la pillola "Completed" invadeva "Remains"; i link lunghi vanno a capo */
 @media (min-width: 768px) {
@@ -639,6 +636,8 @@ body.vg-pop-open { overflow: hidden; }
 .vg-plat-grid .vg-fav-btn + .vg-plat-btn { grid-column-start: 1; }
 /* New order su PC: My favorites al centro, sopra TikTok e YouTube (Mirko, 23 nov 2026) */
 @media (min-width: 1200px) { body.vg-neworder .vg-plat-grid .vg-plat-btn.vg-fav-btn { grid-column: 3 / span 2; } }
+/* telefono e tablet: My favorites su tutta la riga, anche quando le piattaforme stanno su 3 colonne (Mirko, 23 nov 2026) */
+@media (max-width: 1199px) { .vg-plat-grid .vg-plat-btn.vg-fav-btn { grid-column: 1 / -1; } }
 .vg-plat-btn.vg-fav-btn i { color: #f5c518; }
 .vg-plat-btn.vg-fav-btn.active { background: linear-gradient(90deg, #5d59ff, #7a5cff); border-color: #5d59ff; }
 .vg-plat-btn.vg-fav-btn.active i { color: #ffd84d; }
