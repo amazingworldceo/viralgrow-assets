@@ -394,12 +394,13 @@ body.vg-pop-open { overflow: hidden; }
 }
 /* Orders su PC: colonne a misura fissa, le piccole tutte uguali, Service la piu' larga (Mirko, 23 nov 2026) */
 @media (min-width: 1200px) {
+    /* !important: style.css del tema fissa 70 px all'ID, 100 a Date e 173 a Link e Service, con selettori piu' forti */
     table.vg-cards.vg-orders { table-layout: fixed; width: 100%; }
-    table.vg-orders th { width: 8%; word-break: normal; overflow-wrap: normal; }
-    table.vg-orders th.vg-col-date, table.vg-orders th.vg-col-status { width: 12%; }
-    table.vg-orders th.vg-col-link { width: 15%; }
-    table.vg-orders th.vg-col-service { width: 21%; }
-    table.vg-orders th, table.vg-orders td { padding-left: 10px; padding-right: 10px; }
+    table.vg-orders th, table.vg-orders td { width: auto !important; min-width: 0 !important; max-width: none !important; padding-left: 10px; padding-right: 10px; }
+    table.vg-orders th { width: 8% !important; word-break: normal; overflow-wrap: normal; }
+    table.vg-orders th.vg-col-date, table.vg-orders th.vg-col-status { width: 12% !important; }
+    table.vg-orders th.vg-col-link { width: 15% !important; }
+    table.vg-orders th.vg-col-service { width: 21% !important; }
 }
 @keyframes vg-pulse { 50% { opacity: .25; } }
 
