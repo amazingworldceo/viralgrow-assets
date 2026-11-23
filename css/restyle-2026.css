@@ -236,6 +236,8 @@ body.vg-neworder .vg-order-notes + #service_description { margin-top: 14px; marg
     font-size: 12px; font-weight: 700; line-height: 18px; vertical-align: middle;
     color: #c9c7ff; background: rgba(93, 89, 255, .18); border: 1px solid rgba(93, 89, 255, .45);
 }
+/* Orders e Refill: stellina dei preferiti dopo il #ID (Mirko, 23 nov 2026) */
+.vg-fav-mark { margin-right: 6px; font-size: 13px; color: #f5c518; vertical-align: middle; }
 .select2-results__option--highlighted .vg-sid { color: #fff; background: rgba(255, 255, 255, .18); border-color: rgba(255, 255, 255, .4); }
 
 /* New order e Services: quadratini delle piattaforme sulla riga del titolo (scorrono di lato; li mette restyle-2026.js) */

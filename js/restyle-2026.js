@@ -970,6 +970,21 @@
             }
         } else if (vuoto) vuoto.remove();
     }
+    // Orders e Refill: stellina gialla accanto al #ID se il servizio e' nei preferiti, niente se non lo e' (Mirko,
+    // 23 nov 2026). Solo da vedere: i preferiti si cambiano in Services e New order
+    function stelleOrdini() {
+        if (!document.querySelector('table.vg-orders .vg-sid, table.vg-refill .vg-sid')) return;
+        leggiCatalogo(false).then(function (c) {
+            document.querySelectorAll('table.vg-orders .vg-svc > .vg-sid, table.vg-refill .vg-svc > .vg-sid').forEach(function (b) {
+                var id = b.textContent.replace(/\D/g, '');
+                if (c.fav[id] && !(b.nextSibling && b.nextSibling.classList && b.nextSibling.classList.contains('vg-fav-mark'))) {
+                    var s = el('i', 'fas fa-star vg-fav-mark');
+                    s.title = 'In My favorites';
+                    b.parentNode.insertBefore(s, b.nextSibling);
+                }
+            });
+        }).catch(function () { /* senza elenco niente stelline */ });
+    }
     function stelleServizi() {
         if (!document.getElementById('sidenav-main') || !document.querySelector('.services-page tr[data-index]')) return;
         leggiCatalogo(true).then(function (c) {
@@ -1082,7 +1097,7 @@
         }
         // New order compatto (il CSS stringe gli spazi solo su questa pagina)
         if (document.getElementById('order-form')) document.body.classList.add('vg-neworder');
-        [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, animazioniPrima, faqCompatte, ordiniASchede, numeriOrdini, affiliatiASchede, oggettiTicket, pagineMinori, pulsantiCopia].forEach(function (f) {
+        [titoloPagina, videoInCima, caricaCopertina, dal2020, secondoTitolo, pulsanteSignIn, animazioniPrima, faqCompatte, ordiniASchede, stelleOrdini, numeriOrdini, affiliatiASchede, oggettiTicket, pagineMinori, pulsantiCopia].forEach(function (f) {
             try { f(); } catch (e) { /* un ritocco che non riesce non deve fermare gli altri */ }
         });
         // Dopo gli script del pannello (i loro "ready" di jQuery, registrati prima di questo): New order e Services si
