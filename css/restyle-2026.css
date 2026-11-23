@@ -187,8 +187,13 @@ body span.select2-dropdown .select2-results__option[aria-selected="true"] { back
 .vg-page-title { color: #fff; font-size: 22px; font-weight: 700; margin: 0 0 22px; line-height: 1.2; text-align: center; }
 /* titolo al centro anche in verticale: 22 px dalla barra in alto (64 px su PC, 69 su telefono) e 22 dal riquadro sotto,
    in tutte le pagine col titolo (Mirko, 23 nov 2026) */
-.innerMainPage:has(> .container > .vg-page-title) { padding-top: 86px !important; }
-@media (max-width: 767px) { .innerMainPage:has(> .container > .vg-page-title) { padding-top: 91px !important; } }
+/* style.css del tema forza Services a 6rem con .loginAfter .innerMainPage.services-page.pt-5.pb-5: stesso selettore qui */
+.innerMainPage:has(> .container > .vg-page-title),
+.loginAfter .innerMainPage.services-page.pt-5.pb-5 { padding-top: 86px !important; }
+@media (max-width: 767px) {
+    .innerMainPage:has(> .container > .vg-page-title),
+    .loginAfter .innerMainPage.services-page.pt-5.pb-5 { padding-top: 91px !important; }
+}
 
 /* New order senza scroll, su telefono e PC: titolo in alto, spazi stretti, Submit visibile subito */
 /* in alto 78px invece dei 96 del tema: sotto i ~70 il titolo finisce sotto la barra fissa */
