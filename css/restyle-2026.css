@@ -392,7 +392,7 @@ body.vg-pop-open { overflow: hidden; }
     table.vg-cards td a { overflow-wrap: anywhere; }
     /* Orders: numeri a destra, titoli delle colonne al centro (Mirko, 23 nov 2026) */
     table.vg-cards td.vg-num { text-align: right; }
-    table.vg-orders th { text-align: center; }
+    table.vg-orders th, table.vg-refill th { text-align: center; }
 }
 /* Orders su PC: colonne a misura fissa, le piccole tutte uguali, Service la piu' larga (Mirko, 23 nov 2026) */
 @media (min-width: 1200px) {
@@ -403,6 +403,18 @@ body.vg-pop-open { overflow: hidden; }
     table.vg-orders th.vg-col-date, table.vg-orders th.vg-col-status { width: 12% !important; }
     table.vg-orders th.vg-col-link { width: 15% !important; }
     table.vg-orders th.vg-col-service { width: 21% !important; }
+    /* la colonna "Refill" coi tasti Refill/Cancel c'e' solo quando un ordine li ha (task == 1 in orders.twig) */
+    table.vg-orders th.vg-col-refill { width: 9% !important; }
+    table.vg-orders .order-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+    /* Refill come Orders (Mirko, 23 nov 2026) */
+    table.vg-cards.vg-refill { table-layout: fixed; width: 100%; }
+    table.vg-refill th, table.vg-refill td { width: auto !important; min-width: 0 !important; max-width: none !important; padding-left: 10px; padding-right: 10px; }
+    table.vg-refill th { width: 8% !important; word-break: normal; overflow-wrap: normal; }
+    table.vg-refill th.vg-col-date, table.vg-refill th.vg-col-status { width: 13% !important; }
+    table.vg-refill th.vg-col-order-id { width: 10% !important; }
+    table.vg-refill th.vg-col-link { width: 25% !important; }
+    table.vg-refill th.vg-col-service { width: 31% !important; }
+    table.vg-refill td { overflow-wrap: anywhere; }
 }
 @keyframes vg-pulse { 50% { opacity: .25; } }
 

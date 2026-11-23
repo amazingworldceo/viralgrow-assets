@@ -138,10 +138,13 @@
         });
     }
 
-    // Ordini: ogni cella prende il nome della sua colonna, il CSS su telefono ne fa una scheda
+    // Ordini e Refill: ogni cella prende il nome della sua colonna, il CSS su telefono ne fa una scheda
+    // (Refill come Orders: Mirko, 23 nov 2026; la tabella dei refill si riconosce dalla colonna "Order ID")
     function ordiniASchede() {
         var tabella = document.querySelector('table.table-manager');
-        if (tabella && tabella.querySelector('th.orderLinkTh')) aSchede(tabella);
+        if (!tabella) return;
+        var refill = Array.prototype.some.call(tabella.querySelectorAll('thead th'), function (th) { return /^order id$/i.test(th.textContent.trim()); });
+        if (tabella.querySelector('th.orderLinkTh') || refill) aSchede(tabella);
     }
 
     // Orders: in ogni riquadro di stato il numero dei suoi ordini (Mirko, 22 nov 2026). Il pannello non lo dice: si leggono
@@ -207,13 +210,14 @@
         var colonnaStato = nomi.findIndex(function (n) { return /^status$/i.test(n); });
         var colonnaServizio = nomi.findIndex(function (n) { return /^service$/i.test(n); });
         var colonnaCosto = nomi.findIndex(function (n) { return /^charge$/i.test(n); });
-        // Orders (Mirko, 23 nov 2026): su PC colonne a misura fissa (vg-col-<nome> nel CSS), numeri allineati a destra
+        // Orders e Refill (Mirko, 23 nov 2026): su PC colonne a misura fissa (vg-col-<nome> nel CSS), numeri a destra
         var numeri = nomi.map(function (n) { return /^(charge|start count|quantity|remains)$/i.test(n); });
-        if (nomi.some(function (n) { return /^start count$/i.test(n); })) {
-            tabella.classList.add('vg-orders');
+        var tipo = nomi.some(function (n) { return /^start count$/i.test(n); }) ? 'vg-orders'
+            : nomi.some(function (n) { return /^order id$/i.test(n); }) ? 'vg-refill' : '';
+        if (tipo) {
+            tabella.classList.add(tipo);
             tabella.querySelectorAll('thead th').forEach(function (th, i) {
                 th.classList.add('vg-col-' + nomi[i].toLowerCase().replace(/\W+/g, '-'));
-                if (numeri[i]) th.classList.add('vg-num');
             });
         }
         tabella.querySelectorAll('tbody tr').forEach(function (riga) {
@@ -229,9 +233,10 @@
         tabella.classList.add('vg-cards');
     }
 
-    // Orders: "11878 | 11878 - Instagram Save" diventa il riquadro "#11878" + il nome, come in Services e New order
+    // Orders: "11878 | 11878 - Instagram Save" diventa il riquadro "#11878" + il nome, come in Services e New order.
+    // Refill scrive "11861 - Instagram..." o "12324 ♻️ Instagram...": stesso riquadro; senza numero davanti resta com'e'
     function servizioConNumero(cella) {
-        var m = cella.textContent.match(/^\s*(\d+)\s*\|\s*([\s\S]*)$/);
+        var m = cella.textContent.match(/^\s*(\d+)\s*(?:\||-|(?=[^\w\s]))\s*([\s\S]*)$/);
         if (!m || cella.querySelector('.vg-sid')) return;
         var nome = m[2].replace(new RegExp('^' + m[1] + '\\s*-\\s*'), '').trim();
         // riquadro e nome in un solo contenitore: nelle schede del telefono la cella e' flex e li separava
@@ -244,7 +249,7 @@
 
     // Ordini: lo stato diventa una pillola colorata (verde Completed, rosso Canceled...)
     var STATI = { 'completed': 'ok', 'in progress': 'run', 'processing': 'proc', 'pending': 'wait',
-                  'partial': 'part', 'canceled': 'stop', 'cancelled': 'stop' };
+                  'partial': 'part', 'canceled': 'stop', 'cancelled': 'stop', 'rejected': 'stop', 'error': 'stop' };
     function statoColorato(cella) {
         var testo = cella.textContent.trim();
         var tipo = STATI[testo.toLowerCase()];
