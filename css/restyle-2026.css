@@ -390,7 +390,9 @@ body.vg-pop-open { overflow: hidden; }
 @media (min-width: 768px) {
     table.vg-cards { table-layout: auto; }
     table.vg-cards td a { overflow-wrap: anywhere; }
-    table.vg-cards th.vg-num, table.vg-cards td.vg-num { text-align: right; }
+    /* Orders: numeri a destra, titoli delle colonne al centro (Mirko, 23 nov 2026) */
+    table.vg-cards td.vg-num { text-align: right; }
+    table.vg-orders th { text-align: center; }
 }
 /* Orders su PC: colonne a misura fissa, le piccole tutte uguali, Service la piu' larga (Mirko, 23 nov 2026) */
 @media (min-width: 1200px) {
