@@ -222,8 +222,8 @@
                 if (numeri[i]) cella.classList.add('vg-num');
                 if (i === colonnaStato) statoColorato(cella);
                 if (i === colonnaServizio) servizioConNumero(cella);
-                // Charge sempre con 2 decimali: 0.05346 -> 0.05 (Mirko, 23 nov 2026)
-                if (i === colonnaCosto && /^\s*\d+(\.\d+)?\s*$/.test(cella.textContent)) cella.textContent = Number(cella.textContent).toFixed(2);
+                // Charge col dollaro e sempre 2 decimali: 0.05346 -> $0.05 (Mirko, 23 nov 2026)
+                if (i === colonnaCosto && /^\s*\d+(\.\d+)?\s*$/.test(cella.textContent)) cella.textContent = '$' + Number(cella.textContent).toFixed(2);
             });
         });
         tabella.classList.add('vg-cards');

@@ -647,8 +647,8 @@ body.vg-pop-open { overflow: hidden; }
 /* il pulsante lungo quanto All + Instagram, su una riga sua sopra le piattaforme */
 .vg-plat-grid .vg-plat-btn.vg-fav-btn { grid-column: 1 / span 2; }
 .vg-plat-grid .vg-fav-btn + .vg-plat-btn { grid-column-start: 1; }
-/* New order su PC: My favorites al centro, sopra TikTok e YouTube (Mirko, 23 nov 2026) */
-@media (min-width: 1200px) { body.vg-neworder .vg-plat-grid .vg-plat-btn.vg-fav-btn { grid-column: 3 / span 2; } }
+/* New order e Services su PC: My favorites al centro, sopra TikTok e YouTube (Mirko, 23 nov 2026) */
+@media (min-width: 1200px) { .vg-plat-grid .vg-plat-btn.vg-fav-btn { grid-column: 3 / span 2; } }
 /* telefono e tablet: My favorites su tutta la riga, anche quando le piattaforme stanno su 3 colonne (Mirko, 23 nov 2026) */
 @media (max-width: 1199px) { .vg-plat-grid .vg-plat-btn.vg-fav-btn { grid-column: 1 / -1; } }
 .vg-plat-btn.vg-fav-btn i { color: #f5c518; }
