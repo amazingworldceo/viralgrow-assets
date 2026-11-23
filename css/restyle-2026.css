@@ -184,16 +184,27 @@ body span.select2-dropdown .select2-results__option[aria-selected="true"] { back
 
 /* Titolo della pagina (New order, Add funds...): lo aggiunge restyle-2026.js dal menu */
 /* tutti i titoli della stessa misura e al centro, il riquadro grigio piu' vicino (Mirko, 20 nov 2026 21:09) */
-.vg-page-title { color: #fff; font-size: 22px; font-weight: 700; margin: 0 0 10px; text-align: center; }
+.vg-page-title { color: #fff; font-size: 22px; font-weight: 700; margin: 0 0 22px; line-height: 1.2; text-align: center; }
+/* titolo al centro anche in verticale: 22 px dalla barra in alto (64 px su PC, 69 su telefono) e 22 dal riquadro sotto,
+   in tutte le pagine col titolo (Mirko, 23 nov 2026) */
+.innerMainPage:has(> .container > .vg-page-title) { padding-top: 86px !important; }
+@media (max-width: 767px) { .innerMainPage:has(> .container > .vg-page-title) { padding-top: 91px !important; } }
 
 /* New order senza scroll, su telefono e PC: titolo in alto, spazi stretti, Submit visibile subito */
 /* in alto 78px invece dei 96 del tema: sotto i ~70 il titolo finisce sotto la barra fissa */
-body.vg-neworder .innerMainPage.pt-7 { padding-top: 78px !important; padding-bottom: 12px !important; }
+body.vg-neworder .innerMainPage.pt-7 { padding-top: 86px !important; padding-bottom: 12px !important; }
+@media (max-width: 767px) { body.vg-neworder .innerMainPage.pt-7 { padding-top: 91px !important; } }
 body.vg-neworder .innerMainPage .card-body { padding: 8px 14px 20px; }
 /* il modulo sta nella card-header del tema (padding 20/24 px): meno spazio nero prima di Category (Mirko, 20 nov 2026 21:17) */
-body.vg-neworder .newOrder-page .card-header { padding: 4px 14px 16px; border-bottom: 0; }
-body.vg-neworder #order-form .form-group { margin-bottom: 10px; }
-body.vg-neworder #order-form label { margin-bottom: 2px; font-size: 14px; }
+/* il modulo respira: stessi campi, piu' spazio intorno e tra uno e l'altro (Mirko, 23 nov 2026) */
+body.vg-neworder .newOrder-page .card-header { padding: 22px 26px 26px; border-bottom: 0; }
+body.vg-neworder #order-form .form-group { margin-bottom: 26px; }
+body.vg-neworder #order-form label { margin-bottom: 8px; font-size: 14px; letter-spacing: .2px; }
+@media (max-width: 767px) {
+    body.vg-neworder .newOrder-page .card-header { padding: 16px 16px 20px; }
+    body.vg-neworder #order-form .form-group { margin-bottom: 22px; }
+    body.vg-neworder #order-form label { margin-bottom: 6px; }
+}
 /* tutti i campi alti uguali, tendine comprese (Service e' select2: testo centrato con flex) */
 body.vg-neworder #order-form .form-control:not(textarea) { height: 38px !important; padding: 0 12px; }
 body.vg-neworder #order-form .select2-selection.form-control { display: flex; align-items: center; }
@@ -202,12 +213,12 @@ body.vg-neworder #order-form .select2-selection__rendered { padding: 0 !importan
 .vg-price { display: block; margin-top: 3px; font-size: 13px; font-weight: 600; line-height: 1.3; color: #a9a7ff; white-space: nowrap; }
 .select2-results__option--highlighted .vg-price { color: #fff; }
 body.vg-neworder #order-form .select2-selection.form-control:has(.vg-price) { height: auto !important; min-height: 38px; padding-top: 7px; padding-bottom: 7px; }
-body.vg-neworder #order-form small, body.vg-neworder #order-form .help-block { margin-top: 2px; display: block; }
-body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 14px; padding-top: 12px; padding-bottom: 12px; }
+body.vg-neworder #order-form small, body.vg-neworder #order-form .help-block { margin-top: 6px; display: block; }
+body.vg-neworder #order-form button[type="submit"].btn-primary { margin-top: 10px; padding-top: 12px; padding-bottom: 12px; }
 /* descrizione del servizio spostata sotto il tasto da restyle-2026.js */
 body.vg-neworder .vg-order-notes + #service_description { margin-top: 14px; margin-bottom: 0; }
 /* le due avvertenze fisse sotto "Order now" (le mette restyle-2026.js) */
-.vg-order-notes { margin-top: 16px; }
+.vg-order-notes { margin-top: 22px; }
 /* l'esempio di link nel campo vuoto deve sembrare un esempio, non un testo gia' scritto */
 #order-form input::placeholder { color: #5f6375; opacity: 1; }
 .vg-order-notes p { margin: 0 0 6px; font-size: 13px; line-height: 1.45; color: #b9bcc8; }
@@ -221,7 +232,7 @@ body.vg-neworder .vg-order-notes + #service_description { margin-top: 14px; marg
 
 /* New order e Services: quadratini delle piattaforme sulla riga del titolo (scorrono di lato; li mette restyle-2026.js) */
 /* titolo al centro e quadratini sotto, al centro (se non ci stanno scorrono di lato) */
-.vg-title-row { display: flex; flex-direction: column; align-items: stretch; gap: 8px; margin-bottom: 12px; min-width: 0; }
+.vg-title-row { display: flex; flex-direction: column; align-items: stretch; gap: 22px; margin-bottom: 12px; min-width: 0; }
 .vg-title-row .vg-page-title { margin: 0 !important; }
 .vg-title-row .vg-plat > :first-child { margin-left: auto; }
 .vg-title-row .vg-plat > :last-child { margin-right: auto; }
@@ -621,6 +632,8 @@ body.vg-pop-open { overflow: hidden; }
 /* il pulsante lungo quanto All + Instagram, su una riga sua sopra le piattaforme */
 .vg-plat-grid .vg-plat-btn.vg-fav-btn { grid-column: 1 / span 2; }
 .vg-plat-grid .vg-fav-btn + .vg-plat-btn { grid-column-start: 1; }
+/* New order su PC: My favorites al centro, sopra TikTok e YouTube (Mirko, 23 nov 2026) */
+@media (min-width: 1200px) { body.vg-neworder .vg-plat-grid .vg-plat-btn.vg-fav-btn { grid-column: 3 / span 2; } }
 .vg-plat-btn.vg-fav-btn i { color: #f5c518; }
 .vg-plat-btn.vg-fav-btn.active { background: linear-gradient(90deg, #5d59ff, #7a5cff); border-color: #5d59ff; }
 .vg-plat-btn.vg-fav-btn.active i { color: #ffd84d; }
