@@ -30,9 +30,8 @@
 @media (max-width: 767px) { .vg-st-boxes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* New order: "Service status: Working well" su una riga, sotto Order now (Mirko, 23 nov 2026) */
-.vg-status-line { margin-top: 22px; font-size: 14px; color: #b9bcc8; }
+.vg-status-line { display: flex; align-items: center; gap: 10px; margin-top: 22px; padding-left: 9px; font-size: 14px; color: #b9bcc8; }
 .vg-status-line b { margin-left: 6px; font-weight: 700; }
-.vg-status-line .vg-live { justify-content: flex-start; margin-top: 8px; }
 
 /* New order: quadro di tutti i servizi, al primo New order dopo il login */
 .vg-status-welcome { margin: 0 0 16px; }

@@ -135,8 +135,8 @@
         }).catch(function () {});
     }
 
-    // New order: una riga "Service status: Working well" sotto Order now, prima delle avvertenze; senza #ID (c'e' gia'
-    // sopra), senza legenda (Mirko, 23 nov 2026, 02:46); sotto, il Live status con la data (24 nov 2026). Si aspetta che restyle-2026.js abbia messo le
+    // New order: una riga "● Live status · <data>: Working well" sotto Order now, prima delle avvertenze; senza #ID
+    // (c'e' gia' sopra), senza legenda (Mirko, 23 nov 2026, 02:46; testo del 24 nov 2026). Si aspetta che restyle-2026.js abbia messo le
     // avvertenze (.vg-order-notes, max ~5 s): le mette subito dopo il tasto, e la riga deve stare tra le due
     function nuovoOrdine(giri) {
         var servizio = document.getElementById('orderform-service');
@@ -151,9 +151,11 @@
             box.textContent = '';
             if (!/^\d+$/.test(id || '')) { box.style.display = 'none'; return; }
             box.style.display = '';
-            box.appendChild(document.createTextNode('Service status:'));
-            box.appendChild(el('b', 'vg-st-txt-' + stato(id), STATI[stato(id)]));
-            box.appendChild(live());   // la riga Live status di Services, sotto (Mirko, 24 nov 2026, versione A)
+            // una riga: pallino · "Live status · 24 Nov 2026:" · stato (Mirko, 24 nov 2026, 18:22)
+            box.appendChild(el('i', 'vg-dot'));
+            var t = el('span', '', 'Live status · ' + data() + ':');
+            t.appendChild(el('b', 'vg-st-txt-' + stato(id), STATI[stato(id)]));
+            box.appendChild(t);
         }
         aggiorna();
         servizio.addEventListener('change', aggiorna);
